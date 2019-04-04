@@ -1,5 +1,6 @@
 {
   "name": "markdown-translatable",
+  "homepage": "https://unfoldingword-box3.github.io/markdown-translatable/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -13,11 +14,12 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "styleguidist build",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d styleguide",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "styleguide": "styleguidist server",
-    "styleguide:build": "styleguidist build"
+    "styleguide": "styleguidist server"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -29,6 +31,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "gh-pages": "^2.0.1",
     "react-styleguidist": "^9.0.5"
   }
 }
