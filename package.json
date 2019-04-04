@@ -13,13 +13,12 @@
     "turndown": "^5.0.3"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "styleguidist server",
     "build": "styleguidist build",
     "predeploy": "yarn build",
     "deploy": "gh-pages -d styleguide",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "styleguide": "styleguidist server"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

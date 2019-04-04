@@ -3,4 +3,4 @@
 To see the Style guide:
 1. Clone the repo locally
 1. run `yarn`
-1. run `yarn styleguide`
+1. run `yarn start`
