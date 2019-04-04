@@ -1,0 +1,8 @@
+{
+    "env": {},
+    "dependencies": {
+        "unfoldingword.resources/markdown-html-editable": "0.1.10"
+    },
+    "componentsDefaultDirectory": "src/components/{name}",
+    "packageManager": "yarn"
+}
