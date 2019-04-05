@@ -1,4 +1,4 @@
-Toggle Raw Markdown and HTML Editing.
+### Toggle Raw Markdown and HTML Editing.
 
 ```jsx
 initialState = {
@@ -21,7 +21,7 @@ initialState = {
 </div>
 ```
 
-A more complex example...
+### A more complex example...
 
 ```jsx
 const _markdown = "# Edit Markdown as HTML!<br>No *Frills* **Markdown** __WYSIWYG__.\n"

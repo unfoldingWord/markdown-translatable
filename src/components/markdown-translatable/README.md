@@ -1,13 +1,12 @@
-Toggle Raw Markdown and HTML Translating.
+### Based on two MarkdownEditable components.
+1. Original/source on the Left, un-editable.
+1. Translation/target on the right, editable with changes that propagate.
+
+### Toggle Raw Markdown and HTML Translating.
 
 ```jsx
 const markdown = "**Hello** __world__";
 const translation = "**नमस्ते** __दुनिया__";
-const style = {
-  fontSize: '0.9em',
-  color: 'blue',
-  border: '1px dashed',
-};
 initialState = {
   translation,
   raw: false,
@@ -25,14 +24,11 @@ initialState = {
     handleChange={(translation) =>
       setState({ translation })
     }
-    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[["\n", "<br>"]]}
-    style={style}
   />
 </div>
 ```
 
-A more complex example...
+### A more complex example...
 
 ```jsx
 const markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.\n"
@@ -47,8 +43,8 @@ const translation = "# HTML के रूप में मार्कडाउ�
   + "1. HTML और __कच्चे__ मार्कडाउन रेंडर मोड।";
 const style = {
   fontSize: '0.9em',
-  color: 'blue',
-  border: '1px dashed',
+  color: 'darkblue',
+  border: '1px solid',
 };
 initialState = {
   translation,
