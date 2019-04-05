@@ -1,8 +1,8 @@
-### Based on two MarkdownEditable components.
+### Based on two BlockEditable components.
 1. Original/source on the Left, un-editable.
 1. Translation/target on the right, editable with changes that propagate.
 
-### Toggle Raw Markdown and HTML Translating.
+### Toggle Raw block level Markdown and HTML Translating.
 
 ```jsx
 const markdown = "**Hello** __world__";
@@ -17,7 +17,7 @@ initialState = {
   >
     {state.raw ? 'Markdown' : 'HTML'}
   </button>
-  <MarkdownTranslatable
+  <BlockTranslatable
     original={markdown}
     translation={state.translation}
     raw={state.raw}
@@ -56,7 +56,7 @@ initialState = {
   >
     {state.raw ? 'Markdown' : 'HTML'}
   </button>
-  <MarkdownTranslatable
+  <BlockTranslatable
     original={markdown}
     translation={state.translation}
     raw={state.raw}

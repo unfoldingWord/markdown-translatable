@@ -4,13 +4,13 @@ import { withStyles } from '@material-ui/core/styles';
 import {
   Grid,
 } from '@material-ui/core';
-import MarkdownEditable from '../markdown-editable';
+import BlockEditable from '../block-editable';
 
 /**
  * ### A reusable component for translating Markdown as HTML.
  * @component
  */
-function MarkdownTranslatable({
+function BlockTranslatable({
   classes,
   original,
   translation,
@@ -33,7 +33,7 @@ function MarkdownTranslatable({
         xs={12}
         className={classes.original}
       >
-        <MarkdownEditable
+        <BlockEditable
           markdown={original}
           raw={raw}
           editable={false}
@@ -43,7 +43,7 @@ function MarkdownTranslatable({
         item
         xs={12}
       >
-        <MarkdownEditable
+        <BlockEditable
           markdown={translation}
           handleChange={handleChange}
           raw={raw}
@@ -53,7 +53,7 @@ function MarkdownTranslatable({
   );
 };
 
-MarkdownTranslatable.propTypes = {
+BlockTranslatable.propTypes = {
   /** Original markdown for the editor. */
   original: PropTypes.string.isRequired,
   /** Translation markdown for the editor. */
@@ -70,7 +70,7 @@ MarkdownTranslatable.propTypes = {
   raw: PropTypes.bool,
 };
 
-MarkdownTranslatable.defaultProps = {
+BlockTranslatable.defaultProps = {
   original: '',
   translation: '',
   handleChange: () => {},
@@ -89,4 +89,4 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(MarkdownTranslatable);
+export default withStyles(styles)(BlockTranslatable);

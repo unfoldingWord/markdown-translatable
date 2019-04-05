@@ -1,7 +1,23 @@
 import showdown from 'showdown';
 import TurndownService from 'turndown';
+import {gfm} from 'turndown-plugin-gfm';
+
 
 const turndownService = new TurndownService({headingStyle: 'atx'});
+turndownService.use(gfm);
+turndownService.addRule('strikethrough', {
+  filter: ['del', 's', 'strike'],
+  replacement: (content) => `~${content}~`,
+});
+turndownService.addRule('underline', {
+  filter: ['u'],
+  replacement: (content) => `__${content}__`,
+});
+turndownService.addRule('emphasis', {
+  filter: ['em'],
+  replacement: (content) => `*${content}*`,
+});
+
 const markdownToHtmlConverter = new showdown.Converter();
 markdownToHtmlConverter.setOption('underline', true);
 

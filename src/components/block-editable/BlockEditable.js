@@ -4,10 +4,10 @@ import { withStyles } from '@material-ui/core/styles';
 import * as helpers from './helpers';
 
 /**
- * ### A reusable component for translating Markdown as HTML.
+ * ### A reusable component for translating a Markdown block as HTML.
  * @component
  */
-function MarkdownEditable({
+function BlockEditable({
   classes,
   markdown,
   handleChange,
@@ -22,7 +22,7 @@ function MarkdownEditable({
   if (raw) {
     component = (
       <pre
-        className={markdown}
+        className={classes.markdown}
         dir="auto"
         contentEditable={editable}
         onBlur={(e)=>{
@@ -68,7 +68,7 @@ function MarkdownEditable({
   );
 };
 
-MarkdownEditable.propTypes = {
+BlockEditable.propTypes = {
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
   /** Function to propogate changes to the markdown. */
@@ -85,7 +85,7 @@ MarkdownEditable.propTypes = {
   editable: PropTypes.bool,
 };
 
-MarkdownEditable.defaultProps = {
+BlockEditable.defaultProps = {
   markdown: '',
   handleChange: () => {},
   inputFilters: [],
@@ -103,16 +103,19 @@ const styles = theme => ({
   wrapper: {
     height: '100%',
     margin: '0 0.5em',
-    padding: '0 0.5em',
   },
   html: {
     height: '100%',
+    width: '100%',
+    padding: '0 0.1em',
   },
   markdown: {
     height: '100%',
+    width: '100%',
     whiteSpace: 'pre-wrap',
     fontSize: '1.2em',
+    padding: '0 0.1em',
   }
 });
 
-export default withStyles(styles)(MarkdownEditable);
+export default withStyles(styles)(BlockEditable);

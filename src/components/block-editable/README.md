@@ -11,7 +11,7 @@ initialState = {
   >
     {state.raw ? 'Markdown' : 'HTML'}
   </button>
-  <MarkdownEditable
+  <BlockEditable
     markdown={state.markdown}
     raw={state.raw}
     handleChange={(markdown) =>
@@ -49,7 +49,7 @@ initialState = {
   >
     {state.raw ? 'Markdown' : 'HTML'}
   </button>
-  <MarkdownEditable
+  <BlockEditable
     markdown={state.markdown}
     raw={state.raw}
     handleChange={(markdown) =>
