@@ -1,37 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import { withStyles } from '@material-ui/core/styles';
 import * as helpers from './helpers';
 
 /**
- * ### A reusable component for editing Markdown as HTML.
+ * ### A reusable component for translating Markdown as HTML.
  * @component
  */
-export default function MarkdownHtmlEditable({
+function MarkdownEditable({
+  classes,
   markdown,
   handleChange,
   inputFilters,
   outputFilters,
   style,
   raw,
+  editable,
 }) {
   let component;
-
-  let _style = {...style};
-  if (raw) {
-    _style = {
-      whiteSpace: 'pre-wrap',
-      fontSize: '1.2em',
-    }
-    style = {..._style, ...style};
-  }
 
   if (raw) {
     component = (
       <pre
-        style={style}
+        className={markdown}
         dir="auto"
-        contentEditable
+        contentEditable={editable}
         onBlur={(e)=>{
           const _markdown = helpers.filter({
             string: e.target.innerText,
@@ -47,9 +40,9 @@ export default function MarkdownHtmlEditable({
   } else {
     component = (
       <div
-        style={style}
+        className={classes.html}
         dir="auto"
-        contentEditable
+        contentEditable={editable}
         dangerouslySetInnerHTML={{
           __html: helpers.markdownToHtml({markdown, inputFilters})
         }}
@@ -61,10 +54,21 @@ export default function MarkdownHtmlEditable({
       />
     );
   }
-  return component;
+  return (
+    <div
+      className={classes.root}
+      style={style}
+    >
+      <div
+        className={classes.wrapper}
+      >
+        {component}
+      </div>
+    </div>
+  );
 };
 
-MarkdownHtmlEditable.propTypes = {
+MarkdownEditable.propTypes = {
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
   /** Function to propogate changes to the markdown. */
@@ -77,13 +81,38 @@ MarkdownHtmlEditable.propTypes = {
   style: PropTypes.object,
   /** Display Raw Markdown or HTML. */
   raw: PropTypes.bool,
+  /** Enable/Disable editability. */
+  editable: PropTypes.bool,
 };
 
-MarkdownHtmlEditable.defaultProps = {
+MarkdownEditable.defaultProps = {
   markdown: '',
   handleChange: () => {},
   inputFilters: [],
   outputFilters: [],
   style: {},
   raw: false,
+  editable: true,
 };
+
+const styles = theme => ({
+  root: {
+    height: '100%',
+    width: '100%',
+  },
+  wrapper: {
+    height: '100%',
+    margin: '0 0.5em',
+    padding: '0 0.5em',
+  },
+  html: {
+    height: '100%',
+  },
+  markdown: {
+    height: '100%',
+    whiteSpace: 'pre-wrap',
+    fontSize: '1.2em',
+  }
+});
+
+export default withStyles(styles)(MarkdownEditable);

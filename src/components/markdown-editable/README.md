@@ -11,7 +11,7 @@ initialState = {
   >
     {state.raw ? 'Markdown' : 'HTML'}
   </button>
-  <MarkdownHtmlEditable
+  <MarkdownEditable
     markdown={state.markdown}
     raw={state.raw}
     handleChange={(markdown) =>
@@ -38,7 +38,6 @@ const style = {
   fontSize: '0.9em',
   color: 'blue',
   border: '1px dashed',
-  padding: '1em',
 };
 initialState = {
   markdown: _markdown,
@@ -50,7 +49,7 @@ initialState = {
   >
     {state.raw ? 'Markdown' : 'HTML'}
   </button>
-  <MarkdownHtmlEditable
+  <MarkdownEditable
     markdown={state.markdown}
     raw={state.raw}
     handleChange={(markdown) =>
