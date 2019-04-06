@@ -40,19 +40,15 @@ const style = {
   color: 'darkblue',
   border: '1px solid',
 };
-initialState = {
-  translation,
-};
 <div>
   <SectionTranslatable
     original={markdown}
-    translation={state.translation}
-    raw={state.raw}
-    handleChange={(translation) =>
-      setState({ translation })
+    translation={translation}
+    handleChange={(_translation) =>
+      alert(_translation)
     }
     inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[["\n", "<br>"]]}
+    outputFilters={[]}
     style={style}
   />
 </div>

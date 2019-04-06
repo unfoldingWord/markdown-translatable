@@ -55,7 +55,7 @@ initialState = {
       setState({ markdown })
     }
     inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[["\n", "<br>"]]}
+    outputFilters={[[/\n/gi, "<br>"]]}
     style={style}
   />
 </div>

@@ -38,6 +38,8 @@ function SectionTranslatable({
     let _translationBlocks = [...translationBlocks];
     _translationBlocks[index] = translationBlock;
     setTranslationBlocks(_translationBlocks);
+    const _translation = helpers.markdownFromBlocks({blocks: _translationBlocks});
+    handleChange(_translation);
   };
 
   const blockRows = originalBlocks.map((originalBlock, index) =>
