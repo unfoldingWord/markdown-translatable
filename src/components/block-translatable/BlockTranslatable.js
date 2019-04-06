@@ -35,6 +35,8 @@ function BlockTranslatable({
       >
         <BlockEditable
           markdown={original}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
           raw={raw}
           editable={false}
         />
@@ -42,9 +44,12 @@ function BlockTranslatable({
       <Grid
         item
         xs={12}
+        className={classes.translation}
       >
         <BlockEditable
           markdown={translation}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
           handleChange={handleChange}
           raw={raw}
         />
@@ -82,10 +87,12 @@ BlockTranslatable.defaultProps = {
 
 const styles = theme => ({
   root: {
-    lineHeight: '1.1em',
   },
   original: {
     background: '#eee4',
+  },
+  translation: {
+    
   },
 });
 

@@ -21,21 +21,25 @@ function BlockEditable({
 
   if (raw) {
     component = (
-      <pre
+      <div
         className={classes.markdown}
-        dir="auto"
-        contentEditable={editable}
-        onBlur={(e)=>{
-          const _markdown = helpers.filter({
-            string: e.target.innerText,
-            filters: outputFilters
-          });
-          handleChange(_markdown);
-        }}
-        dangerouslySetInnerHTML={
-          { __html: markdown }
-        }
-      />
+      >
+        <pre
+          className={classes.pre}
+          dir="auto"
+          contentEditable={editable}
+          onBlur={(e)=>{
+            const _markdown = helpers.filter({
+              string: e.target.innerText,
+              filters: outputFilters
+            });
+            handleChange(_markdown);
+          }}
+          dangerouslySetInnerHTML={
+            { __html: markdown }
+          }
+        />
+      </div>
     );
   } else {
     component = (
@@ -102,20 +106,24 @@ const styles = theme => ({
   },
   wrapper: {
     height: '100%',
-    margin: '0 0.5em',
+    padding: '0 0.5em',
   },
   html: {
     height: '100%',
     width: '100%',
-    padding: '0 0.1em',
+    display: 'grid',
+    lineHeight: '1.3em',
   },
   markdown: {
     height: '100%',
     width: '100%',
+    fontSize: '1.1em',
+    lineHeight: '1.3em',
+    display: 'grid',
+  },
+  pre: {
     whiteSpace: 'pre-wrap',
-    fontSize: '1.2em',
-    padding: '0 0.1em',
-  }
+  },
 });
 
 export default withStyles(styles)(BlockEditable);

@@ -25,10 +25,11 @@ function SectionTranslatable({
   classes,
   original,
   translation,
-  onChange,
-  raw
+  inputFilters,
+  outputFilters,
+  handleChange,
 }) {
-  const [_raw, setRaw] = useState(raw);
+  const [raw, setRaw] = useState(false);
   const originalBlocks = helpers.blocksFromMarkdown({markdown: original});
   const __translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
   const [translationBlocks, setTranslationBlocks] = useState(__translationBlocks);
@@ -44,10 +45,12 @@ function SectionTranslatable({
       key={index + md5(JSON.stringify(originalBlock)) + Math.random()}
       original={originalBlock}
       translation={translationBlocks[index]}
+      inputFilters={inputFilters}
+      outputFilters={outputFilters}
       handleChange={(translationBlock) =>
         setTranslationBlock({index, translationBlock})
       }
-      raw={_raw}
+      raw={raw}
     />
   );
 
@@ -71,9 +74,9 @@ function SectionTranslatable({
       <ExpansionPanelActions>
         <Button
           size="small"
-          onClick={() => setRaw(!_raw)}
+          onClick={() => setRaw(!raw)}
         >
-          {_raw ? 'Markdown' : 'HTML'}
+          {raw ? 'Markdown' : 'HTML'}
         </Button>
         <Button size="small" color="primary">
           Save
@@ -96,8 +99,6 @@ SectionTranslatable.propTypes = {
   outputFilters: PropTypes.array,
   /** CSS for the component. */
   style: PropTypes.object,
-  /** Display Raw Markdown or HTML. */
-  raw: PropTypes.bool,
 };
 
 SectionTranslatable.defaultProps = {
@@ -107,7 +108,6 @@ SectionTranslatable.defaultProps = {
   inputFilters: [],
   outputFilters: [],
   style: {},
-  raw: false,
 }
 
 const styles = theme => ({
@@ -115,7 +115,7 @@ const styles = theme => ({
   },
   details: {
     display: 'block',
-    padding: 0,
+    padding: '0',
     borderTop: '1px solid #ccc',
     borderBottom: '1px solid #ccc',
   },

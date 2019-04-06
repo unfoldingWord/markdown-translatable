@@ -9,14 +9,8 @@ const markdown = "**Hello** __world__";
 const translation = "**नमस्ते** __दुनिया__";
 initialState = {
   translation,
-  raw: false,
 };
 <div>
-  <button
-    onClick={() => setState({ raw: !state.raw })}
-  >
-    {state.raw ? 'Markdown' : 'HTML'}
-  </button>
   <SectionTranslatable
     original={markdown}
     translation={state.translation}
@@ -48,14 +42,8 @@ const style = {
 };
 initialState = {
   translation,
-  raw: false,
 };
 <div>
-  <button
-    onClick={() => setState({ raw: !state.raw })}
-  >
-    {state.raw ? 'Markdown' : 'HTML'}
-  </button>
   <SectionTranslatable
     original={markdown}
     translation={state.translation}

@@ -31,12 +31,12 @@ initialState = {
 ### A more complex example...
 
 ```jsx
-const markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.\n"
+const markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.\n\n"
   + "1. Custom <u>input/output</u> filters. \n"
   + "1. Custom __styles__, this is an ugly example. \n"
   + "1. Save changes __callback__ via onBlur event. \n"
   + "1. HTML and __raw__ Markdown render modes. \n";
-const translation = "# HTML के रूप में मार्कडाउन संपादित करें!<br><br>नो *फ्रिल्स* **मार्कडाउन** __WYSIWYG__।\n"
+const translation = "# HTML के रूप में मार्कडाउन संपादित करें!<br><br>नो *फ्रिल्स* **मार्कडाउन** __WYSIWYG__।\n\n"
   + "1. कस्टम __इनपुट/आउटपुट__ फ़िल्टर।\n"
   + "1. कस्टम __शैलियाँ__, यह एक बदसूरत उदाहरण है।\n"
   + "1. onBlur इवेंट के माध्यम से परिवर्तन __कॉलबैक__ सहेजें।\n"

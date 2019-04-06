@@ -2,7 +2,7 @@
 
 ```jsx
 initialState = {
-  markdown: '# Hello World',
+  markdown: '**Hello** __world__',
   raw: true,
 };
 <div>
@@ -24,7 +24,7 @@ initialState = {
 ### A more complex example...
 
 ```jsx
-const _markdown = "# Edit Markdown as HTML!<br>No *Frills* **Markdown** __WYSIWYG__.\n"
+const _markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.\n\n"
   + "1. Custom <u>input/output</u> filters. \n"
   + "1. Custom __styles__, this is an ugly example. \n"
   + "1. Save changes __callback__ via onBlur event. \n"
@@ -35,7 +35,6 @@ const _markdown = "# Edit Markdown as HTML!<br>No *Frills* **Markdown** __WYSIWY
 };
 const style = {
   width: '20em',
-  fontSize: '0.9em',
   color: 'blue',
   border: '1px dashed',
 };
