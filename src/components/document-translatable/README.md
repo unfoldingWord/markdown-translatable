@@ -41,8 +41,9 @@ const translation = "# HTML के रूप में मार्कडाउ�
   + "आप अलग-अलग अनुभागों को संपादित कर सकते हैं।";
 const style = {
   fontSize: '0.9em',
-  color: 'darkblue',
+  color: 'gray',
   border: '1px solid',
+  fontFamily: 'Arial',
 };
 <div>
   <DocumentTranslatable

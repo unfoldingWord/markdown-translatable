@@ -37,8 +37,9 @@ const translation = "# HTML के रूप में मार्कडाउ�
   + "1. HTML और __कच्चे__ मार्कडाउन रेंडर मोड।";
 const style = {
   fontSize: '0.9em',
-  color: 'darkblue',
+  color: 'gray',
   border: '1px solid',
+  fontFamily: 'Arial',
 };
 <div>
   <SectionTranslatable

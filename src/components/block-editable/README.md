@@ -35,8 +35,9 @@ const _markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WY
 };
 const style = {
   width: '20em',
-  color: 'blue',
+  color: 'gray',
   border: '1px dashed',
+  fontFamily: 'Arial',
 };
 initialState = {
   markdown: _markdown,
