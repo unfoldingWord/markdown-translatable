@@ -32,9 +32,11 @@ const _markdown = `
 1. Save changes __callback__ via onBlur event.
 1. HTML and __raw__ Markdown render modes.
 
-# Another Section
+# Sections and Blocks
 
-You can edit separate sections.`;
+- Markdown Heading Sections are split out only in the DocumentTranslatable component and render a SectionTranslatable component for each section.
+- Markdown Blocks are split out only in the SectionTranslatable component and render a BlockTranslatable component for each block.
+`;
 
   const callback = (markdown) => {
   // do something when the user exits editing element (onBlur).

@@ -33,9 +33,11 @@ const markdown = `
 1. Save changes __callback__ via onBlur event.
 1. HTML and __raw__ Markdown render modes.
 
-# Another Section
+# Sections and Blocks
 
-You can edit separate sections.`;
+- Markdown Heading Sections are split out only in the DocumentTranslatable component and render a SectionTranslatable component for each section.
+- Markdown Blocks are split out only in the SectionTranslatable component and render a BlockTranslatable component for each block.
+`;
 
 const translation = `
 # HTML के रूप में मार्कडाउन संपादित करें!<br><br>नो *फ्रिल्स* **मार्कडाउन** __WYSIWYG__।
@@ -45,9 +47,11 @@ const translation = `
 1. onBlur इवेंट के माध्यम से परिवर्तन __कॉलबैक__ सहेजें।
 1. HTML और __कच्चे__ मार्कडाउन रेंडर मोड।
 
-# एक अन्य खंड
+# खंड और खंड
 
-आप अलग-अलग अनुभागों को संपादित कर सकते हैं।`;
+- मार्कडाउन हेडिंग सेक्शंस को केवल डॉक्यूमेंटट्रांसलेटेबल कंपोनेंट में विभाजित किया गया है और प्रत्येक सेक्शन के लिए एक सेक्शन ट्रांसलेटेबल कंपोनेंट को रेंडर किया गया है।
+- मार्कडाउन ब्लॉक केवल सेक्शनट्रांसलेबल कंपोनेंट में विभाजित हो जाते हैं और प्रत्येक ब्लॉक के लिए ब्लॉकट्रांसलेबल कंपोनेंट को रेंडर करते हैं।
+`;
 
 const style = {
   fontSize: '0.9em',
@@ -55,16 +59,15 @@ const style = {
   border: '1px solid',
   fontFamily: 'Arial',
 };
-<div>
-  <DocumentTranslatable
-    original={markdown}
-    translation={translation}
-    handleChange={(_translation) =>
-      alert(_translation)
-    }
-    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[]}
-    style={style}
-  />
-</div>
+
+<DocumentTranslatable
+  original={markdown}
+  translation={translation}
+  handleChange={(_translation) =>
+    alert(_translation)
+  }
+  inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
+  outputFilters={[]}
+  style={style}
+/>
 ```
