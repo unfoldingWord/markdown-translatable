@@ -5,6 +5,7 @@ initialState = {
   markdown: '**Hello** __world__',
   raw: true,
 };
+
 <div>
   <button
     onClick={() => setState({ raw: !state.raw })}
@@ -42,16 +43,19 @@ const _markdown = `
   // do something when the user exits editing element (onBlur).
   alert(markdown);
 };
+
 const style = {
   width: '20em',
   color: 'gray',
   border: '1px dashed',
   fontFamily: 'Arial',
 };
+
 initialState = {
   markdown: _markdown,
   raw: false,
 };
+
 <div>
   <button
     onClick={() => setState({ raw: !state.raw })}

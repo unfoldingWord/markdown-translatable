@@ -7,19 +7,19 @@
 ```jsx
 const markdown = "**Hello** __world__";
 const translation = "**नमस्ते** __दुनिया__";
+
 initialState = {
   translation,
 };
-<div>
-  <DocumentTranslatable
-    original={markdown}
-    translation={state.translation}
-    raw={state.raw}
-    handleChange={(translation) =>
-      setState({ translation })
-    }
-  />
-</div>
+
+<DocumentTranslatable
+  original={markdown}
+  translation={state.translation}
+  raw={state.raw}
+  handleChange={(translation) =>
+    setState({ translation })
+  }
+/>
 ```
 
 ### A more complex example...

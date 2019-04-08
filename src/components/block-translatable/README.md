@@ -7,10 +7,12 @@
 ```jsx
 const markdown = "**Hello** __world__";
 const translation = "**नमस्ते** __दुनिया__";
+
 initialState = {
   translation,
   raw: false,
 };
+
 <div>
   <button
     onClick={() => setState({ raw: !state.raw })}
@@ -65,10 +67,12 @@ const style = {
   border: '1px solid',
   fontFamily: 'Arial',
 };
+
 initialState = {
   translation,
   raw: false,
 };
+
 <div>
   <button
     onClick={() => setState({ raw: !state.raw })}
