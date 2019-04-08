@@ -28,6 +28,7 @@ function SectionTranslatable({
   inputFilters,
   outputFilters,
   handleChange,
+  style,
 }) {
   const [raw, setRaw] = useState(false);
   const originalBlocks = helpers.blocksFromMarkdown({markdown: original});
@@ -42,7 +43,7 @@ function SectionTranslatable({
     handleChange(_translation);
   };
 
-  const blockRows = originalBlocks.map((originalBlock, index) =>
+  const blockTranslatables = originalBlocks.map((originalBlock, index) =>
     <BlockTranslatable
       key={index + md5(JSON.stringify(originalBlock)) + Math.random()}
       original={originalBlock}
@@ -57,7 +58,7 @@ function SectionTranslatable({
   );
 
   return (
-    <ExpansionPanel className={classes.root}>
+    <ExpansionPanel style={style} className={classes.root}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         classes={{content: 'summaryContent'}}
@@ -71,7 +72,7 @@ function SectionTranslatable({
       <ExpansionPanelDetails
         className={classes.details}
       >
-        {blockRows}
+        {blockTranslatables}
       </ExpansionPanelDetails>
       <ExpansionPanelActions>
         <Button
