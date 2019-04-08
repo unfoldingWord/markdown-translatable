@@ -24,11 +24,18 @@ initialState = {
 ### A more complex example...
 
 ```jsx
-const _markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.\n\n"
-  + "1. Custom <u>input/output</u> filters. \n"
-  + "1. Custom __styles__, this is an ugly example. \n"
-  + "1. Save changes __callback__ via onBlur event. \n"
-  + "1. HTML and __raw__ Markdown render modes. \n";
+const _markdown = `
+# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.
+
+1. Custom <u>input/output</u> filters.
+1. Custom __styles__, this is an ugly example.
+1. Save changes __callback__ via onBlur event.
+1. HTML and __raw__ Markdown render modes.
+
+# Another Section
+
+You can edit separate sections.`;
+
   const callback = (markdown) => {
   // do something when the user exits editing element (onBlur).
   alert(markdown);

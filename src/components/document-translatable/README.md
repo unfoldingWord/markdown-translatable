@@ -25,20 +25,30 @@ initialState = {
 ### A more complex example...
 
 ```jsx
-const markdown = "# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.\n\n"
-  + "1. Custom <u>input/output</u> filters.\n"
-  + "1. Custom __styles__, this is an ugly example.\n"
-  + "1. Save changes __callback__ via onBlur event.\n"
-  + "1. HTML and __raw__ Markdown render modes.\n\n"
-  + "# Another Section\n\n"
-  + "You can edit separate sections.";
-const translation = "# HTML के रूप में मार्कडाउन संपादित करें!<br><br>नो *फ्रिल्स* **मार्कडाउन** __WYSIWYG__।\n\n"
-  + "1. कस्टम __इनपुट/आउटपुट__ फ़िल्टर।\n"
-  + "1. कस्टम __शैलियाँ__, यह एक बदसूरत उदाहरण है।\n"
-  + "1. onBlur इवेंट के माध्यम से परिवर्तन __कॉलबैक__ सहेजें।\n"
-  + "1. HTML और __कच्चे__ मार्कडाउन रेंडर मोड।\n\n"
-  + "# एक अन्य खंड\n\n"
-  + "आप अलग-अलग अनुभागों को संपादित कर सकते हैं।";
+const markdown = `
+# Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.
+
+1. Custom <u>input/output</u> filters.
+1. Custom __styles__, this is an ugly example.
+1. Save changes __callback__ via onBlur event.
+1. HTML and __raw__ Markdown render modes.
+
+# Another Section
+
+You can edit separate sections.`;
+
+const translation = `
+# HTML के रूप में मार्कडाउन संपादित करें!<br><br>नो *फ्रिल्स* **मार्कडाउन** __WYSIWYG__।
+
+1. कस्टम __इनपुट/आउटपुट__ फ़िल्टर।
+1. कस्टम __शैलियाँ__, यह एक बदसूरत उदाहरण है।
+1. onBlur इवेंट के माध्यम से परिवर्तन __कॉलबैक__ सहेजें।
+1. HTML और __कच्चे__ मार्कडाउन रेंडर मोड।
+
+# एक अन्य खंड
+
+आप अलग-अलग अनुभागों को संपादित कर सकते हैं।`;
+
 const style = {
   fontSize: '0.9em',
   color: 'gray',
