@@ -35,7 +35,8 @@ const theme = {
     base: colors.dark,
     link: colors.primary,
     linkHover: colors.tertiary,
-    sidebarBackground: colors.primary
+    sidebarBackground: colors.primary,
+    ribbonBackground: colors.primary,
   },
   fontFamily: {
     base: '"proxima-nova", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',

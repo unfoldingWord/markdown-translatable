@@ -21,8 +21,7 @@ module.exports = {
     const dirname = Path.dirname(componentPath, '.js');
     const file = dirname.split('/').slice(-1)[0];
     const componentName = upperFirst(camelCase(file));
-    const appName = upperFirst(camelCase(name));
-    return `import {${componentName}} from "${appName}"`;
+    return `import { ${componentName} } from "${name}";`;
   },
   usageMode: 'expand',
   exampleMode: 'expand',
