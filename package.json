@@ -1,6 +1,6 @@
 {
   "name": "markdown-translatable",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "license": "MIT",
   "description": "A library developed using lib-create-react-app",
   "homepage": "https://unfoldingword-box3.github.io/markdown-translatable/",
@@ -21,7 +21,7 @@
     "deploy": "gh-pages -d styleguide",
     "test": "react-scripts test",
     "build": "react-scripts build",
-    "prepublishOnly": "babel ./src --out-dir ./dist -s inline"
+    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
   },
   "eslintConfig": {
     "extends": "react-app"
