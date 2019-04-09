@@ -1,7 +1,7 @@
 {
   "name": "markdown-translatable",
   "homepage": "https://unfoldingword-box3.github.io/markdown-translatable/",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^3.9.3",
