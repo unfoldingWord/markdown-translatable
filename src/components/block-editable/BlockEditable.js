@@ -10,7 +10,7 @@ import * as helpers from './helpers';
 function BlockEditable({
   classes,
   markdown,
-  handleChange,
+  onEdit,
   inputFilters,
   outputFilters,
   style,
@@ -33,7 +33,7 @@ function BlockEditable({
               string: e.target.innerText,
               filters: outputFilters
             });
-            handleChange(_markdown);
+            onEdit(_markdown);
           }}
           dangerouslySetInnerHTML={
             { __html: markdown }
@@ -53,7 +53,7 @@ function BlockEditable({
         onBlur={(e)=>{
           const html = e.target.innerHTML;
           const _markdown = helpers.htmlToMarkdown({html, outputFilters});
-          handleChange(_markdown);
+          onEdit(_markdown);
         }}
       />
     );
@@ -76,7 +76,7 @@ BlockEditable.propTypes = {
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
   /** Function to propogate changes to the markdown. */
-  handleChange: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -91,7 +91,7 @@ BlockEditable.propTypes = {
 
 BlockEditable.defaultProps = {
   markdown: '',
-  handleChange: () => {},
+  onEdit: () => {},
   inputFilters: [],
   outputFilters: [],
   style: {},

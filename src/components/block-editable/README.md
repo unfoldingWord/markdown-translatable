@@ -15,7 +15,7 @@ initialState = {
   <BlockEditable
     markdown={state.markdown}
     raw={state.raw}
-    handleChange={(markdown) =>
+    onEdit={(markdown) =>
       setState({ markdown })
     }
   />
@@ -65,7 +65,7 @@ initialState = {
   <BlockEditable
     markdown={state.markdown}
     raw={state.raw}
-    handleChange={(markdown) =>
+    onEdit={(markdown) =>
       setState({ markdown })
     }
     inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}

@@ -20,19 +20,21 @@ function DocumentTranslatable({
   translation,
   inputFilters,
   outputFilters,
-  handleChange,
+  onTranslation,
   style,
 }) {
+  const [sectionFocus, setSectionFocus] = useState(0);
   const originalSections = helpers.sectionsFromMarkdown({markdown: original});
   const __translationSections = helpers.sectionsFromMarkdown({markdown: translation});
   const [translationSections, setTranslationSections] = useState(__translationSections);
 
   const setTranslationSection = ({index, translationSection}) => {
+    setSectionFocus(index);
     let _translationSections = [...translationSections];
     _translationSections[index] = translationSection;
     setTranslationSections(_translationSections);
     const _translation = helpers.markdownFromSections({sections: _translationSections});
-    handleChange(_translation);
+    onTranslation(_translation);
   };
 
   const sectionTranslatables = originalSections.map((originalSection, index) =>
@@ -42,9 +44,14 @@ function DocumentTranslatable({
       translation={translationSections[index]}
       inputFilters={inputFilters}
       outputFilters={outputFilters}
-      handleChange={(translationSection) =>
+      onTranslation={(translationSection) =>
         setTranslationSection({index, translationSection})
       }
+      onSectionFocus={(expanded) => {
+        if (expanded) setSectionFocus(index);
+        else setSectionFocus(null);
+      }}
+      sectionFocus={sectionFocus === index}
       style={style}
     />
   );
@@ -62,7 +69,7 @@ DocumentTranslatable.propTypes = {
   /** Translation markdown for the editor. */
   translation: PropTypes.string.isRequired,
   /** Function to propogate changes to the translation. */
-  handleChange: PropTypes.func.isRequired,
+  onTranslation: PropTypes.func.isRequired,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -74,7 +81,7 @@ DocumentTranslatable.propTypes = {
 DocumentTranslatable.defaultProps = {
   original: '',
   translation: '',
-  handleChange: () => {},
+  onTranslation: () => {},
   inputFilters: [],
   outputFilters: [],
   style: {},

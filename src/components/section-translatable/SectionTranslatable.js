@@ -27,7 +27,9 @@ function SectionTranslatable({
   translation,
   inputFilters,
   outputFilters,
-  handleChange,
+  onTranslation,
+  onSectionFocus,
+  sectionFocus,
   style,
 }) {
   const [raw, setRaw] = useState(false);
@@ -40,7 +42,7 @@ function SectionTranslatable({
     _translationBlocks[index] = translationBlock;
     setTranslationBlocks(_translationBlocks);
     const _translation = helpers.markdownFromBlocks({blocks: _translationBlocks});
-    handleChange(_translation);
+    onTranslation(_translation);
   };
 
   const blockTranslatables = originalBlocks.map((originalBlock, index) =>
@@ -50,7 +52,7 @@ function SectionTranslatable({
       translation={translationBlocks[index]}
       inputFilters={inputFilters}
       outputFilters={outputFilters}
-      handleChange={(translationBlock) =>
+      onTranslation={(translationBlock) =>
         setTranslationBlock({index, translationBlock})
       }
       raw={raw}
@@ -58,7 +60,12 @@ function SectionTranslatable({
   );
 
   return (
-    <ExpansionPanel style={style} className={classes.root}>
+    <ExpansionPanel
+      style={style}
+      className={classes.root}
+      defaultExpanded={sectionFocus}
+      onChange={onSectionFocus}
+    >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         classes={{content: 'summaryContent'}}
@@ -95,7 +102,11 @@ SectionTranslatable.propTypes = {
   /** Translation markdown for the editor. */
   translation: PropTypes.string.isRequired,
   /** Function to propogate changes to the translation. */
-  handleChange: PropTypes.func.isRequired,
+  onTranslation: PropTypes.func.isRequired,
+  /** Function to propogate changes to the Section in focus. */
+  onSectionFocus: PropTypes.func.isRequired,
+  /** Set the Section in focus. */
+  sectionFocus: PropTypes.bool,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -107,9 +118,11 @@ SectionTranslatable.propTypes = {
 SectionTranslatable.defaultProps = {
   original: '',
   translation: '',
-  handleChange: () => {},
   inputFilters: [],
   outputFilters: [],
+  onTranslation: () => {},
+  onSectionFocus: () => {},
+  sectionFocus: false,
   style: {},
 }
 

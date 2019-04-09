@@ -6,18 +6,17 @@
 
 ```jsx
 const markdown = "**Hello** __world__";
-const translation = "**नमस्ते** __दुनिया__";
+const _translation = "**नमस्ते** __दुनिया__";
 
 initialState = {
-  translation,
+  translation: _translation,
 };
 
 <SectionTranslatable
   original={markdown}
   translation={state.translation}
-  raw={state.raw}
-  handleChange={(translation) =>
-    setState({ translation })
+  onTranslation={(translation) =>
+    setState({translation})
   }
 />
 ```
@@ -39,7 +38,7 @@ const markdown = `
 - Markdown Blocks are split out only in the SectionTranslatable component and render a BlockTranslatable component for each block.
 `;
 
-const translation = `
+const _translation = `
 # HTML के रूप में मार्कडाउन संपादित करें!<br><br>नो *फ्रिल्स* **मार्कडाउन** __WYSIWYG__।
 
 1. कस्टम __इनपुट/आउटपुट__ फ़िल्टर।
@@ -60,11 +59,20 @@ const style = {
   fontFamily: 'Arial',
 };
 
+initialState = {
+  translation: _translation,
+  sectionFocus: false,
+};
+
 <SectionTranslatable
   original={markdown}
-  translation={translation}
-  handleChange={(_translation) =>
-    alert(_translation)
+  translation={state.translation}
+  sectionFocus={state.sectionFocus}
+  onSectionFocus={(sectionFocus) =>
+    setState({sectionFocus})
+  }
+  onTranslation={(translation) =>
+    setState({translation})
   }
   inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
   outputFilters={[]}

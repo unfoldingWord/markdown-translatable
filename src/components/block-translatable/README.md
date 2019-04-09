@@ -23,7 +23,7 @@ initialState = {
     original={markdown}
     translation={state.translation}
     raw={state.raw}
-    handleChange={(translation) =>
+    onTranslation={(translation) =>
       setState({ translation })
     }
   />
@@ -83,8 +83,8 @@ initialState = {
     original={markdown}
     translation={state.translation}
     raw={state.raw}
-    handleChange={(translation) =>
-      setState({ translation })
+    onTranslation={(translation) =>
+      setState({translation})
     }
     inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
     outputFilters={[[/\n/gi, "<br>"]]}

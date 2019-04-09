@@ -14,7 +14,7 @@ function BlockTranslatable({
   classes,
   original,
   translation,
-  handleChange,
+  onTranslation,
   inputFilters,
   outputFilters,
   style,
@@ -50,7 +50,7 @@ function BlockTranslatable({
           markdown={translation}
           inputFilters={inputFilters}
           outputFilters={outputFilters}
-          handleChange={handleChange}
+          onEdit={onTranslation}
           raw={raw}
         />
       </Grid>
@@ -64,7 +64,7 @@ BlockTranslatable.propTypes = {
   /** Translation markdown for the editor. */
   translation: PropTypes.string.isRequired,
   /** Function to propogate changes to the translation. */
-  handleChange: PropTypes.func.isRequired,
+  onTranslation: PropTypes.func.isRequired,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -78,7 +78,7 @@ BlockTranslatable.propTypes = {
 BlockTranslatable.defaultProps = {
   original: '',
   translation: '',
-  handleChange: () => {},
+  onTranslation: () => {},
   inputFilters: [],
   outputFilters: [],
   style: {},
@@ -92,7 +92,7 @@ const styles = theme => ({
     background: '#eee4',
   },
   translation: {
-    
+
   },
 });
 
