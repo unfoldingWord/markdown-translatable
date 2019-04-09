@@ -112,13 +112,11 @@ const styles = theme => ({
     height: '100%',
     width: '100%',
     display: 'grid',
-    lineHeight: '1.3em',
   },
   markdown: {
     height: '100%',
     width: '100%',
     fontSize: '1.1em',
-    lineHeight: '1.3em',
     display: 'grid',
   },
   pre: {
