@@ -14,7 +14,7 @@ module.exports = {
   },
 	// components: 'src/components/**/[A-Z]*.js',
   webpackConfig: require('react-scripts/config/webpack.config')('development'),
-  serverPort: 3000,
+  // serverPort: 3000,
   styles,
   theme,
   getComponentPathLine: (componentPath) => {
@@ -27,10 +27,6 @@ module.exports = {
   exampleMode: 'expand',
   pagePerSection: true,
   sections: [
-    {
-      name: '',
-      content: './src/components/README.md'
-    },
     {
       name: 'Document Translation',
       components: () => ([

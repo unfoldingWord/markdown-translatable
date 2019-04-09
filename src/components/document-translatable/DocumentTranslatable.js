@@ -2,10 +2,6 @@ import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import md5 from 'md5';
-import {
-} from '@material-ui/core';
-import {
-} from '@material-ui/icons';
 
 import SectionTranslatable from '../section-translatable';
 

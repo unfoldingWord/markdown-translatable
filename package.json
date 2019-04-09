@@ -1,15 +1,13 @@
 {
   "name": "markdown-translatable",
+  "version": "0.3.2",
+  "license": "MIT",
+  "description": "A library developed using lib-create-react-app",
   "homepage": "https://unfoldingword-box3.github.io/markdown-translatable/",
-  "version": "0.3.0",
-  "private": true,
+  "private": false,
   "dependencies": {
-    "@material-ui/core": "^3.9.3",
-    "@material-ui/icons": "^3.0.2",
     "md5": "^2.2.1",
     "prop-types": "^15.7.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
     "react-markdown": "^4.0.6",
     "react-scripts": "2.1.8",
     "showdown": "^1.9.0",
@@ -18,11 +16,12 @@
   },
   "scripts": {
     "start": "styleguidist server",
-    "build": "styleguidist build",
-    "predeploy": "yarn build",
+    "styleguide:build": "styleguidist build",
+    "predeploy": "yarn styleguide:build",
     "deploy": "gh-pages -d styleguide",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build",
+    "prepublishOnly": "babel ./src --out-dir ./dist -s inline"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -33,9 +32,25 @@
     "not ie <= 11",
     "not op_mini all"
   ],
+  "peerDependencies": {
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
+    "react": "^16.8.6"
+  },
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
+    "@babel/preset-env": "^7.4.3",
+    "@babel/preset-react": "^7.0.0",
+    "@material-ui/core": "^3.9.3",
+    "@material-ui/icons": "^3.0.2",
     "gh-pages": "^2.0.1",
     "lodash": "^4.17.11",
+    "react": "^16.8.6",
     "react-styleguidist": "^9.0.5"
-  }
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist/*"
+  ]
 }
