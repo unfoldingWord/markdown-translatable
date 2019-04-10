@@ -1,12 +1,12 @@
 {
   "name": "markdown-translatable",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "license": "MIT",
   "description": "A library developed using lib-create-react-app",
   "homepage": "https://unfoldingword-box3.github.io/markdown-translatable/",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/unfoldingWord-box3/markdown-translatable"
+    "type": "git",
+    "url": "https://github.com/unfoldingWord-box3/markdown-translatable"
   },
   "private": false,
   "dependencies": {
