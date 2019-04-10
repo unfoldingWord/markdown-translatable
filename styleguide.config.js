@@ -7,12 +7,9 @@ const { styles, theme } = require('./styleguide.styles');
 module.exports = {
   title: `${upperFirst(camelCase(name))} v${version}`,
   ribbon: {
-    // Link to open on the ribbon click (required)
     url: 'https://github.com/unfoldingWord-box3/markdown-translatable',
-    // Text to show on the ribbon (optional)
     text: 'View me on GitHub'
   },
-	// components: 'src/components/**/[A-Z]*.js',
   webpackConfig: require('react-scripts/config/webpack.config')('development'),
   // serverPort: 3000,
   styles,

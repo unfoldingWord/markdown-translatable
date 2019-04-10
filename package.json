@@ -4,6 +4,10 @@
   "license": "MIT",
   "description": "A library developed using lib-create-react-app",
   "homepage": "https://unfoldingword-box3.github.io/markdown-translatable/",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/unfoldingWord-box3/markdown-translatable"
+  },
   "private": false,
   "dependencies": {
     "md5": "^2.2.1",
