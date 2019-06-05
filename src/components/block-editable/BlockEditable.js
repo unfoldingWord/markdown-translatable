@@ -73,6 +73,8 @@ function BlockEditable({
 };
 
 BlockEditable.propTypes = {
+  /** @ignore */
+  classes: PropTypes.object.isRequired,
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
   /** Function to propogate changes to the markdown. */
