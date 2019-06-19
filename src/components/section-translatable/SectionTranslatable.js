@@ -33,9 +33,15 @@ function SectionTranslatable({
   style,
 }) {
   const [raw, setRaw] = useState(false);
+  const [expanded, setExpanded] = useState(sectionFocus);
   const originalBlocks = helpers.blocksFromMarkdown({markdown: original});
   const __translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
   const [translationBlocks, setTranslationBlocks] = useState(__translationBlocks);
+
+  const onExpanded = (_expanded) => {
+    if (onSectionFocus) onSectionFocus(_expanded);
+    else setExpanded(expanded);
+  };
 
   const setTranslationBlock = ({index, translationBlock}) => {
     let _translationBlocks = [...translationBlocks];
@@ -63,19 +69,22 @@ function SectionTranslatable({
     <ExpansionPanel
       style={style}
       className={classes.root}
-      defaultExpanded={sectionFocus}
-      onChange={onSectionFocus}
+      defaultExpanded={expanded}
+      onChange={onExpanded}
     >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         classes={{content: 'summaryContent'}}
-        content={classes.content}
-      >
-        <ReactMarkdown
-          source={originalBlocks[0]}
-          escapeHtml={false}
-        />
-      </ExpansionPanelSummary>
+        className={classes.content}
+        onClick={() => setExpanded(!expanded)}
+        children={
+          (expanded) ? <></> :
+          <ReactMarkdown
+            source={originalBlocks[0]}
+            escapeHtml={false}
+          />
+        }
+      />
       <ExpansionPanelDetails
         className={classes.details}
       >
