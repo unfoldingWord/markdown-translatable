@@ -6,6 +6,10 @@ import {
 } from '@material-ui/core';
 import BlockEditable from '../block-editable';
 
+const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
+  require('@welldone-software/why-did-you-render') : undefined;
+if (whyDidYouRender) whyDidYouRender(React);
+
 /**
  * ### A reusable component for translating Markdown as HTML.
  * @component
@@ -95,4 +99,15 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(BlockTranslatable);
+const areEqual = (prevProps, nextProps) => {
+  const keys = ['original', 'translation', 'raw', 'style'];
+  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
+  const equal = !checks.includes(false);
+  // console.log('BlockTranslatable', keys, checks, equal);
+  return equal;
+};
+
+BlockTranslatable.whyDidYouRender = true;
+const StyleComponent = withStyles(styles)(BlockTranslatable);
+const MemoComponent = React.memo(StyleComponent, areEqual);
+export default MemoComponent;

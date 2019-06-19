@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import * as helpers from './helpers';
 
+const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
+  require('@welldone-software/why-did-you-render') : undefined;
+if (whyDidYouRender) whyDidYouRender(React);
 /**
  * ### A reusable component for translating a Markdown block as HTML.
  * @component
@@ -25,7 +28,23 @@ function BlockEditable({
     if (oldHTML !== newHTML) onEdit(_markdown);
   }
 
+  const handleHTMLBlur = (e) => {
+    const html = e.target.innerHTML;
+    const _markdown = helpers.htmlToMarkdown({html, outputFilters});
+    handleBlur(_markdown);
+  };
+
+  const handleRawBlur = (e) => {
+    const _markdown = helpers.filter({
+      string: e.target.innerText,
+      filters: outputFilters
+    });
+    handleBlur(_markdown);
+  };
+
+  
   if (raw) {
+    const dangerouslySetInnerHTML = { __html: markdown };
     component = (
       <div
         className={classes.markdown}
@@ -34,33 +53,20 @@ function BlockEditable({
           className={classes.pre}
           dir="auto"
           contentEditable={editable}
-          onBlur={(e)=>{
-            const _markdown = helpers.filter({
-              string: e.target.innerText,
-              filters: outputFilters
-            });
-            handleBlur(_markdown);
-          }}
-          dangerouslySetInnerHTML={
-            { __html: markdown }
-          }
+          onBlur={handleRawBlur}
+          dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         />
       </div>
     );
   } else {
+    const dangerouslySetInnerHTML = { __html: helpers.markdownToHtml({markdown, inputFilters}) };
     component = (
       <div
         className={classes.html}
         dir="auto"
         contentEditable={editable}
-        dangerouslySetInnerHTML={{
-          __html: helpers.markdownToHtml({markdown, inputFilters})
-        }}
-        onBlur={(e)=>{
-          const html = e.target.innerHTML;
-          const _markdown = helpers.htmlToMarkdown({html, outputFilters});
-          handleBlur(_markdown);
-        }}
+        dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+        onBlur={handleHTMLBlur}
       />
     );
   }
@@ -132,4 +138,15 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(BlockEditable);
+const areEqual = (prevProps, nextProps) => {
+  const keys = ['markdown', 'raw', 'editable', 'style'];
+  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
+  const equal = !checks.includes(false);
+  // console.log('BlockEditable', keys, checks, equal);
+  return equal;
+};
+
+BlockEditable.whyDidYouRender = true;
+const StyleComponent = withStyles(styles)(BlockEditable);
+const MemoComponent = React.memo(StyleComponent, areEqual);
+export default MemoComponent;

@@ -17,6 +17,11 @@ import {
 import BlockTranslatable from '../block-translatable';
 
 import * as helpers from './helpers';
+
+const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
+  require('@welldone-software/why-did-you-render') : undefined;
+if (whyDidYouRender) whyDidYouRender(React);
+
 /**
  * ### A reusable component for translating Markdown in sections.
  * @component
@@ -38,9 +43,9 @@ function SectionTranslatable({
   const __translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
   const [translationBlocks, setTranslationBlocks] = useState(__translationBlocks);
 
-  const onExpanded = (_expanded) => {
-    if (onSectionFocus) onSectionFocus(_expanded);
-    else setExpanded(expanded);
+  const handleToggle = () => {
+    if (onSectionFocus) onSectionFocus(!expanded);
+    setExpanded(!expanded);
   };
 
   const setTranslationBlock = ({index, translationBlock}) => {
@@ -70,13 +75,13 @@ function SectionTranslatable({
       style={style}
       className={classes.root}
       defaultExpanded={expanded}
-      onChange={onExpanded}
+      onChange={handleToggle}
     >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         classes={{content: 'summaryContent'}}
         className={classes.content}
-        onClick={() => setExpanded(!expanded)}
+        // onClick={handleToggle}
         children={
           (expanded) ? <></> :
           <ReactMarkdown
@@ -146,4 +151,15 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(SectionTranslatable);
+const areEqual = (prevProps, nextProps) => {
+  const keys = ['original', 'translation', 'sectionFocus', 'style'];
+  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
+  const equal = !checks.includes(false);
+  // console.log('SectionTranslatable', keys, checks, equal);
+  return equal;
+};
+
+SectionTranslatable.whyDidYouRender = true;
+const StyleComponent = withStyles(styles)(SectionTranslatable);
+const MemoComponent = React.memo(StyleComponent, areEqual);
+export default MemoComponent;

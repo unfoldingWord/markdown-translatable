@@ -6,6 +6,11 @@ import md5 from 'md5';
 import SectionTranslatable from '../section-translatable';
 
 import * as helpers from './helpers';
+
+const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
+  require('@welldone-software/why-did-you-render') : undefined;
+if (whyDidYouRender) whyDidYouRender(React);
+
 /**
  * ### A reusable component for translating a Markdown document.
  * @component
@@ -33,30 +38,31 @@ function DocumentTranslatable({
     onTranslation(_translation);
   };
 
-  const sectionTranslatables = originalSections.map((originalSection, index) =>
-    <SectionTranslatable
-      key={index + md5(JSON.stringify(originalSection))}
-      original={originalSection}
-      translation={translationSections[index]}
-      inputFilters={inputFilters}
-      outputFilters={outputFilters}
-      onTranslation={(translationSection) =>
-        setTranslationSection({index, translationSection})
-      }
-      onSectionFocus={(expanded) => {
-        if (expanded) setSectionFocus(index);
-        else setSectionFocus(null);
-      }}
-      sectionFocus={sectionFocus === index}
-      style={style}
-    />
-  );
+  const sectionTranslatables = originalSections.map((originalSection, index) => {
+    const key = index + md5(JSON.stringify(originalSection));
+    const translationSection = translationSections[index];
+    const _onTranslation = (_translationSection) =>
+      setTranslationSection({index, translationSection: _translationSection});
+    const _onSectionFocus = (expanded) => {
+      if (expanded) setSectionFocus(index);
+      else setSectionFocus(null);
+    };
+    return (
+      <SectionTranslatable
+        key={key}
+        original={originalSection}
+        translation={translationSection}
+        inputFilters={inputFilters}
+        outputFilters={outputFilters}
+        onTranslation={_onTranslation}
+        onSectionFocus={_onSectionFocus}
+        sectionFocus={sectionFocus === index}
+        style={style}
+      />
+    );
+  });
 
-  return (
-    <div>
-      {sectionTranslatables}
-    </div>
-  );
+  return (<>{sectionTranslatables}</>);
 };
 
 DocumentTranslatable.propTypes = {
@@ -94,4 +100,15 @@ const styles = theme => ({
   },
 });
 
-export default withStyles(styles)(DocumentTranslatable);
+const areEqual = (prevProps, nextProps) => {
+  const keys = ['original', 'translation', 'style'];
+  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
+  const equal = !checks.includes(false);
+  // console.log('DocumentTranslatable', keys, checks, equal);
+  return equal;
+};
+
+DocumentTranslatable.whyDidYouRender = true;
+const StyleComponent = withStyles(styles)(DocumentTranslatable);
+const MemoComponent = React.memo(StyleComponent, areEqual);
+export default MemoComponent;
