@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import * as helpers from './helpers';
 
-const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
-  require('@welldone-software/why-did-you-render') : undefined;
-if (whyDidYouRender) whyDidYouRender(React);
+// const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
+//   require('@welldone-software/why-did-you-render') : undefined;
+// if (whyDidYouRender) whyDidYouRender(React);
 /**
  * ### A reusable component for translating a Markdown block as HTML.
  * @component
@@ -146,7 +146,7 @@ const areEqual = (prevProps, nextProps) => {
   return equal;
 };
 
-BlockEditable.whyDidYouRender = true;
+// BlockEditable.whyDidYouRender = true;
 const StyleComponent = withStyles(styles)(BlockEditable);
 const MemoComponent = React.memo(StyleComponent, areEqual);
 export default MemoComponent;

@@ -7,10 +7,9 @@ import SectionTranslatable from '../section-translatable';
 
 import * as helpers from './helpers';
 
-const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
-  require('@welldone-software/why-did-you-render') : undefined;
-if (whyDidYouRender) whyDidYouRender(React);
-
+// const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
+//   require('@welldone-software/why-did-you-render') : undefined;
+// if (whyDidYouRender) whyDidYouRender(React);
 /**
  * ### A reusable component for translating a Markdown document.
  * @component
@@ -109,7 +108,7 @@ const areEqual = (prevProps, nextProps) => {
   return equal;
 };
 
-DocumentTranslatable.whyDidYouRender = true;
+// DocumentTranslatable.whyDidYouRender = true;
 const StyleComponent = withStyles(styles)(DocumentTranslatable);
 const MemoComponent = React.memo(StyleComponent, areEqual);
 export default MemoComponent;
