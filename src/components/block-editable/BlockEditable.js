@@ -19,12 +19,6 @@ function BlockEditable({
 }) {
   let component;
 
-  const handleBlur = (_markdown) => {
-    const oldHTML = helpers.markdownToHtml({markdown, inputFilters});
-    const newHTML = helpers.markdownToHtml({markdown: _markdown, inputFilters});
-    if (oldHTML !== newHTML) onEdit(_markdown);
-  }
-
   if (raw) {
     component = (
       <div
@@ -39,7 +33,7 @@ function BlockEditable({
               string: e.target.innerText,
               filters: outputFilters
             });
-            handleBlur(_markdown);
+            onEdit(_markdown);
           }}
           dangerouslySetInnerHTML={
             { __html: markdown }
@@ -59,7 +53,7 @@ function BlockEditable({
         onBlur={(e)=>{
           const html = e.target.innerHTML;
           const _markdown = helpers.htmlToMarkdown({html, outputFilters});
-          handleBlur(_markdown);
+          onEdit(_markdown);
         }}
       />
     );
