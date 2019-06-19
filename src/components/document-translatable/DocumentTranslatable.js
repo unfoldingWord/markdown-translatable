@@ -47,6 +47,7 @@ function DocumentTranslatable({
       if (expanded) setSectionFocus(index);
       else setSectionFocus(null);
     };
+    const _sectionFocus = (sectionFocus === index)
     return (
       <SectionTranslatable
         key={key}
@@ -56,7 +57,7 @@ function DocumentTranslatable({
         outputFilters={outputFilters}
         onTranslation={_onTranslation}
         onSectionFocus={_onSectionFocus}
-        sectionFocus={sectionFocus === index}
+        sectionFocus={_sectionFocus}
         style={style}
       />
     );

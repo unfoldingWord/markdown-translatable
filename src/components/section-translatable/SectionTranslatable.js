@@ -43,9 +43,12 @@ function SectionTranslatable({
   const __translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
   const [translationBlocks, setTranslationBlocks] = useState(__translationBlocks);
 
+  if (onSectionFocus && (sectionFocus !== expanded)) setExpanded(sectionFocus);
+
   const handleToggle = () => {
-    if (onSectionFocus) onSectionFocus(!expanded);
-    setExpanded(!expanded);
+    const _expanded = !expanded;
+    if (onSectionFocus) onSectionFocus(_expanded);
+    setExpanded(_expanded);
   };
 
   const setTranslationBlock = ({index, translationBlock}) => {
@@ -56,17 +59,26 @@ function SectionTranslatable({
     onTranslation(_translation);
   };
 
-  const blockTranslatables = originalBlocks.map((originalBlock, index) =>
-    <BlockTranslatable
-      key={index + md5(JSON.stringify(originalBlock)) + Math.random()}
-      original={originalBlock}
-      translation={translationBlocks[index]}
-      inputFilters={inputFilters}
-      outputFilters={outputFilters}
-      onTranslation={(translationBlock) =>
-        setTranslationBlock({index, translationBlock})
-      }
-      raw={raw}
+  const blockTranslatables = originalBlocks.map((originalBlock, index) => {
+    const key = index + md5(JSON.stringify(originalBlock));
+    const _onTranslation = (translationBlock) => setTranslationBlock({index, translationBlock});
+    return (
+      <BlockTranslatable
+        key={key}
+        original={originalBlock}
+        translation={translationBlocks[index]}
+        inputFilters={inputFilters}
+        outputFilters={outputFilters}
+        onTranslation={_onTranslation}
+        raw={raw}
+      />
+    );
+  });
+
+  const summaryTitle = (expanded) ? <></> : (
+    <ReactMarkdown
+      source={originalBlocks[0]}
+      escapeHtml={false}
     />
   );
 
@@ -74,21 +86,14 @@ function SectionTranslatable({
     <ExpansionPanel
       style={style}
       className={classes.root}
-      defaultExpanded={expanded}
-      onChange={handleToggle}
+      expanded={expanded}
     >
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
-        classes={{content: 'summaryContent'}}
+        // classes={{content: 'summaryContent'}}
         className={classes.content}
-        // onClick={handleToggle}
-        children={
-          (expanded) ? <></> :
-          <ReactMarkdown
-            source={originalBlocks[0]}
-            escapeHtml={false}
-          />
-        }
+        onClick={handleToggle}
+        children={summaryTitle}
       />
       <ExpansionPanelDetails
         className={classes.details}
@@ -118,7 +123,7 @@ SectionTranslatable.propTypes = {
   /** Function to propogate changes to the translation. */
   onTranslation: PropTypes.func.isRequired,
   /** Function to propogate changes to the Section in focus. */
-  onSectionFocus: PropTypes.func.isRequired,
+  onSectionFocus: PropTypes.func,
   /** Set the Section in focus. */
   sectionFocus: PropTypes.bool,
   /** Replace strings before rendering. */
@@ -134,8 +139,6 @@ SectionTranslatable.defaultProps = {
   translation: '',
   inputFilters: [],
   outputFilters: [],
-  onTranslation: () => {},
-  onSectionFocus: () => {},
   sectionFocus: false,
   style: {},
 }
