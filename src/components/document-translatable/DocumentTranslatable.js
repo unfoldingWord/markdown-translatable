@@ -35,7 +35,7 @@ function DocumentTranslatable({
 
   const sectionTranslatables = originalSections.map((originalSection, index) =>
     <SectionTranslatable
-      key={index + md5(JSON.stringify(originalSection)) + Math.random()}
+      key={index + md5(JSON.stringify(originalSection))}
       original={originalSection}
       translation={translationSections[index]}
       inputFilters={inputFilters}
