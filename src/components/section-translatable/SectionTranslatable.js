@@ -8,10 +8,15 @@ import {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
   ExpansionPanelActions,
-  Button,
+  IconButton,
 } from '@material-ui/core';
 import {
   ExpandMore,
+  ExpandLess,
+  Save,
+  SaveOutlined,
+  Pageview,
+  PageviewOutlined,
 } from '@material-ui/icons';
 
 import BlockTranslatable from '../block-translatable';
@@ -41,10 +46,14 @@ function SectionTranslatable({
   const originalBlocks = helpers.blocksFromMarkdown({markdown: original});
   const __translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
   const [translationBlocks, setTranslationBlocks] = useState(__translationBlocks);
+  const [editedTranslation, setEditedTranslation] = useState();
+
+  const saveEditedTranslation = () => onTranslation(editedTranslation);
+  const toggleRaw = () => setRaw(!raw);
 
   if (onSectionFocus && (sectionFocus !== expanded)) setExpanded(sectionFocus);
 
-  const handleToggle = () => {
+  const expandedToggle = () => {
     const _expanded = !expanded;
     if (onSectionFocus) onSectionFocus(_expanded);
     setExpanded(_expanded);
@@ -55,17 +64,18 @@ function SectionTranslatable({
     _translationBlocks[index] = translationBlock;
     setTranslationBlocks(_translationBlocks);
     const _translation = helpers.markdownFromBlocks({blocks: _translationBlocks});
-    onTranslation(_translation);
+    setEditedTranslation(_translation);
   };
 
   const blockTranslatables = originalBlocks.map((originalBlock, index) => {
     const key = index + md5(JSON.stringify(originalBlock));
     const _onTranslation = (translationBlock) => setTranslationBlock({index, translationBlock});
+    const translationBlock = translationBlocks[index];
     return (
       <BlockTranslatable
         key={key}
         original={originalBlock}
-        translation={translationBlocks[index]}
+        translation={translationBlock}
         inputFilters={inputFilters}
         outputFilters={outputFilters}
         onTranslation={_onTranslation}
@@ -74,12 +84,17 @@ function SectionTranslatable({
     );
   });
 
+  const titleBlock = originalBlocks[0];
   const summaryTitle = (expanded) ? <></> : (
     <ReactMarkdown
-      source={originalBlocks[0]}
+      source={titleBlock}
       escapeHtml={false}
     />
   );
+
+  const changed = (editedTranslation && translation !== editedTranslation);
+  const saveIcon = changed ? <Save /> : <SaveOutlined />;
+  const rawIcon = raw ? <PageviewOutlined /> : <Pageview />;
 
   return (
     <ExpansionPanel
@@ -91,7 +106,7 @@ function SectionTranslatable({
         expandIcon={<ExpandMore />}
         // classes={{content: 'summaryContent'}}
         className={classes.content}
-        onClick={handleToggle}
+        onClick={expandedToggle}
         children={summaryTitle}
       />
       <ExpansionPanelDetails
@@ -99,16 +114,16 @@ function SectionTranslatable({
       >
         {blockTranslatables}
       </ExpansionPanelDetails>
-      <ExpansionPanelActions>
-        <Button
-          size="small"
-          onClick={() => setRaw(!raw)}
-        >
-          {raw ? 'Markdown' : 'HTML'}
-        </Button>
-        <Button size="small" color="primary">
-          Save
-        </Button>
+      <ExpansionPanelActions className={classes.actions}>
+        <IconButton onClick={toggleRaw}>
+          {rawIcon}
+        </IconButton>
+        <IconButton disabled={!changed} onClick={saveEditedTranslation}>
+          {saveIcon}
+        </IconButton>
+        <IconButton onClick={expandedToggle}>
+          <ExpandLess />
+        </IconButton>
       </ExpansionPanelActions>
     </ExpansionPanel>
   );
@@ -150,6 +165,9 @@ const styles = theme => ({
     padding: '0',
     borderTop: '1px solid #ccc',
     borderBottom: '1px solid #ccc',
+  },
+  actions: {
+    padding: '8px',
   },
 });
 
