@@ -17,7 +17,7 @@ function BlockEditable({
   inputFilters,
   outputFilters,
   style,
-  raw,
+  preview,
   editable,
 }) {
   let component;
@@ -43,7 +43,7 @@ function BlockEditable({
   };
 
   
-  if (raw) {
+  if (!preview) {
     const dangerouslySetInnerHTML = { __html: markdown };
     component = (
       <div
@@ -98,7 +98,7 @@ BlockEditable.propTypes = {
   /** CSS for the component. */
   style: PropTypes.object,
   /** Display Raw Markdown or HTML. */
-  raw: PropTypes.bool,
+  preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
 };
@@ -109,7 +109,7 @@ BlockEditable.defaultProps = {
   inputFilters: [],
   outputFilters: [],
   style: {},
-  raw: false,
+  preview: true,
   editable: true,
 };
 
@@ -139,7 +139,7 @@ const styles = theme => ({
 });
 
 const areEqual = (prevProps, nextProps) => {
-  const keys = ['markdown', 'raw', 'editable', 'style'];
+  const keys = ['markdown', 'preview', 'editable', 'style'];
   const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
   const equal = !checks.includes(false);
   // console.log('BlockEditable', keys, checks, equal);

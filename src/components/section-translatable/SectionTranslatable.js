@@ -1,22 +1,13 @@
-import React, {useState, useEffect, useReducer} from 'react';
+import React, {useState, useEffect, useReducer, useMemo, useCallback} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import ReactMarkdown from 'react-markdown';
 import md5 from 'md5';
 import {
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails,
-  ExpansionPanelActions,
-  IconButton,
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, ExpansionPanelActions, IconButton
 } from '@material-ui/core';
 import {
-  ExpandMore,
-  ExpandLess,
-  Save,
-  SaveOutlined,
-  Pageview,
-  PageviewOutlined,
+  ExpandMore, ExpandLess, Save, SaveOutlined, Pageview, PageviewOutlined,
 } from '@material-ui/icons';
 
 import BlockTranslatable from '../block-translatable';
@@ -25,9 +16,6 @@ import * as helpers from './helpers';
 import { blocksReducer } from './blocksReducer';
 import { styles } from './styles';
 
-// const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
-//   require('@welldone-software/why-did-you-render') : undefined;
-// if (whyDidYouRender) whyDidYouRender(React);
 /**
  * ### A reusable component for translating Markdown in sections.
  * @component
@@ -43,7 +31,7 @@ function SectionTranslatable({
   sectionFocus,
   style,
 }) {
-  const [raw, setRaw] = useState(false);
+  const [preview, setPreview] = useState(true);
   const [expanded, setExpanded] = useState(sectionFocus);
   const [originalBlocks, setOriginalBlocks] = useState([]);
   const [translationBlocks, targetBlocksDispatch] = useReducer(blocksReducer, []);
@@ -64,49 +52,52 @@ function SectionTranslatable({
     setEditedTranslation(_translation);
   }, [translationBlocks]);
 
-  const setTranslationBlock = ({index, markdown}) => {
+  useEffect(() => {
+    if (onSectionFocus && (sectionFocus !== expanded)) setExpanded(sectionFocus);
+  }, [onSectionFocus, sectionFocus, expanded]);
+
+  const expandedToggle = useCallback(() => {
+    if (onSectionFocus) onSectionFocus(!expanded);
+    setExpanded(_expanded => !_expanded);
+  }, [onSectionFocus, expanded]);
+
+  const setTranslationBlock = useCallback(({index, markdown}) => {
     targetBlocksDispatch({type: 'SET_BLOCK', value: {index, markdown}});
-  };
+  }, []);
 
-  const saveEditedTranslation = () => onTranslation(editedTranslation);
-  const toggleRaw = () => setRaw(!raw);
+  const saveEditedTranslation = useCallback(() => (
+    onTranslation(editedTranslation)
+  ), [editedTranslation]);
 
-  if (onSectionFocus && (sectionFocus !== expanded)) setExpanded(sectionFocus);
+  const togglePreview = useCallback(() => {setPreview(!preview); debugger}, [preview]);
 
-  const expandedToggle = () => {
-    const _expanded = !expanded;
-    if (onSectionFocus) onSectionFocus(_expanded);
-    setExpanded(_expanded);
-  };
+  const blockTranslatables = useMemo(() => (
+    originalBlocks.map((originalBlock, index) => {
+      const _onTranslation = (markdown) => setTranslationBlock({index, markdown});
+      const translationBlock = translationBlocks[index];
+      const key = index + md5(JSON.stringify(originalBlock + translationBlock));
+      return (
+        <BlockTranslatable
+          key={key}
+          original={originalBlock}
+          translation={translationBlock}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
+          onTranslation={_onTranslation}
+          preview={preview}
+        />
+      );
+    })
+  ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview]);
 
-  const blockTranslatables = originalBlocks.map((originalBlock, index) => {
-    const _onTranslation = (markdown) => setTranslationBlock({index, markdown});
-    const translationBlock = translationBlocks[index];
-    const key = index + md5(JSON.stringify(originalBlock + translationBlock));
-    return (
-      <BlockTranslatable
-        key={key}
-        original={originalBlock}
-        translation={translationBlock}
-        inputFilters={inputFilters}
-        outputFilters={outputFilters}
-        onTranslation={_onTranslation}
-        raw={raw}
-      />
-    );
-  });
+  const titleBlock = useMemo(() => (originalBlocks[0]), [originalBlocks]);
+  const summaryTitle = useMemo(() => (
+    (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
+  ), [expanded, titleBlock])
 
-  const titleBlock = originalBlocks[0];
-  const summaryTitle = (expanded) ? <></> : (
-    <ReactMarkdown
-      source={titleBlock}
-      escapeHtml={false}
-    />
-  );
-
-  const changed = (editedTranslation && translation !== editedTranslation);
-  const saveIcon = changed ? <Save /> : <SaveOutlined />;
-  const rawIcon = raw ? <Pageview /> : <PageviewOutlined />;
+  const changed = useMemo(() => (editedTranslation && translation !== editedTranslation), [editedTranslation, translation]);
+  const saveIcon = useMemo(() => (changed ? <Save /> : <SaveOutlined />), [changed]);
+  const previewIcon = useMemo(() => (!preview ? <Pageview /> : <PageviewOutlined />), [preview]);
 
   return (
     <ExpansionPanel
@@ -127,8 +118,8 @@ function SectionTranslatable({
         {blockTranslatables}
       </ExpansionPanelDetails>
       <ExpansionPanelActions className={classes.actions}>
-        <IconButton onClick={toggleRaw}>
-          {rawIcon}
+        <IconButton onClick={togglePreview}>
+          {previewIcon}
         </IconButton>
         <IconButton disabled={!changed} onClick={saveEditedTranslation}>
           {saveIcon}

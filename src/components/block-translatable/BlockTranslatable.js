@@ -21,7 +21,7 @@ function BlockTranslatable({
   inputFilters,
   outputFilters,
   style,
-  raw,
+  preview,
 }) {
   return (
     <Grid
@@ -40,7 +40,7 @@ function BlockTranslatable({
           markdown={original}
           inputFilters={inputFilters}
           outputFilters={outputFilters}
-          raw={raw}
+          preview={preview}
           editable={false}
         />
       </Grid>
@@ -54,7 +54,7 @@ function BlockTranslatable({
           inputFilters={inputFilters}
           outputFilters={outputFilters}
           onEdit={onTranslation}
-          raw={raw}
+          preview={preview}
         />
       </Grid>
     </Grid>
@@ -75,7 +75,7 @@ BlockTranslatable.propTypes = {
   /** CSS for the component. */
   style: PropTypes.object,
   /** Display Raw Markdown or HTML. */
-  raw: PropTypes.bool,
+  preview: PropTypes.bool,
 };
 
 BlockTranslatable.defaultProps = {
@@ -85,7 +85,7 @@ BlockTranslatable.defaultProps = {
   inputFilters: [],
   outputFilters: [],
   style: {},
-  raw: false,
+  preview: true,
 };
 
 const styles = theme => ({
@@ -99,7 +99,7 @@ const styles = theme => ({
 });
 
 const areEqual = (prevProps, nextProps) => {
-  const keys = ['original', 'translation', 'raw', 'style'];
+  const keys = ['original', 'translation', 'preview', 'style'];
   const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
   const equal = !checks.includes(false);
   // console.log('BlockTranslatable', keys, checks, equal);
