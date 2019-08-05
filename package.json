@@ -10,6 +10,7 @@
   },
   "private": false,
   "dependencies": {
+    "deep-freeze": "^0.0.1",
     "md5": "^2.2.1",
     "prop-types": "^15.7.2",
     "react-markdown": "^4.0.6",

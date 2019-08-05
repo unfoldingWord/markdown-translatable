@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useReducer} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import ReactMarkdown from 'react-markdown';
@@ -22,6 +22,8 @@ import {
 import BlockTranslatable from '../block-translatable';
 
 import * as helpers from './helpers';
+import { blocksReducer } from './blocksReducer';
+import { styles } from './styles';
 
 // const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
 //   require('@welldone-software/why-did-you-render') : undefined;
@@ -43,10 +45,28 @@ function SectionTranslatable({
 }) {
   const [raw, setRaw] = useState(false);
   const [expanded, setExpanded] = useState(sectionFocus);
-  const originalBlocks = helpers.blocksFromMarkdown({markdown: original});
-  const __translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
-  const [translationBlocks, setTranslationBlocks] = useState(__translationBlocks);
+  const [originalBlocks, setOriginalBlocks] = useState([]);
+  const [translationBlocks, targetBlocksDispatch] = useReducer(blocksReducer, []);
   const [editedTranslation, setEditedTranslation] = useState();
+  // update originalBlocks when original is updated
+  useEffect(() => {
+    const _originalBlocks = helpers.blocksFromMarkdown({markdown: original});
+    setOriginalBlocks(_originalBlocks);
+  }, [original]);
+  // update translationBlocks when translation is updated
+  useEffect(() => {
+    const _translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
+    targetBlocksDispatch({type: 'SET_BLOCKS', value: {blocks: _translationBlocks}});
+  }, [translation]);
+  // update editedTranslation when translationBlocks are updated
+  useEffect(() => {
+    const _translation = helpers.markdownFromBlocks({blocks: translationBlocks});
+    setEditedTranslation(_translation);
+  }, [translationBlocks]);
+
+  const setTranslationBlock = ({index, markdown}) => {
+    targetBlocksDispatch({type: 'SET_BLOCK', value: {index, markdown}});
+  };
 
   const saveEditedTranslation = () => onTranslation(editedTranslation);
   const toggleRaw = () => setRaw(!raw);
@@ -59,18 +79,10 @@ function SectionTranslatable({
     setExpanded(_expanded);
   };
 
-  const setTranslationBlock = ({index, translationBlock}) => {
-    let _translationBlocks = [...translationBlocks];
-    _translationBlocks[index] = translationBlock;
-    setTranslationBlocks(_translationBlocks);
-    const _translation = helpers.markdownFromBlocks({blocks: _translationBlocks});
-    setEditedTranslation(_translation);
-  };
-
   const blockTranslatables = originalBlocks.map((originalBlock, index) => {
-    const key = index + md5(JSON.stringify(originalBlock));
-    const _onTranslation = (translationBlock) => setTranslationBlock({index, translationBlock});
+    const _onTranslation = (markdown) => setTranslationBlock({index, markdown});
     const translationBlock = translationBlocks[index];
+    const key = index + md5(JSON.stringify(originalBlock + translationBlock));
     return (
       <BlockTranslatable
         key={key}
@@ -94,7 +106,7 @@ function SectionTranslatable({
 
   const changed = (editedTranslation && translation !== editedTranslation);
   const saveIcon = changed ? <Save /> : <SaveOutlined />;
-  const rawIcon = raw ? <PageviewOutlined /> : <Pageview />;
+  const rawIcon = raw ? <Pageview /> : <PageviewOutlined />;
 
   return (
     <ExpansionPanel
@@ -155,21 +167,7 @@ SectionTranslatable.defaultProps = {
   outputFilters: [],
   sectionFocus: false,
   style: {},
-}
-
-const styles = theme => ({
-  root: {
-  },
-  details: {
-    display: 'block',
-    padding: '0',
-    borderTop: '1px solid #ccc',
-    borderBottom: '1px solid #ccc',
-  },
-  actions: {
-    padding: '8px',
-  },
-});
+};
 
 const areEqual = (prevProps, nextProps) => {
   const keys = ['original', 'translation', 'sectionFocus', 'style'];
