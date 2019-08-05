@@ -10,19 +10,19 @@ const translation = "**नमस्ते** __दुनिया__";
 
 initialState = {
   translation,
-  raw: false,
+  preview: true,
 };
 
 <div>
   <button
-    onClick={() => setState({ raw: !state.raw })}
+    onClick={() => setState({ preview: !state.preview })}
   >
-    {state.raw ? 'Markdown' : 'HTML'}
+    {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockTranslatable
     original={markdown}
     translation={state.translation}
-    raw={state.raw}
+    preview={state.preview}
     onTranslation={(translation) =>
       setState({ translation })
     }
@@ -70,19 +70,19 @@ const style = {
 
 initialState = {
   translation,
-  raw: false,
+  preview: true,
 };
 
 <div>
   <button
-    onClick={() => setState({ raw: !state.raw })}
+    onClick={() => setState({ preview: !state.preview })}
   >
-    {state.raw ? 'Markdown' : 'HTML'}
+    {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockTranslatable
     original={markdown}
     translation={state.translation}
-    raw={state.raw}
+    preview={state.preview}
     onTranslation={(translation) =>
       setState({translation})
     }

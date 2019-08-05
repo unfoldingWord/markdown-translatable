@@ -3,18 +3,18 @@
 ```jsx
 initialState = {
   markdown: '**Hello** __world__',
-  raw: true,
+  preview: false,
 };
 
 <div>
   <button
-    onClick={() => setState({ raw: !state.raw })}
+    onClick={() => setState({ preview: !state.preview })}
   >
-    {state.raw ? 'Markdown' : 'HTML'}
+    {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
-    raw={state.raw}
+    preview={state.preview}
     onEdit={(markdown) =>
       setState({ markdown })
     }
@@ -58,13 +58,13 @@ initialState = {
 
 <div>
   <button
-    onClick={() => setState({ raw: !state.raw })}
+    onClick={() => setState({ preview: !state.preview })}
   >
-    {state.raw ? 'Markdown' : 'HTML'}
+    {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
-    raw={state.raw}
+    preview={state.preview}
     onEdit={(markdown) =>
       setState({ markdown })
     }
