@@ -2,6 +2,11 @@ import showdown from 'showdown';
 import TurndownService from 'turndown';
 import {gfm} from 'turndown-plugin-gfm';
 
+export const isHebrew = (string) => {
+  const hebrewChars = string.match(/[\u0590-\u05FF]/g) || [];
+  const percent = hebrewChars.length / string.length;
+  return percent > 0.75;
+};
 
 const turndownService = new TurndownService({headingStyle: 'atx'});
 turndownService.use(gfm);

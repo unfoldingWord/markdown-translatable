@@ -35,28 +35,30 @@ function BlockEditable({
   };
 
   const handleRawBlur = (e) => {
+    const string = e.target.innerText//.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
     const _markdown = helpers.filter({
-      string: e.target.innerText,
+      string,
       filters: outputFilters
-    });
+    })
     handleBlur(_markdown);
   };
 
-  
   if (!preview) {
-    const dangerouslySetInnerHTML = { __html: markdown };
+    const code = markdown//.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const dangerouslySetInnerHTML = { __html: code };
     component = (
-      <div
+      <pre
         className={classes.markdown}
+        style={style}
       >
-        <pre
+        <code
           className={classes.pre}
           dir="auto"
           contentEditable={editable}
           onBlur={handleRawBlur}
           dangerouslySetInnerHTML={dangerouslySetInnerHTML}
         />
-      </div>
+      </pre>
     );
   } else {
     const dangerouslySetInnerHTML = { __html: helpers.markdownToHtml({markdown, inputFilters}) };
@@ -70,10 +72,16 @@ function BlockEditable({
       />
     );
   }
+
+  let _style = {...style};
+  if (helpers.isHebrew(markdown)) {
+    _style.fontSize = '1.5em';
+  }
+
   return (
     <div
       className={classes.root}
-      style={style}
+      style={_style}
     >
       <div
         className={classes.wrapper}
