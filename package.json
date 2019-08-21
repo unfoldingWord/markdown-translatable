@@ -25,7 +25,8 @@
     "deploy": "gh-pages -d styleguide",
     "test": "react-scripts test",
     "build": "react-scripts build",
-    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline"
+    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
+    "postpublish": "yarn deploy"
   },
   "browserslist": [
     ">0.2%",

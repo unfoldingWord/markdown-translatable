@@ -69,7 +69,7 @@ function SectionTranslatable({
     onTranslation(editedTranslation)
   ), [editedTranslation]);
 
-  const togglePreview = useCallback(() => {setPreview(!preview); debugger}, [preview]);
+  const togglePreview = useCallback(() => {setPreview(!preview);}, [preview]);
 
   const blockTranslatables = useMemo(() => (
     originalBlocks.map((originalBlock, index) => {
