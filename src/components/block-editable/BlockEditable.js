@@ -22,6 +22,11 @@ function BlockEditable({
 }) {
   let component;
 
+  let _style = {...style};
+  if (helpers.isHebrew(markdown)) {
+    _style.fontSize = '1.5em';
+  }
+
   const handleBlur = (_markdown) => {
     const oldHTML = helpers.markdownToHtml({markdown, inputFilters});
     const newHTML = helpers.markdownToHtml({markdown: _markdown, inputFilters});
@@ -44,15 +49,15 @@ function BlockEditable({
   };
 
   if (!preview) {
-    const code = markdown//.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const code = helpers.filter({string: markdown, filters: inputFilters})//.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     const dangerouslySetInnerHTML = { __html: code };
     component = (
       <pre
-        className={classes.markdown}
-        style={style}
+        className={classes.pre}
       >
         <code
-          className={classes.pre}
+          className={classes.markdown}
+          style={_style}
           dir="auto"
           contentEditable={editable}
           onBlur={handleRawBlur}
@@ -64,6 +69,7 @@ function BlockEditable({
     const dangerouslySetInnerHTML = { __html: helpers.markdownToHtml({markdown, inputFilters}) };
     component = (
       <div
+        style={_style}
         className={classes.html}
         dir="auto"
         contentEditable={editable}
@@ -73,21 +79,13 @@ function BlockEditable({
     );
   }
 
-  let _style = {...style};
-  if (helpers.isHebrew(markdown)) {
-    _style.fontSize = '1.5em';
-  }
+
 
   return (
     <div
       className={classes.root}
-      style={_style}
     >
-      <div
-        className={classes.wrapper}
-      >
-        {component}
-      </div>
+      {component}
     </div>
   );
 };
@@ -126,23 +124,30 @@ const styles = theme => ({
     height: '100%',
     width: '100%',
   },
-  wrapper: {
-    height: '100%',
-    padding: '0 0.5em',
-  },
   html: {
     height: '100%',
-    width: '100%',
+    width: 'calc(100% - 1em)',
     display: 'grid',
+    padding: '0 0.5em',
+    lineHeight: '1.4',
   },
   markdown: {
     height: '100%',
-    width: '100%',
-    fontSize: '1.1em',
+    width: 'calc(100% - 1em)',
+    // fontSize: '1.1em',
     display: 'grid',
+    whiteSpace: 'pre-wrap',
+    paddingBlockStart: '1em',
+    paddingBlockEnd: '1em',
+    fontSize: 'unset',
+    fontFamily: 'unset',
+    padding: '0 0.5em',
+    lineHeight: '1.4',
   },
   pre: {
-    whiteSpace: 'pre-wrap',
+    margin: 0,
+    fontFamily: 'unset',
+    fontSize: 'unset',
   },
 });
 
