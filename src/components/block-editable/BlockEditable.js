@@ -79,8 +79,6 @@ function BlockEditable({
     );
   }
 
-
-
   return (
     <div
       className={classes.root}

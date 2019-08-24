@@ -29,13 +29,15 @@ markdownToHtmlConverter.setOption('underline', true);
 export const markdownToHtml = ({markdown, inputFilters=[]}) => {
   let _markdown = markdown.slice(0);
   _markdown = filter({string: _markdown, filters: inputFilters});
-  const html = markdownToHtmlConverter.makeHtml(_markdown);
+  let html = markdownToHtmlConverter.makeHtml(_markdown);
+  if (!html || html === '') html = '<p>&#8203;</p>';
   return html;
 };
 
 export const htmlToMarkdown = ({html, outputFilters=[]}) => {
   let markdown = turndownService.turndown(html);
   markdown = filter({string: markdown, filters: outputFilters});
+  if (markdown === '&#8203;') markdown = '';
   return markdown;
 };
 
