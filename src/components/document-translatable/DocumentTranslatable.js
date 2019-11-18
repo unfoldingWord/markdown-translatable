@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import md5 from 'md5';
 
 import SectionTranslatable from '../section-translatable';
@@ -15,7 +15,6 @@ import * as helpers from './helpers';
  * @component
  */
 function DocumentTranslatable({
-  classes,
   original,
   translation,
   inputFilters,
@@ -23,10 +22,15 @@ function DocumentTranslatable({
   onTranslation,
   style,
 }) {
+  const classes = useStyles();
   const [sectionFocus, setSectionFocus] = useState(0);
   const originalSections = helpers.sectionsFromMarkdown({markdown: original});
-  const __translationSections = helpers.sectionsFromMarkdown({markdown: translation});
-  const [translationSections, setTranslationSections] = useState(__translationSections);
+  const [translationSections, setTranslationSections] = useState([]);
+  
+  useEffect(() => {
+    const __translationSections = helpers.sectionsFromMarkdown({markdown: translation});
+    setTranslationSections(__translationSections);
+  }, [translation]);
 
   const setTranslationSection = ({index, translationSection}) => {
     setSectionFocus(index);
@@ -62,7 +66,11 @@ function DocumentTranslatable({
     );
   });
 
-  return (<>{sectionTranslatables}</>);
+  return (
+    <div className={classes.root}>
+      {sectionTranslatables}
+    </div>
+  );
 };
 
 DocumentTranslatable.propTypes = {
@@ -89,16 +97,10 @@ DocumentTranslatable.defaultProps = {
   style: {},
 }
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
   },
-  details: {
-    display: 'block',
-    padding: '0',
-    borderTop: '1px solid #ccc',
-    borderBottom: '1px solid #ccc',
-  },
-});
+}));
 
 const areEqual = (prevProps, nextProps) => {
   const keys = ['original', 'translation', 'style'];
@@ -109,6 +111,5 @@ const areEqual = (prevProps, nextProps) => {
 };
 
 // DocumentTranslatable.whyDidYouRender = true;
-const StyleComponent = withStyles(styles)(DocumentTranslatable);
-const MemoComponent = React.memo(StyleComponent, areEqual);
+const MemoComponent = React.memo(DocumentTranslatable, areEqual);
 export default MemoComponent;

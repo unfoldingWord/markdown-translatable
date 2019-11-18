@@ -1,6 +1,5 @@
 import React, {useState, useEffect, useReducer, useMemo, useCallback} from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import ReactMarkdown from 'react-markdown';
 import md5 from 'md5';
 import {
@@ -14,14 +13,13 @@ import BlockTranslatable from '../block-translatable';
 
 import * as helpers from './helpers';
 import { blocksReducer } from './blocksReducer';
-import { styles } from './styles';
+import { useStyles } from './styles';
 
 /**
  * ### A reusable component for translating Markdown in sections.
  * @component
  */
 function SectionTranslatable({
-  classes,
   original,
   translation,
   inputFilters,
@@ -31,6 +29,7 @@ function SectionTranslatable({
   sectionFocus,
   style,
 }) {
+  const classes = useStyles();
   const [preview, setPreview] = useState(true);
   const [expanded, setExpanded] = useState(sectionFocus);
   const [originalBlocks, setOriginalBlocks] = useState([]);
@@ -169,6 +168,5 @@ const areEqual = (prevProps, nextProps) => {
 };
 
 // SectionTranslatable.whyDidYouRender = true;
-const StyleComponent = withStyles(styles)(SectionTranslatable);
-const MemoComponent = React.memo(StyleComponent, areEqual);
+const MemoComponent = React.memo(SectionTranslatable, areEqual);
 export default MemoComponent;

@@ -59,18 +59,26 @@ const style = {
   fontFamily: 'Arial',
 };
 
-initialState = {
-  translation: _translation,
-};
+const [translation, setTranslation] = React.useState(_translation);
+const [mode, setMode] = React.useState(true);
+const toggleMode = () => { setMode(!mode); };
 
-<DocumentTranslatable
-  original={markdown}
-  translation={state.translation}
-  onTranslation={(translation) =>
-    setState({translation})
-  }
-  inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-  outputFilters={[]}
-  style={style}
-/>
+React.useEffect(() => {
+  if (mode) setTranslation(_translation);
+  else setTranslation(markdown);
+},[mode, _translation, markdown]);
+
+<>
+  <div onClick={toggleMode}>
+    Click to switch mode to {!mode ? 'Translate' : 'Edit Source' }
+  </div>
+  <DocumentTranslatable
+    original={markdown}
+    translation={translation}
+    onTranslation={setTranslation}
+    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
+    outputFilters={[]}
+    style={style}
+  />
+</>
 ```

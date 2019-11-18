@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import * as helpers from './helpers';
 
 // const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
@@ -11,7 +11,6 @@ import * as helpers from './helpers';
  * @component
  */
 function BlockEditable({
-  classes,
   markdown,
   onEdit,
   inputFilters,
@@ -20,6 +19,7 @@ function BlockEditable({
   preview,
   editable,
 }) {
+  const classes = useStyles();
   let component;
 
   let _style = {...style};
@@ -89,8 +89,6 @@ function BlockEditable({
 };
 
 BlockEditable.propTypes = {
-  /** @ignore */
-  classes: PropTypes.object.isRequired,
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
   /** Function to propogate changes to the markdown. */
@@ -117,7 +115,7 @@ BlockEditable.defaultProps = {
   editable: true,
 };
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
     width: '100%',
@@ -147,7 +145,7 @@ const styles = theme => ({
     fontFamily: 'unset',
     fontSize: 'unset',
   },
-});
+}));
 
 const areEqual = (prevProps, nextProps) => {
   const keys = ['markdown', 'preview', 'editable', 'style'];
@@ -158,6 +156,5 @@ const areEqual = (prevProps, nextProps) => {
 };
 
 // BlockEditable.whyDidYouRender = true;
-const StyleComponent = withStyles(styles)(BlockEditable);
-const MemoComponent = React.memo(StyleComponent, areEqual);
+const MemoComponent = React.memo(BlockEditable, areEqual);
 export default MemoComponent;

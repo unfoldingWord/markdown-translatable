@@ -59,23 +59,29 @@ const style = {
   fontFamily: 'Arial',
 };
 
-initialState = {
-  translation: _translation,
-  sectionFocus: false,
-};
+const [translation, setTranslation] = React.useState(_translation);
+const [sectionFocus, setSectionFocus] = React.useState(false);
+const [mode, setMode] = React.useState(true);
+const toggleMode = () => { setMode(!mode); };
 
-<SectionTranslatable
-  original={markdown}
-  translation={state.translation}
-  sectionFocus={state.sectionFocus}
-  onSectionFocus={(sectionFocus) =>
-    setState({sectionFocus})
-  }
-  onTranslation={(translation) =>
-    setState({translation})
-  }
-  inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-  outputFilters={[]}
-  style={style}
-/>
+React.useEffect(() => {
+  if (mode) setTranslation(_translation);
+  else setTranslation(markdown);
+},[mode, _translation, markdown]);
+
+<>
+  <div onClick={toggleMode}>
+    Click to switch mode to {!mode ? 'Translate' : 'Edit Source' }
+  </div>
+  <SectionTranslatable
+    original={markdown}
+    translation={translation}
+    sectionFocus={sectionFocus}
+    onSectionFocus={setSectionFocus}
+    onTranslation={setTranslation}
+    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
+    outputFilters={[]}
+    style={style}
+  />
+</>
 ```

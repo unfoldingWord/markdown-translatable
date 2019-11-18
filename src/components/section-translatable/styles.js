@@ -1,4 +1,6 @@
-export const styles = theme => ({
+import {makeStyles} from '@material-ui/core/styles';
+
+export const useStyles = makeStyles(theme => ({
   root: {
   },
   details: {
@@ -10,4 +12,4 @@ export const styles = theme => ({
   actions: {
     padding: '8px',
   },
-});
+}));

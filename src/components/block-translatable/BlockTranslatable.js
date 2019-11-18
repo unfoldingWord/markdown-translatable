@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 import {
   Grid,
 } from '@material-ui/core';
@@ -14,7 +14,6 @@ import BlockEditable from '../block-editable';
  * @component
  */
 function BlockTranslatable({
-  classes,
   original,
   translation,
   onTranslation,
@@ -23,6 +22,7 @@ function BlockTranslatable({
   style,
   preview,
 }) {
+  const classes = useStyles();
   return (
     <Grid
       container
@@ -88,7 +88,7 @@ BlockTranslatable.defaultProps = {
   preview: true,
 };
 
-const styles = theme => ({
+export const useStyles = makeStyles(theme => ({
   root: {
   },
   original: {
@@ -96,7 +96,7 @@ const styles = theme => ({
   },
   translation: {
   },
-});
+}));
 
 const areEqual = (prevProps, nextProps) => {
   const keys = ['original', 'translation', 'preview', 'style'];
@@ -107,6 +107,5 @@ const areEqual = (prevProps, nextProps) => {
 };
 
 // BlockTranslatable.whyDidYouRender = true;
-const StyleComponent = withStyles(styles)(BlockTranslatable);
-const MemoComponent = React.memo(StyleComponent, areEqual);
+const MemoComponent = React.memo(BlockTranslatable, areEqual);
 export default MemoComponent;
