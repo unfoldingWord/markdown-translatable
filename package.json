@@ -20,11 +20,9 @@
   },
   "scripts": {
     "start": "styleguidist server",
-    "styleguide:build": "styleguidist build",
-    "predeploy": "yarn styleguide:build",
-    "deploy": "gh-pages -d styleguide",
+    "build": "styleguidist build",
+    "deploy": "git push",
     "test": "react-scripts test",
-    "build": "react-scripts build",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline",
     "postpublish": "yarn deploy"
   },
