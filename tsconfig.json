@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "moduleResolution": "node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": false,
+    /** For function overloads*/
+    "noImplicitAny": false,
+    "sourceMap": true,
+  },
+  "include": [
+    "**/*"
+  ],
+  "exclude": [
+    "**/node_modules/**"
+  ]
+}

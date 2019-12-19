@@ -1,6 +1,6 @@
 import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
-import { filter } from './';
+import { filter } from '.';
 
 const turndownService = new TurndownService({ headingStyle: 'atx' });
 turndownService.use(gfm);
