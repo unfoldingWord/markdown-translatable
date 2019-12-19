@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import * as helpers from './helpers';
+import { markdownToHtml, htmlToMarkdown, filter } from '../../core/';
 
 // const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
 //   require('@welldone-software/why-did-you-render') : undefined;
@@ -22,26 +23,26 @@ function BlockEditable({
   const classes = useStyles();
   let component;
 
-  let _style = {...style};
+  let _style = { ...style };
   if (helpers.isHebrew(markdown)) {
     _style.fontSize = '1.5em';
   }
 
   const handleBlur = (_markdown) => {
-    const oldHTML = helpers.markdownToHtml({markdown, inputFilters});
-    const newHTML = helpers.markdownToHtml({markdown: _markdown, inputFilters});
+    const oldHTML = markdownToHtml({ markdown, inputFilters });
+    const newHTML = markdownToHtml({ markdown: _markdown, inputFilters });
     if (oldHTML !== newHTML) onEdit(_markdown);
   }
 
   const handleHTMLBlur = (e) => {
     const html = e.target.innerHTML;
-    const _markdown = helpers.htmlToMarkdown({html, outputFilters});
+    const _markdown = htmlToMarkdown({ html, outputFilters });
     handleBlur(_markdown);
   };
 
   const handleRawBlur = (e) => {
     const string = e.target.innerText//.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
-    const _markdown = helpers.filter({
+    const _markdown = filter({
       string,
       filters: outputFilters
     })
@@ -49,7 +50,7 @@ function BlockEditable({
   };
 
   if (!preview) {
-    const code = helpers.filter({string: markdown, filters: inputFilters})//.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+    const code = filter({ string: markdown, filters: inputFilters })//.replace(/&/g, '&amp;').replace(/</g, '&lt;');
     const dangerouslySetInnerHTML = { __html: code };
     component = (
       <pre
@@ -66,7 +67,7 @@ function BlockEditable({
       </pre>
     );
   } else {
-    const dangerouslySetInnerHTML = { __html: helpers.markdownToHtml({markdown, inputFilters}) };
+    const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
     component = (
       <div
         style={_style}
@@ -107,7 +108,7 @@ BlockEditable.propTypes = {
 
 BlockEditable.defaultProps = {
   markdown: '',
-  onEdit: () => {},
+  onEdit: () => { },
   inputFilters: [],
   outputFilters: [],
   style: {},

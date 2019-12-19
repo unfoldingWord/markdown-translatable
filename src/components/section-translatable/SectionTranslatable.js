@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useReducer, useMemo, useCallback} from 'react';
+import React, { useState, useEffect, useReducer, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import md5 from 'md5';
@@ -37,17 +37,17 @@ function SectionTranslatable({
   const [editedTranslation, setEditedTranslation] = useState();
   // update originalBlocks when original is updated
   useEffect(() => {
-    const _originalBlocks = helpers.blocksFromMarkdown({markdown: original});
+    const _originalBlocks = helpers.blocksFromMarkdown({ markdown: original });
     setOriginalBlocks(_originalBlocks);
   }, [original]);
   // update translationBlocks when translation is updated
   useEffect(() => {
-    const _translationBlocks = helpers.blocksFromMarkdown({markdown: translation});
-    targetBlocksDispatch({type: 'SET_BLOCKS', value: {blocks: _translationBlocks}});
+    const _translationBlocks = helpers.blocksFromMarkdown({ markdown: translation });
+    targetBlocksDispatch({ type: 'SET_BLOCKS', value: { blocks: _translationBlocks } });
   }, [translation]);
   // update editedTranslation when translationBlocks are updated
   useEffect(() => {
-    const _translation = helpers.markdownFromBlocks({blocks: translationBlocks});
+    const _translation = helpers.markdownFromBlocks({ blocks: translationBlocks });
     setEditedTranslation(_translation);
   }, [translationBlocks]);
 
@@ -60,19 +60,19 @@ function SectionTranslatable({
     setExpanded(_expanded => !_expanded);
   }, [onSectionFocus, expanded]);
 
-  const setTranslationBlock = useCallback(({index, markdown}) => {
-    targetBlocksDispatch({type: 'SET_BLOCK', value: {index, markdown}});
+  const setTranslationBlock = useCallback(({ index, markdown }) => {
+    targetBlocksDispatch({ type: 'SET_BLOCK', value: { index, markdown } });
   }, []);
 
   const saveEditedTranslation = useCallback(() => (
     onTranslation(editedTranslation)
-  ), [editedTranslation]);
+  ), [editedTranslation, onTranslation]);
 
-  const togglePreview = useCallback(() => {setPreview(!preview);}, [preview]);
+  const togglePreview = useCallback(() => { setPreview(!preview); }, [preview]);
 
   const blockTranslatables = useMemo(() => (
     originalBlocks.map((originalBlock, index) => {
-      const _onTranslation = (markdown) => setTranslationBlock({index, markdown});
+      const _onTranslation = (markdown) => setTranslationBlock({ index, markdown });
       const translationBlock = translationBlocks[index];
       const key = index + md5(JSON.stringify(originalBlock + translationBlock));
       return (
@@ -87,7 +87,7 @@ function SectionTranslatable({
         />
       );
     })
-  ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview]);
+  ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview, setTranslationBlock]);
 
   const titleBlock = useMemo(() => (originalBlocks[0]), [originalBlocks]);
   const summaryTitle = useMemo(() => (
