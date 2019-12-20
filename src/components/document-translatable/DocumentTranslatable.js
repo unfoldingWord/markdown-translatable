@@ -5,7 +5,10 @@ import md5 from 'md5';
 
 import SectionTranslatable from '../section-translatable';
 
-import * as helpers from './helpers';
+import {
+  sectionsFromMarkdown,
+  markdownFromSections,
+} from '../../core/sections';
 
 // const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
 //   require('@welldone-software/why-did-you-render') : undefined;
@@ -24,11 +27,11 @@ function DocumentTranslatable({
 }) {
   const classes = useStyles();
   const [sectionFocus, setSectionFocus] = useState(0);
-  const originalSections = helpers.sectionsFromMarkdown({markdown: original});
+  const originalSections = sectionsFromMarkdown({markdown: original});
   const [translationSections, setTranslationSections] = useState([]);
   
   useEffect(() => {
-    const __translationSections = helpers.sectionsFromMarkdown({markdown: translation});
+    const __translationSections = sectionsFromMarkdown({markdown: translation});
     setTranslationSections(__translationSections);
   }, [translation]);
 
@@ -37,7 +40,7 @@ function DocumentTranslatable({
     let _translationSections = [...translationSections];
     _translationSections[index] = translationSection;
     setTranslationSections(_translationSections);
-    const _translation = helpers.markdownFromSections({sections: _translationSections});
+    const _translation = markdownFromSections({sections: _translationSections});
     onTranslation(_translation);
   };
 
