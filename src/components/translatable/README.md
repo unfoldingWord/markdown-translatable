@@ -8,8 +8,6 @@ const _translation = "**नमस्ते** __दुनिया__";
 
 function Component() {
   const [translation, setTranslation] = React.useState(_translation);
-  
-  console.log(translation)
 
   return (
     <Translatable
