@@ -11,7 +11,6 @@ module.exports = {
     text: 'View me on GitHub'
   },
   webpackConfig: require('react-scripts/config/webpack.config')('development'),
-  // serverPort: 3000,
   styles,
   theme,
   getComponentPathLine: (componentPath) => {
@@ -25,27 +24,39 @@ module.exports = {
   pagePerSection: true,
   sections: [
     {
-      name: 'Document Translation',
+      name: 'Translatable',
+      components: () => ([
+        Path.resolve(__dirname, `src/components/translatable`, `Translatable.js`),
+      ]),
+    },
+    {
+      name: 'Document Translatable',
       components: () => ([
         Path.resolve(__dirname, `src/components/document-translatable`, `DocumentTranslatable.js`),
       ]),
     },
     {
-      name: 'Section Translation',
+      name: 'Section Translatable',
       components: () => ([
         Path.resolve(__dirname, `src/components/section-translatable`, `SectionTranslatable.js`),
       ]),
     },
     {
-      name: 'Block Translation',
+      name: 'Block Translatable',
       components: () => ([
         Path.resolve(__dirname, `src/components/block-translatable`, `BlockTranslatable.js`),
       ]),
     },
     {
-      name: 'Block Editing',
+      name: 'Block Editable',
       components: () => ([
         Path.resolve(__dirname, `src/components/block-editable`, `BlockEditable.js`),
+      ]),
+    },
+    {
+      name: 'Actions',
+      components: () => ([
+        Path.resolve(__dirname, `src/components/actions`, `Actions.js`),
       ]),
     },
   ]
