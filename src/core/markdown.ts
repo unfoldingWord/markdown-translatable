@@ -1,8 +1,13 @@
+export const blocksFromMarkdown = ({ markdown }) =>
+  markdown.replace(/<br>/gi, '\n').split(/\n\n/g);
 
-export const sectionsFromMarkdown = ({markdown}) => {
+export const markdownFromBlocks = ({ blocks }) =>
+  blocks.join(`\n\n`);
+
+export const sectionsFromMarkdown = ({ markdown }) => {
   let sections = [];
   let section = [];
-  const blocks = markdown.replace(/<br>/gi,'\n').split(/\n\n/g);
+  const blocks = markdown.replace(/<br>/gi, '\n').split(/\n\n/g);
   blocks.forEach(block => {
     const headingRegex = /^\s?#+/;
     const heading = headingRegex.test(block);
@@ -21,5 +26,5 @@ export const sectionsFromMarkdown = ({markdown}) => {
   return sections;
 };
 
-export const markdownFromSections = ({sections}) =>
+export const markdownFromSections = ({ sections }) =>
   sections.join(`\n\n`);

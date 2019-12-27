@@ -11,7 +11,7 @@ import {
 
 import BlockTranslatable from '../block-translatable';
 
-import * as helpers from './helpers';
+import * as helpers from '../../core/';
 import { blocksReducer } from './blocksReducer';
 import { useStyles } from './styles';
 
