@@ -1,0 +1,1 @@
+*This text will be italic* *This will also be italic* **This text will be bold** **This will also be bold** *You **can** combine them*
