@@ -5,8 +5,8 @@ export const markdownFromBlocks = ({ blocks }) =>
   blocks.join(`\n\n`);
 
 export const sectionsFromMarkdown = ({ markdown }) => {
-  let sections = [];
-  let section = [];
+  let sections: any = [];
+  let section: string[] = [];
   const blocks = markdown.replace(/<br>/gi, '\n').split(/\n\n/g);
   blocks.forEach(block => {
     const headingRegex = /^\s?#+/;

@@ -12,6 +12,7 @@ module.exports = {
     text: 'View me on GitHub'
   },
   webpackConfig: {
+    devtool: 'cheap-module-eval-source-map',
     module: {
       rules: [
         {
@@ -22,6 +23,17 @@ module.exports = {
         {
           test: /\.css$/,
           loader: 'style-loader!css-loader',
+        },
+        {
+          test: /\.tsx?$/,
+          use: [
+            {
+              loader: 'ts-loader',
+              options: {
+                transpileOnly: true
+              }
+            }
+          ]
         }
       ]
     }
@@ -39,27 +51,39 @@ module.exports = {
   pagePerSection: true,
   sections: [
     {
-      name: 'Document Translation',
+      name: 'Translatable',
+      components: () => ([
+        path.resolve(__dirname, `src/components/translatable`, `Translatable.js`),
+      ]),
+    },
+    {
+      name: 'Document Translatable',
       components: () => ([
         path.resolve(__dirname, `src/components/document-translatable`, `DocumentTranslatable.js`),
       ]),
     },
     {
-      name: 'Section Translation',
+      name: 'Section Translatable',
       components: () => ([
         path.resolve(__dirname, `src/components/section-translatable`, `SectionTranslatable.js`),
       ]),
     },
     {
-      name: 'Block Translation',
+      name: 'Block Translatable',
       components: () => ([
         path.resolve(__dirname, `src/components/block-translatable`, `BlockTranslatable.js`),
       ]),
     },
     {
-      name: 'Block Editing',
+      name: 'Block Editable',
       components: () => ([
         path.resolve(__dirname, `src/components/block-editable`, `BlockEditable.js`),
+      ]),
+    },
+    {
+      name: 'Actions',
+      components: () => ([
+        path.resolve(__dirname, `src/components/actions`, `Actions.js`),
       ]),
     },
   ]

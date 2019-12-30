@@ -6,73 +6,67 @@ import {
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, ExpansionPanelActions, IconButton
 } from '@material-ui/core';
 import {
-  ExpandMore, ExpandLess, Save, SaveOutlined, Pageview, PageviewOutlined,
+  ExpandMore, ExpandLess,
 } from '@material-ui/icons';
 
 import BlockTranslatable from '../block-translatable';
 
 import * as helpers from '../../core/';
-import { blocksReducer } from './blocksReducer';
 import { useStyles } from './styles';
 
-/**
- * ### A reusable component for translating Markdown in sections.
- * @component
- */
 function SectionTranslatable({
   original,
   translation,
+  preview,
   inputFilters,
   outputFilters,
   onTranslation,
-  onSectionFocus,
-  sectionFocus,
+  onExpanded,
+  expanded,
   style,
 }) {
   const classes = useStyles();
-  const [preview, setPreview] = useState(true);
-  const [expanded, setExpanded] = useState(sectionFocus);
-  const [originalBlocks, setOriginalBlocks] = useState([]);
-  const [translationBlocks, targetBlocksDispatch] = useReducer(blocksReducer, []);
-  const [editedTranslation, setEditedTranslation] = useState();
-  // update originalBlocks when original is updated
-  useEffect(() => {
-    const _originalBlocks = helpers.blocksFromMarkdown({ markdown: original });
-    setOriginalBlocks(_originalBlocks);
-  }, [original]);
+  const [editedTranslation, setEditedTranslation] = useState(translation);
+
+  const originalBlocks = useMemo(() => (
+    helpers.blocksFromMarkdown({ markdown: original })
+  ), [original]);
+
+  const _translationBlocks = useMemo(() => (
+    helpers.blocksFromMarkdown({ markdown: translation })
+  ), [translation]);
+  const [translationBlocks, dispatch] = useReducer(helpers.itemsReducer, _translationBlocks);
+
+  const _onTranslation = useCallback(onTranslation, []);
+  const _onExpanded = useCallback(onExpanded, []);
   // update translationBlocks when translation is updated
   useEffect(() => {
     const _translationBlocks = helpers.blocksFromMarkdown({ markdown: translation });
-    targetBlocksDispatch({ type: 'SET_BLOCKS', value: { blocks: _translationBlocks } });
+    dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
+    // console.log('SectionTranslatable got updated translation')
   }, [translation]);
-  // update editedTranslation when translationBlocks are updated
+  // update onTranslation when translationBlocks are updated
   useEffect(() => {
     const _translation = helpers.markdownFromBlocks({ blocks: translationBlocks });
     setEditedTranslation(_translation);
   }, [translationBlocks]);
 
   useEffect(() => {
-    if (onSectionFocus && (sectionFocus !== expanded)) setExpanded(sectionFocus);
-  }, [onSectionFocus, sectionFocus, expanded]);
+    _onTranslation(editedTranslation);
+    // console.log('SectionTranslatable got updated editedTranslation')
+  }, [editedTranslation, _onTranslation]);
 
   const expandedToggle = useCallback(() => {
-    if (onSectionFocus) onSectionFocus(!expanded);
-    setExpanded(_expanded => !_expanded);
-  }, [onSectionFocus, expanded]);
+    _onExpanded(!expanded);
+  }, [_onExpanded, expanded]);
 
-  const setTranslationBlock = useCallback(({ index, markdown }) => {
-    targetBlocksDispatch({ type: 'SET_BLOCK', value: { index, markdown } });
+  const setTranslationBlock = useCallback(({ index, item }) => {
+    dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
-
-  const saveEditedTranslation = useCallback(() => (
-    onTranslation(editedTranslation)
-  ), [editedTranslation, onTranslation]);
-
-  const togglePreview = useCallback(() => { setPreview(!preview); }, [preview]);
 
   const blockTranslatables = useMemo(() => (
     originalBlocks.map((originalBlock, index) => {
-      const _onTranslation = (markdown) => setTranslationBlock({ index, markdown });
+      const _onTranslation = (item) => setTranslationBlock({ index, item });
       const translationBlock = translationBlocks[index];
       const key = index + md5(JSON.stringify(originalBlock + translationBlock));
       return (
@@ -80,7 +74,7 @@ function SectionTranslatable({
           key={key}
           original={originalBlock}
           translation={translationBlock}
-          inputFilters={inputFilters}
+          inputFiltesrs={inputFilters}
           outputFilters={outputFilters}
           onTranslation={_onTranslation}
           preview={preview}
@@ -89,21 +83,15 @@ function SectionTranslatable({
     })
   ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview, setTranslationBlock]);
 
-  const titleBlock = useMemo(() => (originalBlocks[0]), [originalBlocks]);
+  const titleBlock = useMemo(() => (
+    originalBlocks[0]
+  ), [originalBlocks]);
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
-  ), [expanded, titleBlock])
+  ), [expanded, titleBlock]);
 
-  const changed = useMemo(() => (editedTranslation && translation !== editedTranslation), [editedTranslation, translation]);
-  const saveIcon = useMemo(() => (changed ? <Save /> : <SaveOutlined />), [changed]);
-  const previewIcon = useMemo(() => (!preview ? <Pageview /> : <PageviewOutlined />), [preview]);
-
-  return (
-    <ExpansionPanel
-      style={style}
-      className={classes.root}
-      expanded={expanded}
-    >
+  const component = useMemo(() => (
+    <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
         // classes={{content: 'summaryContent'}}
@@ -111,23 +99,21 @@ function SectionTranslatable({
         onClick={expandedToggle}
         children={summaryTitle}
       />
-      <ExpansionPanelDetails
-        className={classes.details}
-      >
+      <ExpansionPanelDetails className={classes.details}>
         {blockTranslatables}
       </ExpansionPanelDetails>
       <ExpansionPanelActions className={classes.actions}>
-        <IconButton onClick={togglePreview}>
-          {previewIcon}
-        </IconButton>
-        <IconButton disabled={!changed} onClick={saveEditedTranslation}>
-          {saveIcon}
-        </IconButton>
         <IconButton onClick={expandedToggle}>
           <ExpandLess />
         </IconButton>
       </ExpansionPanelActions>
     </ExpansionPanel>
+  ), [blockTranslatables, classes, expanded, expandedToggle, style, summaryTitle]);
+
+  return (
+    <>
+      {component}
+    </>
   );
 };
 
@@ -138,10 +124,12 @@ SectionTranslatable.propTypes = {
   translation: PropTypes.string.isRequired,
   /** Function to propogate changes to the translation. */
   onTranslation: PropTypes.func.isRequired,
+  /** Preview HTML rendered vs Raw Markdown */
+  preview: PropTypes.bool,
   /** Function to propogate changes to the Section in focus. */
-  onSectionFocus: PropTypes.func,
+  onExpanded: PropTypes.func,
   /** Set the Section in focus. */
-  sectionFocus: PropTypes.bool,
+  expanded: PropTypes.bool,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -151,22 +139,9 @@ SectionTranslatable.propTypes = {
 };
 
 SectionTranslatable.defaultProps = {
-  original: '',
-  translation: '',
   inputFilters: [],
   outputFilters: [],
-  sectionFocus: false,
   style: {},
 };
 
-const areEqual = (prevProps, nextProps) => {
-  const keys = ['original', 'translation', 'sectionFocus', 'style'];
-  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
-  const equal = !checks.includes(false);
-  // console.log('SectionTranslatable', keys, checks, equal);
-  return equal;
-};
-
-// SectionTranslatable.whyDidYouRender = true;
-const MemoComponent = React.memo(SectionTranslatable, areEqual);
-export default MemoComponent;
+export default SectionTranslatable;
