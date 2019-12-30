@@ -140,6 +140,8 @@ SectionTranslatable.propTypes = {
 };
 
 SectionTranslatable.defaultProps = {
+  original: '',
+  translation: '',
   inputFilters: [],
   outputFilters: [],
   style: {},
