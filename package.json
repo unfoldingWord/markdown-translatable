@@ -22,7 +22,7 @@
     "start": "styleguidist server",
     "build": "styleguidist build",
     "deploy": "git push",
-    "test": "react-scripts test",
+    "test": "jest",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline --extensions \".ts,.js\"",
     "postpublish": "yarn deploy"
   },
