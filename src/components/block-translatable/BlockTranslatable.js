@@ -1,18 +1,9 @@
-import React from 'react';
+import React, {useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
-import {
-  Grid,
-} from '@material-ui/core';
+import {Grid} from '@material-ui/core';
 import BlockEditable from '../block-editable';
 
-// const whyDidYouRender = (process.env.NODE_ENV !== 'production') ?
-//   require('@welldone-software/why-did-you-render') : undefined;
-// if (whyDidYouRender) whyDidYouRender(React);
-/**
- * ### A reusable component for translating Markdown as HTML.
- * @component
- */
 function BlockTranslatable({
   original,
   translation,
@@ -23,6 +14,28 @@ function BlockTranslatable({
   preview,
 }) {
   const classes = useStyles();
+
+  const originalBlock = useMemo(() => (
+    <BlockEditable
+      markdown={original}
+      inputFilters={inputFilters}
+      outputFilters={outputFilters}
+      preview={preview}
+      editable={false}
+    />
+  ), [original, inputFilters, outputFilters, preview]);
+
+  const translationBlock = useMemo(() => (
+    <BlockEditable
+      markdown={translation}
+      onEdit={onTranslation}
+      inputFilters={inputFilters}
+      outputFilters={outputFilters}
+      preview={preview}
+      editable={true}
+    />
+  ), [translation, onTranslation, inputFilters, outputFilters, preview]);
+
   return (
     <Grid
       container
@@ -31,31 +44,11 @@ function BlockTranslatable({
       className={classes.root}
       style={style}
     >
-      <Grid
-        item
-        xs={12}
-        className={classes.original}
-      >
-        <BlockEditable
-          markdown={original}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
-          preview={preview}
-          editable={false}
-        />
+      <Grid item xs={12} className={classes.original}>
+        {originalBlock}
       </Grid>
-      <Grid
-        item
-        xs={12}
-        className={classes.translation}
-      >
-        <BlockEditable
-          markdown={translation}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
-          onEdit={onTranslation}
-          preview={preview}
-        />
+      <Grid item xs={12} className={classes.translation}>
+        {translationBlock}
       </Grid>
     </Grid>
   );
@@ -81,14 +74,13 @@ BlockTranslatable.propTypes = {
 BlockTranslatable.defaultProps = {
   original: '',
   translation: '',
-  onTranslation: () => {},
   inputFilters: [],
   outputFilters: [],
   style: {},
   preview: true,
 };
 
-export const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
   },
   original: {
@@ -98,14 +90,4 @@ export const useStyles = makeStyles(theme => ({
   },
 }));
 
-const areEqual = (prevProps, nextProps) => {
-  const keys = ['original', 'translation', 'preview', 'style'];
-  const checks = keys.map(key => (JSON.stringify(prevProps[key]) === JSON.stringify(nextProps[key])));
-  const equal = !checks.includes(false);
-  // console.log('BlockTranslatable', keys, checks, equal);
-  return equal;
-};
-
-// BlockTranslatable.whyDidYouRender = true;
-const MemoComponent = React.memo(BlockTranslatable, areEqual);
-export default MemoComponent;
+export default BlockTranslatable;
