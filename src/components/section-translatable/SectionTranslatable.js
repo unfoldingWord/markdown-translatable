@@ -77,7 +77,7 @@ function SectionTranslatable({
           key={key}
           original={originalBlock}
           translation={translationBlock}
-          inputFiltesrs={inputFilters}
+          inputFilters={inputFilters}
           outputFilters={outputFilters}
           onTranslation={_onTranslation}
           preview={preview}
