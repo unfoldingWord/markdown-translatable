@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useMemo, useCallback, useReducer} from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useReducer } from 'react';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import md5 from 'md5';
 
 import SectionTranslatable from '../section-translatable';
@@ -8,9 +8,9 @@ import SectionTranslatable from '../section-translatable';
 import {
   sectionsFromMarkdown,
   markdownFromSections,
-} from '../../core/sections';
+} from '../../core/';
 
-import {itemsReducer} from '../../core/itemsReducer';
+import { itemsReducer } from '../../core/itemsReducer';
 
 function DocumentTranslatable({
   original,
@@ -26,21 +26,21 @@ function DocumentTranslatable({
   const [editedTranslation, setEditedTranslation] = useState(translation);
 
   const _translationSections = useMemo(() => (
-    sectionsFromMarkdown({markdown: editedTranslation})
+    sectionsFromMarkdown({ markdown: editedTranslation })
   ), [editedTranslation]);
   const [translationSections, dispatch] = useReducer(itemsReducer, _translationSections);
 
   const originalSections = useMemo(() => (
-    sectionsFromMarkdown({markdown: original})
+    sectionsFromMarkdown({ markdown: original })
   ), [original]);
-  
+
   useEffect(() => {
-    const _translationSections = sectionsFromMarkdown({markdown: translation});
-    dispatch({type: 'SET_ITEMS', value: {items: _translationSections}});
+    const _translationSections = sectionsFromMarkdown({ markdown: translation });
+    dispatch({ type: 'SET_ITEMS', value: { items: _translationSections } });
   }, [translation]);
 
   useEffect(() => {
-    const _translation = markdownFromSections({sections: translationSections});
+    const _translation = markdownFromSections({ sections: translationSections });
     setEditedTranslation(_translation);
   }, [translationSections]);
 
@@ -50,15 +50,15 @@ function DocumentTranslatable({
     // console.log('DocumentTranslatable got updated editedTranslation')
   }, [editedTranslation, _onTranslation]); // adding onTranslation to memoized array causes infinite loop
 
-  const setTranslationSection = useCallback(({index, item}) => {
-    dispatch({type: 'SET_ITEM', value: {index, item}});
+  const setTranslationSection = useCallback(({ index, item }) => {
+    dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
 
   const sectionTranslatables = useMemo(() => (
     originalSections.map((originalSection, index) => {
       const key = index + md5(JSON.stringify(originalSection));
       const translationSection = translationSections[index];
-      const __onTranslation = (item) => setTranslationSection({index, item});
+      const __onTranslation = (item) => setTranslationSection({ index, item });
       const onExpanded = (expanded) => {
         if (expanded) setSectionFocus(index);
         else setSectionFocus(null);
