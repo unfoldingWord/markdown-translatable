@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useReducer, useMemo, useCallback } from 'react';
+import React, {
+  useState, useEffect, useReducer, useMemo, useCallback,
+} from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import md5 from 'md5';
 import {
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, ExpansionPanelActions, IconButton
+  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, ExpansionPanelActions, IconButton,
 } from '@material-ui/core';
-import {
-  ExpandMore, ExpandLess,
-} from '@material-ui/icons';
+import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
 import BlockTranslatable from '../block-translatable';
 
-import * as helpers from '../../core/';
+import {
+  blocksFromMarkdown, markdownFromBlocks, itemsReducer,
+} from '../../core/';
 import { useStyles } from './styles';
 
 function SectionTranslatable({
@@ -29,25 +31,26 @@ function SectionTranslatable({
   const [editedTranslation, setEditedTranslation] = useState(translation);
 
   const originalBlocks = useMemo(() => (
-    helpers.blocksFromMarkdown({ markdown: original })
+    blocksFromMarkdown({ markdown: original })
   ), [original]);
 
   const _translationBlocks = useMemo(() => (
-    helpers.blocksFromMarkdown({ markdown: translation })
+    blocksFromMarkdown({ markdown: translation })
   ), [translation]);
-  const [translationBlocks, dispatch] = useReducer(helpers.itemsReducer, _translationBlocks);
+  const [translationBlocks, dispatch] = useReducer(itemsReducer, _translationBlocks);
 
   const _onTranslation = useCallback(onTranslation, []);
   const _onExpanded = useCallback(onExpanded, []);
+
   // update translationBlocks when translation is updated
   useEffect(() => {
-    const _translationBlocks = helpers.blocksFromMarkdown({ markdown: translation });
+    const _translationBlocks = blocksFromMarkdown({ markdown: translation });
     dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
     // console.log('SectionTranslatable got updated translation')
   }, [translation]);
   // update onTranslation when translationBlocks are updated
   useEffect(() => {
-    const _translation = helpers.markdownFromBlocks({ blocks: translationBlocks });
+    const _translation = markdownFromBlocks({ blocks: translationBlocks });
     setEditedTranslation(_translation);
   }, [translationBlocks]);
 
@@ -96,9 +99,9 @@ function SectionTranslatable({
         expandIcon={<ExpandMore />}
         // classes={{content: 'summaryContent'}}
         className={classes.content}
-        onClick={expandedToggle}
-        children={summaryTitle}
-      />
+        onClick={expandedToggle}>
+        {summaryTitle}
+      </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.details}>
         {blockTranslatables}
       </ExpansionPanelDetails>
