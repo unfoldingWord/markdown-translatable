@@ -1,7 +1,6 @@
-export * from './markdown';
-
 export const filter = ({ string, filters }) => {
   let _string = string.slice(0);
+
   filters.forEach((filter) => {
     const [replace, replacer] = filter;
     _string = _string.replace(replace, replacer);
