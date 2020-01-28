@@ -1,10 +1,23 @@
-import * as helpers from '../../src/core';
 import fs from 'fs';
 import path from 'path';
+import * as helpers from '../../src/core';
+
+function generateTest(fileName: string) {
+  const markdown = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.md`), { encoding: 'utf-8' });
+  const html = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.html`), { encoding: 'utf-8' });
+  const res = helpers.htmlToMarkdown({ html });
+  const markdownToDisplay = helpers.toDisplay(res);
+  const markdownFromDisplay = helpers.fromDisplay(markdownToDisplay);
+  expect(markdownFromDisplay).toBe(markdown);
+}
 
 describe('HTML To Markdown Converter', () => {
   it(`convert image html tag to markdown`, () => {
     generateTest('image');
+  });
+
+  it(`convert underline tags`, () => {
+    generateTest('double_underscores');
   });
 
   it(`convert heading html tags to markdown`, () => {
@@ -43,10 +56,3 @@ describe('HTML To Markdown Converter', () => {
     generateTest('definition_list');
   });
 });
-
-function generateTest(fileName) {
-  const markdown = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.md`), { encoding: 'utf-8' });
-  const html = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.html`), { encoding: 'utf-8' });
-  const res = helpers.htmlToMarkdown({ html });
-  expect(res).toBe(markdown);
-}

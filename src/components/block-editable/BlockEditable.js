@@ -1,9 +1,11 @@
-import React, {useMemo, useCallback} from 'react';
+import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import * as helpers from '../../core/';
-import { markdownToHtml, htmlToMarkdown, filter } from '../../core/';
-import {useStyles} from './useStyles';
+import {
+  markdownToHtml, htmlToMarkdown, filter, toDisplay, fromDisplay,
+} from '../../core/';
+import { useStyles } from './useStyles';
 
 function BlockEditable({
   markdown,
@@ -16,8 +18,8 @@ function BlockEditable({
 }) {
   const classes = useStyles();
 
-  let _style = useMemo(() => (
-    helpers.isHebrew(markdown) ? {...style, fontSize: '1.5em'} : style
+  const _style = useMemo(() => (
+    helpers.isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style
   ), [style, markdown]);
 
   const handleBlur = useCallback((_markdown) => {
@@ -33,16 +35,20 @@ function BlockEditable({
   }, [outputFilters]);
 
   const handleRawBlur = useCallback((e) => {
-    const string = e.target.innerText//.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
-    const _markdown = filter({string, filters: outputFilters});
+    let string = e.target.innerText;
+    string = fromDisplay(string);
+    const _markdown = filter({ string, filters: outputFilters });
     handleBlur(_markdown);
   }, [outputFilters]);
 
   const component = useMemo(() => {
     let _component;
+
     if (!preview) {
-      const code = filter({ string: markdown, filters: inputFilters })//.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+      let code = filter({ string: markdown, filters: inputFilters });
+      code = toDisplay(code);
       const dangerouslySetInnerHTML = { __html: code };
+
       _component = (
         <pre className={classes.pre}>
           <code
@@ -57,6 +63,7 @@ function BlockEditable({
       );
     } else {
       const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
+
       _component = (
         <div
           style={_style}
@@ -97,7 +104,7 @@ BlockEditable.propTypes = {
 
 BlockEditable.defaultProps = {
   markdown: '',
-  onEdit: () => {},
+  onEdit: () => { },
   inputFilters: [],
   outputFilters: [],
   style: {},
