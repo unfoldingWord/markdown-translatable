@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useMemo, useCallback, useReducer } from 'react';
+import React, {
+  useState, useEffect, useMemo, useCallback, useReducer,
+} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import md5 from 'md5';
@@ -19,6 +21,7 @@ function DocumentTranslatable({
   inputFilters,
   outputFilters,
   onTranslation,
+  blockable,
   style,
 }) {
   const classes = useStyles();
@@ -45,6 +48,7 @@ function DocumentTranslatable({
   }, [translationSections]);
 
   const _onTranslation = useCallback(onTranslation, []);
+
   useEffect(() => {
     _onTranslation(editedTranslation);
     // console.log('DocumentTranslatable got updated editedTranslation')
@@ -59,10 +63,12 @@ function DocumentTranslatable({
       const key = index + md5(JSON.stringify(originalSection));
       const translationSection = translationSections[index];
       const __onTranslation = (item) => setTranslationSection({ index, item });
+
       const onExpanded = (expanded) => {
         if (expanded) setSectionFocus(index);
         else setSectionFocus(null);
       };
+
       const expanded = (sectionFocus === index);
       return (
         <SectionTranslatable
@@ -75,11 +81,15 @@ function DocumentTranslatable({
           onExpanded={onExpanded}
           expanded={expanded}
           preview={preview}
+          blockable={blockable}
           style={style}
         />
       );
     })
-  ), [inputFilters, originalSections, outputFilters, preview, sectionFocus, setTranslationSection, style, translationSections]);
+  ), [
+    inputFilters, originalSections, outputFilters, preview, sectionFocus,
+    setTranslationSection, style, translationSections, blockable,
+  ]);
 
   return (
     <div className={classes.root}>
@@ -99,6 +109,8 @@ DocumentTranslatable.propTypes = {
   onPreview: PropTypes.func,
   /** Function to propogate changes to the translation. */
   onTranslation: PropTypes.func.isRequired,
+  /** Divide segments by blocks */
+  blockable: PropTypes.bool,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -108,9 +120,10 @@ DocumentTranslatable.propTypes = {
 };
 
 DocumentTranslatable.defaultProps = {
+  blockable: true,
   inputFilters: [],
   outputFilters: [],
-}
+};
 
 const useStyles = makeStyles(theme => ({
   root: {

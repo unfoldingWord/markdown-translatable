@@ -1,7 +1,9 @@
-import React, {useState, useEffect, useCallback, useMemo} from 'react';
+import React, {
+  useState, useEffect, useCallback, useMemo,
+} from 'react';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
-import {Paper} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Paper } from '@material-ui/core';
 import {
   DocumentTranslatable,
   SectionTranslatable,
@@ -18,27 +20,38 @@ function Translatable({
   const classes = useStyles();
   const [preview, setPreview] = useState(true);
   const [sectionable, setSectionable] = useState(true);
+  const [blockable, setBlockable] = useState(true);
   const [editedTranslation, setEditedTranslation] = useState(translation);
 
   useEffect(() => {
     setEditedTranslation(translation);
   }, [translation]);
-  
+
   const saveTranslation = useCallback(() => {
     onTranslation(editedTranslation);
   }, [onTranslation, editedTranslation]);
-  
+
   const component = useMemo(() => {
     const props = {
-      original, translation: editedTranslation, onTranslation: setEditedTranslation, 
-      preview, onPreview: setPreview, inputFilters, outputFilters,
+      original, translation: editedTranslation, onTranslation: setEditedTranslation,
+      preview, onPreview: setPreview, inputFilters, outputFilters, blockable,
     };
     let _component;
-    if (sectionable) _component = <DocumentTranslatable {...props} />
-    else _component = <SectionTranslatable expanded={true} onExpanded={()=>{}} {...props} />;
+
+    if (sectionable) {
+      _component = <DocumentTranslatable {...props} />;
+    } else {
+      const _props = {
+        ...props, expanded: true, onExpanded: ()=>{},
+      };
+      _component = <SectionTranslatable {..._props} />;
+    }
     return _component;
-  }, [original, editedTranslation, setEditedTranslation, inputFilters, outputFilters, sectionable, preview]);
-  
+  }, [
+    original, editedTranslation, setEditedTranslation, inputFilters,
+    outputFilters, sectionable, blockable, preview,
+  ]);
+
   const changed = useMemo(() => (
     editedTranslation !== translation
   ), [editedTranslation, translation]);
@@ -49,6 +62,8 @@ function Translatable({
         <Actions
           sectionable={sectionable}
           onSectionable={setSectionable}
+          blockable={blockable}
+          onBlockable={setBlockable}
           preview={preview}
           onPreview={setPreview}
           changed={changed}
@@ -71,14 +86,12 @@ Translatable.propTypes = {
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
   outputFilters: PropTypes.array,
-  /** Divide editor by segments */
-  sectionable: PropTypes.bool,
 };
 
 Translatable.defaultProps = {
   inputFilters: [],
   outputFilters: [],
-}
+};
 
 const useStyles = makeStyles(theme => ({
   root: {},
