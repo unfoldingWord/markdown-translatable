@@ -25,23 +25,28 @@ function SectionTranslatable({
   onTranslation,
   onExpanded,
   expanded,
+  blockable,
   style,
 }) {
   const classes = useStyles();
   const [editedTranslation, setEditedTranslation] = useState(translation);
 
   const originalBlocks = useMemo(() => (
-    blocksFromMarkdown({ markdown: original })
-  ), [original]);
+    (blockable) ? blocksFromMarkdown({ markdown: original }) : [original]
+  ), [blockable, original]);
 
   const _translationBlocks = useMemo(() => (
-    blocksFromMarkdown({ markdown: translation })
-  ), [translation]);
+    (blockable) ? blocksFromMarkdown({ markdown: translation }) : [translation]
+  ), [blockable, translation]);
   const [translationBlocks, dispatch] = useReducer(itemsReducer, _translationBlocks);
 
   const _onTranslation = useCallback(onTranslation, []);
   const _onExpanded = useCallback(onExpanded, []);
 
+  // update translationBlocks to match blockable chained through _translationBlocks
+  useEffect(() => {
+    dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
+  }, [blockable, _translationBlocks]);
   // update translationBlocks when translation is updated
   useEffect(() => {
     const _translationBlocks = blocksFromMarkdown({ markdown: translation });
@@ -87,7 +92,7 @@ function SectionTranslatable({
   ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview, setTranslationBlock]);
 
   const titleBlock = useMemo(() => (
-    originalBlocks[0]
+    originalBlocks[0].split('\n\n')[0]
   ), [originalBlocks]);
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
@@ -133,6 +138,8 @@ SectionTranslatable.propTypes = {
   onExpanded: PropTypes.func,
   /** Set the Section in focus. */
   expanded: PropTypes.bool,
+  /** Divide segments by blocks */
+  blockable: PropTypes.bool,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
   /** Replace strings after editing. */
@@ -146,6 +153,7 @@ SectionTranslatable.defaultProps = {
   translation: '',
   inputFilters: [],
   outputFilters: [],
+  blockable: true,
   style: {},
 };
 
