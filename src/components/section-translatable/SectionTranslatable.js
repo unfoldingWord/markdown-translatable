@@ -46,13 +46,7 @@ function SectionTranslatable({
   // update translationBlocks to match blockable chained through _translationBlocks
   useEffect(() => {
     dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
-  }, [blockable, _translationBlocks]);
-  // update translationBlocks when translation is updated
-  useEffect(() => {
-    const _translationBlocks = blocksFromMarkdown({ markdown: translation });
-    dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
-    // console.log('SectionTranslatable got updated translation')
-  }, [translation]);
+  }, [_translationBlocks]);
   // update onTranslation when translationBlocks are updated
   useEffect(() => {
     const _translation = markdownFromBlocks({ blocks: translationBlocks });
