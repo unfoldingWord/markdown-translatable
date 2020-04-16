@@ -21,6 +21,7 @@
   "scripts": {
     "start": "styleguidist server",
     "build": "styleguidist build",
+    "styleguide:deploy": "gh-pages -d styleguide",
     "deploy": "git push",
     "test": "jest",
     "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline --extensions \".ts,.js\"",
