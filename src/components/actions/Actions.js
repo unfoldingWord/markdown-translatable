@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import {
   Save,
   SaveOutlined,
@@ -11,7 +11,9 @@ import {
   Subject,
   ViewStream,
   ViewStreamOutlined,
+  LocalGasStation,
 } from '@material-ui/icons';
+import { localString } from '../../core/localStrings';
 
 function Actions({
   sectionable,
@@ -35,28 +37,46 @@ function Actions({
 
   const saveIcon = useMemo(() => (changed ? <Save /> : <SaveOutlined />), [changed]);
   const previewIcon = useMemo(() => (!preview ? <Pageview /> : <PageviewOutlined />), [preview]);
-  const sectionableIcon = useMemo(() => (sectionable ? <ViewStream /> : <ViewStreamOutlined />), [sectionable]);
+  const sectionableIcon = useMemo(() => (sectionable ? <ViewStream /> : <ViewStreamOutlined /> ), [sectionable]);
   const blockableIcon = useMemo(() => (blockable ? <ShortText /> : <Subject />), [blockable]);
 
   const sectionsAction = useMemo(() => (
-    <IconButton className={classes.action} aria-label="Sections" onClick={toggleSectionable}>
-      {sectionableIcon}
-    </IconButton>
+    <Tooltip title={
+      sectionable ? 
+        localString("Expand") :
+        localString("Collapse")
+      } arrow
+    >
+      <IconButton className={classes.action} aria-label="Sections" onClick={toggleSectionable}>
+        {sectionableIcon}
+      </IconButton>
+    </Tooltip>
   ), [classes.action, sectionableIcon, toggleSectionable]);
   const blocksAction = useMemo(() => (
-    <IconButton className={classes.action} aria-label="Blocks" onClick={toggleBlockable}>
-      {blockableIcon}
-    </IconButton>
+    <Tooltip title={
+      blockable ? 
+        localString("BlockView") :
+        localString("SectionView")
+      } arrow
+    >
+      <IconButton className={classes.action} aria-label="Blocks" onClick={toggleBlockable}>
+        {blockableIcon}
+      </IconButton>
+    </Tooltip>
   ), [classes.action, blockableIcon, toggleBlockable]);
   const previewAction = useMemo(() => (
-    <IconButton className={classes.action} aria-label="Preview" onClick={togglePreview}>
-      {previewIcon}
-    </IconButton>
+    <Tooltip title={localString("Preview")} arrow>
+      <IconButton className={classes.action} aria-label="Preview" onClick={togglePreview}>
+        {previewIcon}
+      </IconButton>
+    </Tooltip>
   ), [classes.action, previewIcon, togglePreview]);
   const saveAction = useMemo(() => (
-    <IconButton className={classes.action} aria-label="Save" disabled={!changed} onClick={_onSave}>
-      {saveIcon}
-    </IconButton>
+    <Tooltip title={localString("Save")} arrow>
+      <IconButton className={classes.action} aria-label="Save" disabled={!changed} onClick={_onSave}>
+        {saveIcon}
+      </IconButton>
+    </Tooltip>
   ), [_onSave, changed, classes.action, saveIcon]);
 
   return (
