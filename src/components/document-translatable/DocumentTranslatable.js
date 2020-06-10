@@ -58,19 +58,26 @@ function DocumentTranslatable({
     dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
 
-  const sectionTranslatables = useMemo(() => (
-    originalSections.map((originalSection, index) => {
-      const key = index + md5(JSON.stringify(originalSection));
-      const translationSection = translationSections[index];
-      const __onTranslation = (item) => setTranslationSection({ index, item });
+
+
+  const sectionTranslatables = () => {
+    let totalSections = originalSections.length > translationSections.length ? 
+      originalSections.length : translationSections.length;
+
+    let _sectionsTranslatables = [];
+    for ( let i=0; i < totalSections; i++ ) {
+      const originalSection = originalSections[i];
+      const translationSection = translationSections[i];
+      const key = md5(i + JSON.stringify(originalSection) + JSON.stringify(translationSection));
+      const __onTranslation = (item) => setTranslationSection({ i, item });
 
       const onExpanded = (expanded) => {
-        if (expanded) setSectionFocus(index);
+        if (expanded) setSectionFocus(i);
         else setSectionFocus(null);
       };
 
-      const expanded = (sectionFocus === index);
-      return (
+      const expanded = (sectionFocus === i);
+      _sectionsTranslatables.push (
         <SectionTranslatable
           key={key}
           original={originalSection}
@@ -85,15 +92,14 @@ function DocumentTranslatable({
           style={style}
         />
       );
-    })
-  ), [
-    inputFilters, originalSections, outputFilters, preview, sectionFocus,
-    setTranslationSection, style, translationSections, blockable,
-  ]);
+    };
+    return _sectionsTranslatables;
+  };
+
 
   return (
     <div className={classes.root}>
-      {sectionTranslatables}
+      {sectionTranslatables()}
     </div>
   );
 };
