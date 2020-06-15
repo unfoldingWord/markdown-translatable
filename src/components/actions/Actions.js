@@ -43,8 +43,8 @@ function Actions({
   const sectionsAction = useMemo(() => (
     <Tooltip title={
       sectionable ? 
-        localString("Expand") :
-        localString("Collapse")
+        localString("Sections") :
+        localString("NoSections")
       } arrow
     >
       <IconButton className={classes.action} aria-label="Sections" onClick={toggleSectionable}>
@@ -55,8 +55,8 @@ function Actions({
   const blocksAction = useMemo(() => (
     <Tooltip title={
       blockable ? 
-        localString("BlockView") :
-        localString("SectionView")
+        localString("Blocks") :
+        localString("NoBlocks")
       } arrow
     >
       <IconButton className={classes.action} aria-label="Blocks" onClick={toggleBlockable}>

@@ -20,10 +20,10 @@ const strings = {
     en:{
         Preview: "Preview",
         Save: "Save",
-        BlockView: "Block View",
-        SectionView: "Section View",
-        Expand: "Expand",
-        Collapse: "Collapse",
+        Blocks: "Blocks",
+        NoBlocks: "NoBlocks",
+        Sections: "Sections",
+        NoSections: "No Sections",
         /* do not remove these two */
         StringMissing:"String Id missing",
         LangNotSupported: "Language not supported"

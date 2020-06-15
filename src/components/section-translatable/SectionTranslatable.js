@@ -66,12 +66,17 @@ function SectionTranslatable({
     dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
 
-  const blockTranslatables = useMemo(() => (
-    originalBlocks.map((originalBlock, index) => {
-      const _onTranslation = (item) => setTranslationBlock({ index, item });
-      const translationBlock = translationBlocks[index];
-      const key = index + md5(JSON.stringify(originalBlock + translationBlock));
-      return (
+  const blockTranslatables = () => {
+    let mostBlocks = originalBlocks.length > translationBlocks.length ? 
+      originalBlocks : translationBlocks;
+
+    let _blocksTranslatables = [];
+    for ( let i=0; i < mostBlocks.length; i++ ) {
+      const _onTranslation = (item) => setTranslationBlock({ i, item });
+      const translationBlock = translationBlocks[i];
+      const originalBlock    = originalBlocks[i];
+      const key = i + md5(JSON.stringify(originalBlock + translationBlock));
+      _blocksTranslatables.push(
         <BlockTranslatable
           key={key}
           original={originalBlock}
@@ -82,12 +87,12 @@ function SectionTranslatable({
           preview={preview}
         />
       );
-    })
-  ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview, setTranslationBlock]);
+    };
+    return _blocksTranslatables;
+  };
 
-  const titleBlock = useMemo(() => (
-    originalBlocks[0].split('\n\n')[0]
-  ), [originalBlocks]);
+  const titleBlock = originalBlocks[0].split('\n\n')[0] || translationBlocks[0].split('\n\n')[0];
+
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
@@ -102,7 +107,7 @@ function SectionTranslatable({
         {summaryTitle}
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.details}>
-        {blockTranslatables}
+        {blockTranslatables()}
       </ExpansionPanelDetails>
       <ExpansionPanelActions className={classes.actions}>
         <IconButton onClick={expandedToggle}>
@@ -152,3 +157,25 @@ SectionTranslatable.defaultProps = {
 };
 
 export default SectionTranslatable;
+
+
+/* code graveyard
+  const blockTranslatables = useMemo(() => (
+    originalBlocks.map((originalBlock, index) => {
+      const _onTranslation = (item) => setTranslationBlock({ index, item });
+      const translationBlock = translationBlocks[index];
+      const key = index + md5(JSON.stringify(originalBlock + translationBlock));
+      return (
+        <BlockTranslatable
+          key={key}
+          original={originalBlock}
+          translation={translationBlock}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
+          onTranslation={_onTranslation}
+          preview={preview}
+        />
+      );
+    })
+  ), [originalBlocks, translationBlocks, inputFilters, outputFilters, preview, setTranslationBlock]);
+*/
