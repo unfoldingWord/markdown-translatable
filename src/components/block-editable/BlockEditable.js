@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 
 import * as helpers from '../../core/';
 import {
-  markdownToHtml, htmlToMarkdown, filter, toDisplay, fromDisplay,
+  markdownToHtml,
+  htmlToMarkdown,
+  filter,
+  toDisplay,
+  fromDisplay,
 } from '../../core/';
 import { useStyles } from './useStyles';
 
@@ -18,28 +22,39 @@ function BlockEditable({
 }) {
   const classes = useStyles();
 
-  const _style = useMemo(() => (
-    helpers.isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style
-  ), [style, markdown]);
+  const _style = useMemo(
+    () =>
+      helpers.isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style,
+    [style, markdown]
+  );
 
-  const handleBlur = useCallback((_markdown) => {
-    const oldHTML = markdownToHtml({ markdown, inputFilters });
-    const newHTML = markdownToHtml({ markdown: _markdown, inputFilters });
-    if (oldHTML !== newHTML) onEdit(_markdown);
-  }, [markdown, inputFilters]);
+  const handleBlur = useCallback(
+    (_markdown) => {
+      const oldHTML = markdownToHtml({ markdown, inputFilters });
+      const newHTML = markdownToHtml({ markdown: _markdown, inputFilters });
+      if (oldHTML !== newHTML) onEdit(_markdown);
+    },
+    [markdown, inputFilters]
+  );
 
-  const handleHTMLBlur = useCallback((e) => {
-    const html = e.target.innerHTML;
-    const _markdown = htmlToMarkdown({ html, outputFilters });
-    handleBlur(_markdown);
-  }, [outputFilters]);
+  const handleHTMLBlur = useCallback(
+    (e) => {
+      const html = e.target.innerHTML;
+      const _markdown = htmlToMarkdown({ html, outputFilters });
+      handleBlur(_markdown);
+    },
+    [outputFilters]
+  );
 
-  const handleRawBlur = useCallback((e) => {
-    let string = e.target.innerText;
-    string = fromDisplay(string);
-    const _markdown = filter({ string, filters: outputFilters });
-    handleBlur(_markdown);
-  }, [outputFilters]);
+  const handleRawBlur = useCallback(
+    (e) => {
+      let string = e.target.innerText;
+      string = fromDisplay(string);
+      const _markdown = filter({ string, filters: outputFilters });
+      handleBlur(_markdown);
+    },
+    [outputFilters]
+  );
 
   const component = useMemo(() => {
     let _component;
@@ -54,7 +69,7 @@ function BlockEditable({
           <code
             className={classes.markdown}
             style={_style}
-            dir="auto"
+            dir='auto'
             contentEditable={editable}
             onBlur={handleRawBlur}
             dangerouslySetInnerHTML={dangerouslySetInnerHTML}
@@ -62,13 +77,15 @@ function BlockEditable({
         </pre>
       );
     } else {
-      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
+      const dangerouslySetInnerHTML = {
+        __html: markdownToHtml({ markdown, inputFilters }),
+      };
 
       _component = (
         <div
           style={_style}
           className={classes.html}
-          dir="auto"
+          dir='auto'
           contentEditable={editable}
           dangerouslySetInnerHTML={dangerouslySetInnerHTML}
           onBlur={handleHTMLBlur}
@@ -76,14 +93,17 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, inputFilters, editable, handleHTMLBlur, handleRawBlur, _style]);
+  }, [
+    preview,
+    markdown,
+    inputFilters,
+    editable,
+    handleHTMLBlur,
+    handleRawBlur,
+  ]);
 
-  return (
-    <div className={classes.root}>
-      {component}
-    </div>
-  );
-};
+  return <div className={classes.root}>{component}</div>;
+}
 
 BlockEditable.propTypes = {
   /** Initial markdown for the editor. */
@@ -104,7 +124,7 @@ BlockEditable.propTypes = {
 
 BlockEditable.defaultProps = {
   markdown: '',
-  onEdit: () => { },
+  onEdit: () => {},
   inputFilters: [],
   outputFilters: [],
   style: {},
