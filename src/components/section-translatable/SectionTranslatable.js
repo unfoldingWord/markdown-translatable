@@ -40,7 +40,6 @@ function SectionTranslatable({
   ), [blockable, translation]);
   const [translationBlocks, dispatch] = useReducer(itemsReducer, _translationBlocks);
 
-  const _onTranslation = useCallback(onTranslation, []);
   const _onExpanded = useCallback(onExpanded, []);
 
   // update translationBlocks to match blockable chained through _translationBlocks
@@ -54,9 +53,11 @@ function SectionTranslatable({
   }, [translationBlocks]);
 
   useEffect(() => {
-    _onTranslation(editedTranslation);
-    // console.log('SectionTranslatable got updated editedTranslation')
-  }, [editedTranslation, _onTranslation]);
+    if (editedTranslation !== translation) {
+      onTranslation(editedTranslation);
+      // console.log('SectionTranslatable got updated editedTranslation');
+    }
+  }, [editedTranslation, onTranslation, translation]);
 
   const expandedToggle = useCallback(() => {
     _onExpanded(!expanded);
@@ -66,16 +67,18 @@ function SectionTranslatable({
     dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
 
-  const blockTranslatables = () => {
-    let mostBlocks = originalBlocks.length > translationBlocks.length ? 
+  const blockTranslatables = useCallback(() => {
+    const mostBlocks = originalBlocks.length > translationBlocks.length ?
       originalBlocks : translationBlocks;
 
-    let _blocksTranslatables = [];
+    const _blocksTranslatables = [];
+
     for ( let i=0; i < mostBlocks.length; i++ ) {
-      const _onTranslation = (item) => setTranslationBlock({ i, item });
+      const _onTranslation = (item) => setTranslationBlock({ index: i, item });
       const translationBlock = translationBlocks[i];
-      const originalBlock    = originalBlocks[i];
+      const originalBlock = originalBlocks[i];
       const key = i + md5(JSON.stringify(originalBlock + translationBlock));
+
       _blocksTranslatables.push(
         <BlockTranslatable
           key={key}
@@ -89,7 +92,7 @@ function SectionTranslatable({
       );
     };
     return _blocksTranslatables;
-  };
+  }, [inputFilters, originalBlocks, outputFilters, preview, setTranslationBlock, translationBlocks]);
 
   const titleBlock = originalBlocks[0].split('\n\n')[0] || translationBlocks[0].split('\n\n')[0];
 
