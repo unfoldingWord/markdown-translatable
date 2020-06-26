@@ -11,7 +11,7 @@ initialState = {
     onClick={() => {
       console.log('--- --- ---');
       console.log('Current state:' + state.markdown);
-      setPreview(!state.preview);
+      setState({ preview: !state.preview });
     }}
   >
     {!state.preview ? 'Markdown' : 'HTML'}

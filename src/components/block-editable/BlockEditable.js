@@ -88,7 +88,9 @@ function BlockEditable({
         </pre>
       );
     } else {
-      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
+      const dangerouslySetInnerHTML = {
+        __html: markdownToHtml({ markdown, inputFilters }),
+      };
 
       _component = (
         <div
@@ -102,7 +104,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleHTMLBlur]);
+  }, [preview, markdown, editable]);
 
   return <div className={classes.root}>{component}</div>;
 }
