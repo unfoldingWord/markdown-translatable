@@ -47,12 +47,12 @@ function DocumentTranslatable({
     setEditedTranslation(_translation);
   }, [translationSections]);
 
-  const _onTranslation = useCallback(onTranslation, []);
-
   useEffect(() => {
-    _onTranslation(editedTranslation);
-    // console.log('DocumentTranslatable got updated editedTranslation')
-  }, [editedTranslation, _onTranslation]); // adding onTranslation to memoized array causes infinite loop
+    if (editedTranslation !== translation) {
+      onTranslation(editedTranslation);
+      //console.log('DocumentTranslatable got updated editedTranslation');
+    }
+  }, [editedTranslation, onTranslation, translation]); // adding onTranslation to memoized array causes infinite loop
 
   const setTranslationSection = useCallback(({ index, item }) => {
     dispatch({ type: 'SET_ITEM', value: { index, item } });
@@ -61,22 +61,27 @@ function DocumentTranslatable({
 
 
   const sectionTranslatables = () => {
-    let totalSections = originalSections.length > translationSections.length ? 
+    const totalSections = originalSections.length > translationSections.length ?
       originalSections.length : translationSections.length;
 
-    let _sectionsTranslatables = [];
+    const _sectionsTranslatables = [];
+
     for ( let i=0; i < totalSections; i++ ) {
       const originalSection = originalSections[i];
       const translationSection = translationSections[i];
       const key = md5(i + JSON.stringify(originalSection) + JSON.stringify(translationSection));
-      const __onTranslation = (item) => setTranslationSection({ i, item });
+      const __onTranslation = (item) => setTranslationSection({ index: i, item });
 
       const onExpanded = (expanded) => {
-        if (expanded) setSectionFocus(i);
-        else setSectionFocus(null);
+        if (expanded) {
+          setSectionFocus(i);
+        } else {
+          setSectionFocus(null);
+        }
       };
 
       const expanded = (sectionFocus === i);
+
       _sectionsTranslatables.push (
         <SectionTranslatable
           key={key}
@@ -131,10 +136,6 @@ DocumentTranslatable.defaultProps = {
   outputFilters: [],
 };
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    marginTop: `${theme.spacing(2)}px`,
-  },
-}));
+const useStyles = makeStyles(theme => ({ root: { marginTop: `${theme.spacing(2)}px` } }));
 
 export default DocumentTranslatable;

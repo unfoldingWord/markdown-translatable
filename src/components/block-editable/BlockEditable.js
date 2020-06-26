@@ -32,9 +32,12 @@ function BlockEditable({
     (_markdown) => {
       const oldHTML = markdownToHtml({ markdown, inputFilters });
       const newHTML = markdownToHtml({ markdown: _markdown, inputFilters });
-      if (oldHTML !== newHTML) onEdit(_markdown);
+
+      if (oldHTML !== newHTML) {
+        onEdit(_markdown);
+      }
     },
-    [markdown, inputFilters]
+    [markdown, inputFilters, onEdit]
   );
 
   const handleHTMLBlur = useCallback(
@@ -43,7 +46,7 @@ function BlockEditable({
       const _markdown = htmlToMarkdown({ html, outputFilters });
       handleBlur(_markdown);
     },
-    [outputFilters]
+    [handleBlur, outputFilters]
   );
 
   const handleRawBlur = useCallback(
@@ -53,7 +56,7 @@ function BlockEditable({
       const _markdown = filter({ string, filters: outputFilters });
       handleBlur(_markdown);
     },
-    [outputFilters]
+    [handleBlur, outputFilters]
   );
 
   const component = useMemo(() => {
@@ -77,9 +80,7 @@ function BlockEditable({
         </pre>
       );
     } else {
-      const dangerouslySetInnerHTML = {
-        __html: markdownToHtml({ markdown, inputFilters }),
-      };
+      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
 
       _component = (
         <div
@@ -93,14 +94,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [
-    preview,
-    markdown,
-    inputFilters,
-    editable,
-    handleHTMLBlur,
-    handleRawBlur,
-  ]);
+  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleHTMLBlur]);
 
   return <div className={classes.root}>{component}</div>;
 }
