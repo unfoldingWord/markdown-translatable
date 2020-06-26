@@ -8,18 +8,25 @@ initialState = {
 
 <div>
   <button
-    onClick={() => setState({ preview: !state.preview })}
+    onClick={() => {
+      console.log('--- --- ---');
+      console.log('Current state:' + state.markdown);
+      setPreview(!state.preview);
+    }}
   >
     {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
-    onEdit={(markdown) =>
-      setState({ markdown })
-    }
+    onEdit={(_markdown) => {
+      console.log('--- --- ---');
+      console.log('Current state:' + state.markdown);
+      console.log('Setting new state: ' + _markdown);
+      setState({ _markdown });
+    }}
   />
-</div>
+</div>;
 ```
 
 ### Detect Hebrew and Zoom
@@ -28,24 +35,32 @@ If the text includes over 75% hebrew characters it will zoom by 150% using `font
 
 ```jsx
 initialState = {
-  markdown: 'שֻׁדַּ֣ד שָׂדֶ֔ה אָבְלָ֖האֲדָמָ֑ה כִּ֚י שֻׁדַּ֣ד דָּגָ֔ןהוֹבִ֥ישׁ תִּיר֖וֹשׁ אֻמְלַ֥ליִצְהָֽר׃',
+  markdown:
+    'שֻׁדַּ֣ד שָׂדֶ֔ה אָבְלָ֖האֲדָמָ֑ה כִּ֚י שֻׁדַּ֣ד דָּגָ֔ןהוֹבִ֥ישׁ תִּיר֖וֹשׁ אֻמְלַ֥ליִצְהָֽר׃',
   preview: false,
 };
 
 <div>
   <button
-    onClick={() => setState({ preview: !state.preview })}
+    onClick={() => {
+      console.log('--- --- ---');
+      console.log('Current state:' + state.markdown);
+      setState({ preview: !state.preview });
+    }}
   >
     {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
-    onEdit={(markdown) =>
-      setState({ markdown })
-    }
+    onEdit={(_markdown) => {
+      console.log('--- --- ---');
+      console.log('Current state:' + state.markdown);
+      console.log('Setting new state: ' + _markdown);
+      setState({ _markdown });
+    }}
   />
-</div>
+</div>;
 ```
 
 ### A more complex example...
@@ -86,18 +101,19 @@ const callback = (markdown) => {
 };
 
 <div>
-  <button
-    onClick={() => setState({ preview: !state.preview })}
-  >
+  <button onClick={() => setState({ preview: !state.preview })}>
     {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
     onEdit={callback}
-    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[[/\n/gi, "<br>"]]}
+    inputFilters={[
+      [/<br>/gi, '\n'],
+      [/(<u>|<\/u>)/gi, '__'],
+    ]}
+    outputFilters={[[/\n/gi, '<br>']]}
     style={style}
   />
-</div>
+</div>;
 ```

@@ -20,6 +20,8 @@ function BlockEditable({
   preview,
   editable,
 }) {
+  const _oldMarkdown = { markdown };
+
   const classes = useStyles();
 
   const _style = useMemo(
@@ -30,12 +32,18 @@ function BlockEditable({
 
   const handleBlur = useCallback(
     (_markdown) => {
-      const oldHTML = markdownToHtml({ markdown, inputFilters });
-      const newHTML = markdownToHtml({ markdown: _markdown, inputFilters });
+      const oldHTML = markdownToHtml({
+        markdown: _oldMarkdown.markdown,
+        inputFilters: inputFilters,
+      });
+      const newHTML = markdownToHtml({
+        markdown: _markdown,
+        inputFilters: inputFilters,
+      });
 
-      if (oldHTML !== newHTML) {
-        onEdit(_markdown);
-      }
+      _oldMarkdown.markdown = _markdown;
+
+      if (oldHTML !== newHTML) onEdit(_markdown);
     },
     [markdown, inputFilters, onEdit]
   );
