@@ -10,6 +10,9 @@ import {
   Actions,
 } from '../';
 
+const useStyles = makeStyles(theme => ({ root: {} }));
+
+
 function Translatable({
   original,
   translation,
@@ -92,9 +95,5 @@ Translatable.defaultProps = {
   inputFilters: [],
   outputFilters: [],
 };
-
-const useStyles = makeStyles(theme => ({
-  root: {},
-}));
 
 export default Translatable;
