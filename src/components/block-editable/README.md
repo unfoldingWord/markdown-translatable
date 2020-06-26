@@ -1,25 +1,42 @@
 ### Toggle Raw Markdown and HTML Editing.
 
 ```jsx
-initialState = {
-  markdown: '**Hello** __world__',
-  preview: false,
-};
+function Component() {
+  const [markdown, setMarkdown] = React.useState('**Hello** __world__');
+  const [preview, setPreview] = React.useState(false);
 
-<div>
-  <button
-    onClick={() => setState({ preview: !state.preview })}
-  >
-    {!state.preview ? 'Markdown' : 'HTML'}
-  </button>
-  <BlockEditable
-    markdown={state.markdown}
-    preview={state.preview}
-    onEdit={(markdown) =>
-      setState({ markdown })
-    }
-  />
-</div>
+  const component = React.useMemo(() => {
+    return (
+      <>
+        <div>
+          <button
+            onClick={() => {
+              console.log('--- --- ---');
+              console.log('Current state:' + markdown);
+              setPreview(!preview);
+            }}
+          >
+            {!state.preview ? 'Markdown' : 'HTML'}
+          </button>
+          <BlockEditable
+            markdown={markdown}
+            preview={preview}
+            onEdit={(_markdown) => {
+              console.log('--- --- ---');
+              console.log('Current state:' + markdown);
+              console.log('Setting new state: ' + _markdown);
+              setMarkdown(_markdown);
+            }}
+          />
+        </div>
+      </>
+    );
+  }, [markdown, preview]);
+
+  return component;
+}
+
+<Component />;
 ```
 
 ### Detect Hebrew and Zoom
@@ -28,24 +45,21 @@ If the text includes over 75% hebrew characters it will zoom by 150% using `font
 
 ```jsx
 initialState = {
-  markdown: 'שֻׁדַּ֣ד שָׂדֶ֔ה אָבְלָ֖האֲדָמָ֑ה כִּ֚י שֻׁדַּ֣ד דָּגָ֔ןהוֹבִ֥ישׁ תִּיר֖וֹשׁ אֻמְלַ֥ליִצְהָֽר׃',
+  markdown:
+    'שֻׁדַּ֣ד שָׂדֶ֔ה אָבְלָ֖האֲדָמָ֑ה כִּ֚י שֻׁדַּ֣ד דָּגָ֔ןהוֹבִ֥ישׁ תִּיר֖וֹשׁ אֻמְלַ֥ליִצְהָֽר׃',
   preview: false,
 };
 
 <div>
-  <button
-    onClick={() => setState({ preview: !state.preview })}
-  >
+  <button onClick={() => setState({ preview: !state.preview })}>
     {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
-    onEdit={(markdown) =>
-      setState({ markdown })
-    }
+    onEdit={(markdown) => setState({ markdown })}
   />
-</div>
+</div>;
 ```
 
 ### A more complex example...
@@ -86,18 +100,19 @@ const callback = (markdown) => {
 };
 
 <div>
-  <button
-    onClick={() => setState({ preview: !state.preview })}
-  >
+  <button onClick={() => setState({ preview: !state.preview })}>
     {!state.preview ? 'Markdown' : 'HTML'}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
     onEdit={callback}
-    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[[/\n/gi, "<br>"]]}
+    inputFilters={[
+      [/<br>/gi, '\n'],
+      [/(<u>|<\/u>)/gi, '__'],
+    ]}
+    outputFilters={[[/\n/gi, '<br>']]}
     style={style}
   />
-</div>
+</div>;
 ```

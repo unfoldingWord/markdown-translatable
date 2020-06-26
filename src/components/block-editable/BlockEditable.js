@@ -2,14 +2,11 @@ import React, { useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import * as helpers from '../../core/';
-import {
-  markdownToHtml,
-  htmlToMarkdown,
-  filter,
-  toDisplay,
-  fromDisplay,
-} from '../../core/';
+import { markdownToHtml } from '../../core/';
 import { useStyles } from './useStyles';
+
+import BlockEditableMarkdown from './BlockEditableMarkdown';
+import BlockEditablePreview from './BlockEditablePreview';
 
 function BlockEditable({
   markdown,
@@ -20,6 +17,8 @@ function BlockEditable({
   preview,
   editable,
 }) {
+  const _oldMarkdown = { current: markdown };
+
   const classes = useStyles();
 
   const _style = useMemo(
@@ -30,77 +29,54 @@ function BlockEditable({
 
   const handleBlur = useCallback(
     (_markdown) => {
-      const oldHTML = markdownToHtml({ markdown, inputFilters });
-      const newHTML = markdownToHtml({ markdown: _markdown, inputFilters });
+      const oldHTML = markdownToHtml({
+        markdown: _oldMarkdown.current,
+        inputFilters: inputFilters,
+      });
+      const newHTML = markdownToHtml({
+        markdown: _markdown,
+        inputFilters: inputFilters,
+      });
+
+      _oldMarkdown.current = _markdown;
+
       if (oldHTML !== newHTML) onEdit(_markdown);
     },
     [markdown, inputFilters]
-  );
-
-  const handleHTMLBlur = useCallback(
-    (e) => {
-      const html = e.target.innerHTML;
-      const _markdown = htmlToMarkdown({ html, outputFilters });
-      handleBlur(_markdown);
-    },
-    [outputFilters]
-  );
-
-  const handleRawBlur = useCallback(
-    (e) => {
-      let string = e.target.innerText;
-      string = fromDisplay(string);
-      const _markdown = filter({ string, filters: outputFilters });
-      handleBlur(_markdown);
-    },
-    [outputFilters]
   );
 
   const component = useMemo(() => {
     let _component;
 
     if (!preview) {
-      let code = filter({ string: markdown, filters: inputFilters });
-      code = toDisplay(code);
-      const dangerouslySetInnerHTML = { __html: code };
-
       _component = (
-        <pre className={classes.pre}>
-          <code
-            className={classes.markdown}
-            style={_style}
-            dir='auto'
-            contentEditable={editable}
-            onBlur={handleRawBlur}
-            dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-          />
-        </pre>
+        <BlockEditableMarkdown
+          markdown={markdown}
+          onEdit={onEdit}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
+          style={_style}
+          preview={preview}
+          editable={editable}
+          handleBlur={handleBlur}
+        />
       );
     } else {
-      const dangerouslySetInnerHTML = {
-        __html: markdownToHtml({ markdown, inputFilters }),
-      };
-
       _component = (
-        <div
+        <BlockEditablePreview
+          markdown={markdown}
+          onEdit={onEdit}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
           style={_style}
-          className={classes.html}
-          dir='auto'
-          contentEditable={editable}
-          dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-          onBlur={handleHTMLBlur}
+          preview={preview}
+          editable={editable}
+          handleBlur={handleBlur}
         />
       );
     }
     return _component;
-  }, [
-    preview,
-    markdown,
-    inputFilters,
-    editable,
-    handleHTMLBlur,
-    handleRawBlur,
-  ]);
+  }, [preview, markdown, inputFilters, editable]);
 
   return <div className={classes.root}>{component}</div>;
 }
