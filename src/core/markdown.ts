@@ -27,8 +27,6 @@ export const sectionsFromMarkdown = ({ markdown }) => {
   }
   sections = sections.map(blocks => blocks.join(`\n\n`));
 
-  debugger;
-
   return sections;
 };
 
