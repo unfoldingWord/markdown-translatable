@@ -13,6 +13,7 @@ import {
 } from '../../core/';
 
 import { itemsReducer } from '../../core/itemsReducer';
+const useStyles = makeStyles(theme => ({ root: { marginTop: `${theme.spacing(2)}px` } }));
 
 function DocumentTranslatable({
   original,
@@ -135,7 +136,5 @@ DocumentTranslatable.defaultProps = {
   inputFilters: [],
   outputFilters: [],
 };
-
-const useStyles = makeStyles(theme => ({ root: { marginTop: `${theme.spacing(2)}px` } }));
 
 export default DocumentTranslatable;

@@ -15,4 +15,10 @@ describe('HTML To Markdown Converter', () => {
   it(`convert image html tag to markdown`, () => {
     generateTest('double_underscores');
   });
+  it(`convert italic html tag to markdown`, () => {
+    generateTest('italic');
+  });
+  it(`convert bold italic html tag to markdown`, () => {
+    generateTest('bold_italic');
+  });
 });

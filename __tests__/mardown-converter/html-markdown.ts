@@ -55,4 +55,7 @@ describe('HTML To Markdown Converter', () => {
   it(`convert definition list html tags to markdown`, () => {
     generateTest('definition_list');
   });
+  it(`convert bold italic html markdown`, () => {
+    generateTest('bold_italic');
+  });
 });

@@ -13,17 +13,26 @@ turndownService.addRule('underline', {
   filter: ['u'],
   replacement: (content) => `<u>${content}</u>`,
 });
+turndownService.addRule('bold-italic', {
+  filter: function (node: HTMLElement) {
+    return node.innerHTML.match(/<strong><em>.*<\/em><\/strong>/);
+  },
+  replacement: (_, node) => {
+    const content = node.innerHTML.match(/<strong><em>(.*)<\/em><\/strong>/)[1];
+    return `**_${content}_**`;
+  },
+});
 turndownService.addRule('emphasis', {
   filter: ['em'],
   replacement: (content) => `*${content}*`,
 });
 
 const markdownToHtmlConverter = new showdown.Converter();
-markdownToHtmlConverter.setOption('underline', true);
+export const toDisplay = (content) =>
+  content.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
-export const toDisplay = (content) => content.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-
-export const fromDisplay = (content) => content.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
+export const fromDisplay = (content) =>
+  content.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 
 export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
   let markdown = turndownService.turndown(html);
