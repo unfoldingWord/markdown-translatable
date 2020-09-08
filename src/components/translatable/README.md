@@ -45,7 +45,9 @@ This is subsection A, paragraph 2.
 > he brings one down and raises up another.  
 > For Yahweh holds a cup in his hand of ***foaming wine***,  
 > which is mixed with spices, and pours it out.  
-> Surely all the wicked of the earth will ***drink it*** to the last drop. (Psalm 75:8 ULT)
+> Surely all the wicked of the earth will ***drink it*** to the last drop. (Psalm 75:8 ULT)  
+> test-a **test** and **_testing_**  
+> test-b **test** and *test*  
 
 ## Subsection B
 
@@ -79,7 +81,9 @@ This is subsection A, paragraph 2.
 > he brings one down and raises up another.  
 > For Yahweh holds a cup in his hand of ***foaming wine***,  
 > which is mixed with spices, and pours it out.  
-> Surely all the wicked of the earth will ***drink it*** to the last drop. (Psalm 75:8 ULT)
+> Surely all the wicked of the earth will ***drink it*** to the last drop. (Psalm 75:8 ULT)  
+> test-a **test** and **_testing_**  
+> test-b **test** and *test*  
 
 ## Subsection B
 
