@@ -39,6 +39,16 @@ This is subsection A, paragraph 1.
 
 This is subsection A, paragraph 2.
 
+**Bold** and *italic* and **_bold-italic_** styles.
+
+> But God is the judge;  
+> he brings one down and raises up another.  
+> For Yahweh holds a cup in his hand of ***foaming wine***,  
+> which is mixed with spices, and pours it out.  
+> Surely all the wicked of the earth will ***drink it*** to the last drop. (Psalm 75:8 ULT)  
+> test-a **test** and **_testing_**  
+> test-b **test** and *test*  
+
 ## Subsection B
 
 This is subsection B, paragraph 1.
@@ -64,6 +74,16 @@ const _translation = `
 This is subsection A, paragraph 1.
 
 This is subsection A, paragraph 2.
+
+**Bold** and *italic* and **_bold-italic_** styles.
+
+> But God is the judge;  
+> he brings one down and raises up another.  
+> For Yahweh holds a cup in his hand of ***foaming wine***,  
+> which is mixed with spices, and pours it out.  
+> Surely all the wicked of the earth will ***drink it*** to the last drop. (Psalm 75:8 ULT)  
+> test-a **test** and **_testing_**  
+> test-b **test** and *test*  
 
 ## Subsection B
 

@@ -3,11 +3,16 @@ import path from 'path';
 import * as helpers from '../../src/core';
 
 function generateTest(fileName: string) {
-  const markdown = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.md`), { encoding: 'utf-8' });
+  let markdown = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.md`), { encoding: 'utf-8' });
   const html = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.html`), { encoding: 'utf-8' });
   const res = helpers.htmlToMarkdown({ html });
   const markdownToDisplay = helpers.toDisplay(res);
-  const markdownFromDisplay = helpers.fromDisplay(markdownToDisplay);
+  let markdownFromDisplay = helpers.fromDisplay(markdownToDisplay);
+
+  // Standardize line breaks:
+  markdownFromDisplay = markdownFromDisplay.replace(/(\r\n|\n|\r)/gm, "");
+  markdown = markdown.replace(/(\r\n|\n|\r)/gm, "");
+
   expect(markdownFromDisplay).toBe(markdown);
 }
 
@@ -55,6 +60,7 @@ describe('HTML To Markdown Converter', () => {
   it(`convert definition list html tags to markdown`, () => {
     generateTest('definition_list');
   });
+
   it(`convert bold italic html markdown`, () => {
     generateTest('bold_italic');
   });
