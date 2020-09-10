@@ -76,23 +76,27 @@ function BlockEditable(props) {
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
   return (
     <div className={classes.root}>
-      <pre className={classes.pre} style={{ display: !preview ? 'block' : 'none' }}>
+      {!preview && <pre className={classes.pre}>
         <ContentEditable
-          style={{ ..._style, display: !preview ? 'block' : 'none' }}
+          dir="auto"
+          className={classes.markdown}
+          style={_style}
           innerRef={markdownEditable}
           disabled={!editable}
           html={markdownDisplay} // innerHTML of the editable div
           onChange={handleRawChange} // handle innerHTML change
-          tagName='code'
         />
       </pre>
-      <ContentEditable
+      }
+      {preview && <ContentEditable
+        dir="auto"
+        className={classes.html}
         disabled={!editable}
         style={{ ..._style, display: preview ? 'block' : 'none' }}
         innerRef={htmlEditable}
         html={htmlDisplay} // innerHTML of the editable div
         onChange={handleHTMLChange} // handle innerHTML change
-      />
+      />}
     </div>
   );
 }

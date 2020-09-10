@@ -2,7 +2,7 @@
 
 ```jsx
 initialState = {
-  markdown: "**Hello**",
+  markdown: "**Hello** _world_",
   preview: false,
 };
 

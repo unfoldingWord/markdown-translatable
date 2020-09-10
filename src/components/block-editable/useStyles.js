@@ -27,5 +27,6 @@ module.exports = {
     margin: 0,
     fontFamily: 'unset',
     fontSize: 'unset',
+    whiteSpace: 'normal',
   },
 };
