@@ -1,8 +1,9 @@
 import React, {
-  useRef, useState , useEffect, memo,
+  useRef, useState , useEffect, memo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
+import debounce from 'lodash.debounce';
 import ContentEditable from 'react-contenteditable';
 
 import { withStyles } from '@material-ui/core';
@@ -26,6 +27,7 @@ function BlockEditable(props) {
     outputFilters,
     onEdit,
     classes,
+    debounce: debounceTime,
   } = props;
   const markdownEditable = useRef(null);
   const htmlEditable = useRef(null);
@@ -39,6 +41,8 @@ function BlockEditable(props) {
     setMarkdownDisplay(_markdownDisplay);
   }, [inputFilters, markdown]);
 
+  const _onEdit = useCallback(onEdit, []);
+  const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
   function handleChange(newMarkdown) {
     const oldHTML = markdownToHtml({
@@ -50,8 +54,9 @@ function BlockEditable(props) {
       inputFilters: inputFilters,
     });
 
+
     if (oldHTML !== newHTML) {
-      onEdit(newMarkdown);
+      onEditThrottled(newMarkdown);
       const code = filter({ string: newMarkdown, filters: inputFilters });
       setMarkdownDisplay(toDisplay(code));
       setHtmlDisplay(newHTML);
@@ -118,6 +123,8 @@ BlockEditable.propTypes = {
   editable: PropTypes.bool,
   /** CSS clasess from material-ui */
   classes: PropTypes.object.isRequired,
+  /** Amount of time to debounce edits */
+  debounce: PropTypes.number,
 };
 
 BlockEditable.defaultProps = {
@@ -128,6 +135,7 @@ BlockEditable.defaultProps = {
   style: {},
   preview: true,
   editable: true,
+  debounce: 0,
 };
 
 const propsAreEqual = (prevProps, nextProps) => prevProps.preview === nextProps.preview &&

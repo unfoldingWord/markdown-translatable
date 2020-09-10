@@ -2,7 +2,7 @@
 
 ```jsx
 initialState = {
-  markdown: "**Hello** _world_",
+  markdown: `Possible meanings are 1) "the believers who love us" or 2) "the believers who love us because we share the same belief."`,
   preview: false,
 };
 
@@ -15,9 +15,11 @@ initialState = {
     {!state.preview ? "Preview" : "Raw Markdown"}
   </button>
   <BlockEditable
+    debounce={500}
     markdown={state.markdown}
     preview={state.preview}
     onEdit={(_markdown) => {
+      console.log("_markdown", _markdown);
       setState({ markdown: _markdown });
     }}
   />
