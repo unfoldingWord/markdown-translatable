@@ -1,8 +1,8 @@
-import React, {
-  useMemo, useCallback, useEffect, useRef, useState,
-} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import ContentEditable from 'react-contenteditable';
 
+import { withStyles } from '@material-ui/core';
 import {
   markdownToHtml,
   htmlToMarkdown,
@@ -11,105 +11,99 @@ import {
   fromDisplay,
   isHebrew,
 } from '../../core/';
-import { useStyles } from './useStyles';
+import styles from './useStyles';
 
-function BlockEditable({
-  markdown,
-  onEdit,
-  inputFilters,
-  outputFilters,
-  style,
-  preview,
-  editable='true',
-}) {
-  useEffect(() => {
-    const markdownEditable = document.getElementById('markdown-editable');
+class BlockEditable extends React.Component {
+  constructor(props) {
+    super(props);
+    const { markdown, inputFilters } = props;
+    this.state = { oldMarkdown: props.markdown, html: markdownToHtml({ markdown, inputFilters }) };
+    this.handleHTMLChange = this.handleHTMLChange.bind(this);
+    this.handleRawChange = this.handleRawChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.setInnerText = this.setInnerText.bind(this);
+    this.markdownEditable = React.createRef();
+    this.htmlEditable = React.createRef();
+  }
 
-    if (markdownEditable) {
+  setInnerText() {
+    const { markdown, inputFilters } = this.props;
+
+    if (this.markdownEditable.current) {
       let code = filter({ string: markdown, filters: inputFilters });
       code = toDisplay(code);
-      markdownEditable.innerText = code;
+      this.markdownEditable.current.innerText = code;
     }
+  }
 
-    const htmlEditable = document.getElementById('html-editable');
+  handleChange(_markdown) {
+    const { inputFilters } = this.props;
 
-    if (htmlEditable) {
-      htmlEditable.innerHTML = markdownToHtml({ markdown, inputFilters });
+    const oldHTML = markdownToHtml({
+      markdown: this.state.oldMarkdown,
+      inputFilters: inputFilters,
+    });
+    const newHTML = markdownToHtml({
+      markdown: _markdown,
+      inputFilters: inputFilters,
+    });
+
+    this.setState({ oldMarkdown:_markdown });
+
+    if (oldHTML !== newHTML) {
+      this.props.onEdit(_markdown);
+      this.setState({ html: markdownToHtml({ markdown: _markdown, inputFilters }) });
     }
-  }, [inputFilters, markdown]);
+  }
 
-  const [oldMarkdown, setOldMarkdown] = useState(markdown);
-  const classes = useStyles();
-  const _style = useMemo(
-    () =>
-      isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style,
-    [style, markdown]
-  );
-
-  const handleChange = useCallback(
-    (_markdown) => {
-      const oldHTML = markdownToHtml({
-        markdown: oldMarkdown,
-        inputFilters: inputFilters,
-      });
-      const newHTML = markdownToHtml({
-        markdown: _markdown,
-        inputFilters: inputFilters,
-      });
-
-      setOldMarkdown(_markdown);
-
-      if (oldHTML !== newHTML) {
-        onEdit(_markdown);
-      }
-    },
-    [inputFilters, oldMarkdown, onEdit]
-  );
-
-  const handleHTMLChange = useCallback(
-    (e) => {
-      const html = e.target.innerHTML;
-      const _markdown = htmlToMarkdown({ html, outputFilters });
-      handleChange(_markdown, e);
-    },
-    [handleChange, outputFilters]
-  );
+  handleHTMLChange(e) {
+    const { outputFilters } = this.props;
+    const html = e.target.value;
+    const _markdown = htmlToMarkdown({ html, outputFilters });
+    this.handleChange(_markdown, e);
+  }
 
 
-  const handleRawChange = useCallback(
-    (e) => {
-      let string = e.target.innerText;
-      string = fromDisplay(string);
-      const _markdown = filter({ string, filters: outputFilters });
-      handleChange(_markdown);
-    },
-    [handleChange, outputFilters]
-  );
+  handleRawChange(e) {
+    const { outputFilters } = this.props;
+    let string = e.target.value;
+    string = fromDisplay(string);
+    const _markdown = filter({ string, filters: outputFilters });
+    this.handleChange(_markdown);
+  }
 
-  return (
-    <div className={classes.root}>
-      <pre className={classes.pre} style={{ display: !preview ? 'block' : 'none' }}>
-        <code
-          id="markdown-editable"
-          dir='auto'
-          style={_style}
-          className={classes.markdown}
-          contentEditable={editable}
-          onInput={handleRawChange}
-          suppressContentEditableWarning={true}
+
+  render() {
+    const {
+      markdown,
+      style,
+      preview,
+      editable='true',
+      classes,
+    } = this.props;
+    const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
+    return (
+      <div className={classes.root}>
+        <pre className={classes.pre} style={{ display: !preview ? 'block' : 'none' }}>
+          <ContentEditable
+            style={{ ..._style, display: !preview ? 'block' : 'none' }}
+            innerRef={this.markdownEditable}
+            disabled={editable}
+            html={markdown} // innerHTML of the editable div
+            onChange={this.handleRawChange} // handle innerHTML change
+            tagName='code'
+          />
+        </pre>
+        <ContentEditable
+          disabled={editable}
+          style={{ ..._style, display: preview ? 'block' : 'none' }}
+          innerRef={this.htmlEditable}
+          html={this.state.html} // innerHTML of the editable div
+          onChange={this.handleHTMLChange} // handle innerHTML change
         />
-      </pre>
-      <div
-        id="html-editable"
-        dir='auto'
-        style={{ ..._style, display: preview ? 'block' : 'none' }}
-        className={classes.html}
-        contentEditable={editable}
-        onInput={handleHTMLChange}
-        suppressContentEditableWarning={true}
-      />
-    </div>
-  );
+      </div>
+    );
+  }
 }
 
 BlockEditable.propTypes = {
@@ -139,4 +133,4 @@ BlockEditable.defaultProps = {
   editable: true,
 };
 
-export default BlockEditable;
+export default withStyles(styles)(BlockEditable);

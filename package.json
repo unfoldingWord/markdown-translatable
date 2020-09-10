@@ -13,6 +13,7 @@
     "deep-freeze": "^0.0.1",
     "md5": "^2.2.1",
     "prop-types": "^15.7.2",
+    "react-contenteditable": "^3.3.5",
     "react-markdown": "^4.0.6",
     "showdown": "^1.9.0",
     "turndown": "^5.0.3",
