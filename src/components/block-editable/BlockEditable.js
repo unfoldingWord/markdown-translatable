@@ -1,7 +1,8 @@
 import React, {
-  useRef, useState , useEffect,
+  useRef, useState , useEffect, memo,
 } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
 import ContentEditable from 'react-contenteditable';
 
 import { withStyles } from '@material-ui/core';
@@ -20,7 +21,7 @@ function BlockEditable(props) {
     markdown,
     style,
     preview,
-    editable=true,
+    editable,
     inputFilters,
     outputFilters,
     onEdit,
@@ -111,6 +112,8 @@ BlockEditable.propTypes = {
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
+  /** CSS clasess from material-ui */
+  classes: PropTypes.object.isRequired,
 };
 
 BlockEditable.defaultProps = {
@@ -123,4 +126,11 @@ BlockEditable.defaultProps = {
   editable: true,
 };
 
-export default withStyles(styles)(BlockEditable);
+const propsAreEqual = (prevProps, nextProps) => prevProps.preview === nextProps.preview &&
+prevProps.editable === nextProps.editable &&
+  isEqual(prevProps.style, nextProps.style) &&
+ isEqual(prevProps.outputFilters, nextProps.outputFilters) &&
+ isEqual(prevProps.inputFilters, nextProps.inputFilters) &&
+prevProps.markdown === nextProps.markdown;
+
+export default withStyles(styles)(memo(BlockEditable, propsAreEqual));
