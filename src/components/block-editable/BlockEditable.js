@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useRef, useState , useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import ContentEditable from 'react-contenteditable';
 
@@ -13,97 +15,85 @@ import {
 } from '../../core/';
 import styles from './useStyles';
 
-class BlockEditable extends React.Component {
-  constructor(props) {
-    super(props);
-    const { markdown, inputFilters } = props;
-    this.state = { oldMarkdown: props.markdown, html: markdownToHtml({ markdown, inputFilters }) };
-    this.handleHTMLChange = this.handleHTMLChange.bind(this);
-    this.handleRawChange = this.handleRawChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.setInnerText = this.setInnerText.bind(this);
-    this.markdownEditable = React.createRef();
-    this.htmlEditable = React.createRef();
-  }
+function BlockEditable(props) {
+  const {
+    markdown,
+    style,
+    preview,
+    editable=true,
+    inputFilters,
+    outputFilters,
+    onEdit,
+    classes,
+  } = props;
+  const markdownEditable = useRef(null);
+  const htmlEditable = useRef(null);
 
-  setInnerText() {
-    const { markdown, inputFilters } = this.props;
+  const [markdownDisplay, setMarkdownDisplay] = useState('');
+  const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
 
-    if (this.markdownEditable.current) {
-      let code = filter({ string: markdown, filters: inputFilters });
-      code = toDisplay(code);
-      this.markdownEditable.current.innerText = code;
-    }
-  }
+  useEffect(() => {
+    const code = filter({ string: markdown, filters: inputFilters });
+    const _markdownDisplay = toDisplay(code);
+    setMarkdownDisplay(_markdownDisplay);
+  }, [inputFilters, markdown]);
 
-  handleChange(_markdown) {
-    const { inputFilters } = this.props;
 
+  function handleChange(newMarkdown) {
     const oldHTML = markdownToHtml({
-      markdown: this.state.oldMarkdown,
+      markdown,
       inputFilters: inputFilters,
     });
     const newHTML = markdownToHtml({
-      markdown: _markdown,
+      markdown: newMarkdown,
       inputFilters: inputFilters,
     });
 
-    this.setState({ oldMarkdown:_markdown });
-
     if (oldHTML !== newHTML) {
-      this.props.onEdit(_markdown);
-      this.setState({ html: markdownToHtml({ markdown: _markdown, inputFilters }) });
+      onEdit(newMarkdown);
+      const code = filter({ string: newMarkdown, filters: inputFilters });
+      setMarkdownDisplay(toDisplay(code));
+      setHtmlDisplay(newHTML);
     }
   }
 
-  handleHTMLChange(e) {
-    const { outputFilters } = this.props;
+  function handleHTMLChange(e) {
     const html = e.target.value;
     const _markdown = htmlToMarkdown({ html, outputFilters });
-    this.handleChange(_markdown, e);
+    handleChange(_markdown, e);
   }
 
 
-  handleRawChange(e) {
-    const { outputFilters } = this.props;
+  function handleRawChange(e) {
     let string = e.target.value;
     string = fromDisplay(string);
     const _markdown = filter({ string, filters: outputFilters });
-    this.handleChange(_markdown);
+    handleChange(_markdown);
   }
 
 
-  render() {
-    const {
-      markdown,
-      style,
-      preview,
-      editable='true',
-      classes,
-    } = this.props;
-    const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-    return (
-      <div className={classes.root}>
-        <pre className={classes.pre} style={{ display: !preview ? 'block' : 'none' }}>
-          <ContentEditable
-            style={{ ..._style, display: !preview ? 'block' : 'none' }}
-            innerRef={this.markdownEditable}
-            disabled={editable}
-            html={markdown} // innerHTML of the editable div
-            onChange={this.handleRawChange} // handle innerHTML change
-            tagName='code'
-          />
-        </pre>
+  const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
+  return (
+    <div className={classes.root}>
+      <pre className={classes.pre} style={{ display: !preview ? 'block' : 'none' }}>
         <ContentEditable
-          disabled={editable}
-          style={{ ..._style, display: preview ? 'block' : 'none' }}
-          innerRef={this.htmlEditable}
-          html={this.state.html} // innerHTML of the editable div
-          onChange={this.handleHTMLChange} // handle innerHTML change
+          style={{ ..._style, display: !preview ? 'block' : 'none' }}
+          innerRef={markdownEditable}
+          disabled={!editable}
+          html={markdownDisplay} // innerHTML of the editable div
+          onChange={handleRawChange} // handle innerHTML change
+          tagName='code'
         />
-      </div>
-    );
-  }
+      </pre>
+      <ContentEditable
+        disabled={!editable}
+        style={{ ..._style, display: preview ? 'block' : 'none' }}
+        innerRef={htmlEditable}
+        html={htmlDisplay} // innerHTML of the editable div
+        onChange={handleHTMLChange} // handle innerHTML change
+      />
+    </div>
+  );
 }
 
 BlockEditable.propTypes = {
