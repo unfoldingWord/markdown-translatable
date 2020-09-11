@@ -61,16 +61,16 @@ function DocumentTranslatable({
 
 
 
-  const sectionTranslatables = () => {
-    const totalSections = originalSections.length > translationSections.length ?
-      originalSections.length : translationSections.length;
+  const totalSections = originalSections.length > translationSections.length ?
+    originalSections.length : translationSections.length;
 
+  const sectionsTranslatables = useMemo(() => {
     const _sectionsTranslatables = [];
 
     for ( let i=0; i < totalSections; i++ ) {
       const originalSection = originalSections[i];
       const translationSection = translationSections[i];
-      const key = md5(i + JSON.stringify(originalSection) + JSON.stringify(translationSection));
+      const key = md5(JSON.stringify(originalSection + i.toString()));
       const __onTranslation = (item) => setTranslationSection({ index: i, item });
 
       const onExpanded = (expanded) => {
@@ -83,7 +83,7 @@ function DocumentTranslatable({
 
       const expanded = (sectionFocus === i);
 
-      _sectionsTranslatables.push (
+      _sectionsTranslatables.push(
         <SectionTranslatable
           key={key}
           original={originalSection}
@@ -100,12 +100,11 @@ function DocumentTranslatable({
       );
     };
     return _sectionsTranslatables;
-  };
-
+  }, [blockable, inputFilters, originalSections, outputFilters, preview, sectionFocus, setTranslationSection, style, totalSections, translationSections]);
 
   return (
     <div className={classes.root}>
-      {sectionTranslatables()}
+      {sectionsTranslatables}
     </div>
   );
 };

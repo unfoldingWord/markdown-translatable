@@ -81,7 +81,8 @@ function BlockEditable(props) {
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
   return (
     <div className={classes.root}>
-      {!preview && <pre className={classes.pre}>
+      {!preview &&
+      <pre className={classes.pre}>
         <ContentEditable
           dir="auto"
           className={classes.markdown}
@@ -93,7 +94,8 @@ function BlockEditable(props) {
         />
       </pre>
       }
-      {preview && <ContentEditable
+      {preview &&
+      <ContentEditable
         dir="auto"
         className={classes.html}
         disabled={!editable}
