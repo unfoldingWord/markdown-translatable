@@ -28,13 +28,12 @@ turndownService.addRule('bold-italic', {
 turndownService.addRule('emphasis', {
   //filter: ['em'],filter: (node, options) => {
   filter: (node, options) => {
-    debugger;
     return node.nodeName === 'EM' && node.parentNode && node.parentNode.nodeName != 'STRONG';
   },
   replacement: (content) => `*${content}*`,
 });
 
-const markdownToHtmlConverter = new showdown.Converter();
+const markdownToHtmlConverter = new showdown.Converter({noHeaderId: true});
 export const toDisplay = (content) =>
   content.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 

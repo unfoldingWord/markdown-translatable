@@ -2,8 +2,11 @@
 
 ```jsx
 initialState = {
-  markdown: `Possible meanings are 1) "the believers who love us" or 2) "the believers who love us because we share the same belief."`,
-  preview: false,
+  markdown: `# Titus 02 General Notes
+## Special concepts in this chapter
+
+### Gender roles`,
+  preview: true,
 };
 
 <div>
