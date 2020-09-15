@@ -13,17 +13,24 @@ turndownService.addRule('underline', {
   filter: ['u'],
   replacement: (content) => `<u>${content}</u>`,
 });
+// bold-italic <strong><em>...</em></strong>
+// See below: emphasis rule allows bold-italic to pass through as _content_.
 turndownService.addRule('bold-italic', {
-  filter: function (node: HTMLElement) {
-    return node.innerHTML.match(/<strong><em>.*<\/em><\/strong>/);
+  filter: (node, options) => {
+    return node.nodeName === 'STRONG' && node.childNodes && node.childNodes.length == 1 && node.childNodes[0].nodeName === 'EM';
   },
-  replacement: (_, node) => {
-    const content = node.innerHTML.match(/<strong><em>(.*)<\/em><\/strong>/)[1];
-    return `**_${content}_**`;
+  replacement: (content) => {
+    return `**${content}**`;
   },
 });
+// <em> node NOT under a <strong> node.
+// Will allow the embedded <em>content</em> to pass through as _content_
 turndownService.addRule('emphasis', {
-  filter: ['em'],
+  //filter: ['em'],filter: (node, options) => {
+  filter: (node, options) => {
+    debugger;
+    return node.nodeName === 'EM' && node.parentNode && node.parentNode.nodeName != 'STRONG';
+  },
   replacement: (content) => `*${content}*`,
 });
 
