@@ -79,7 +79,6 @@ function BlockEditable(props) {
 
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-  console.log("htmlDisplay", htmlDisplay)
   return (
     <div className={classes.root}>
       {!preview &&
