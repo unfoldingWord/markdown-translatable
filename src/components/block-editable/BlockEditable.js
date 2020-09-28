@@ -1,15 +1,17 @@
-import React, { useMemo, useCallback } from 'react';
+import React, {
+  useMemo, useCallback, useRef, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
-
-import * as helpers from '../../core/';
 import {
   markdownToHtml,
   htmlToMarkdown,
   filter,
   toDisplay,
   fromDisplay,
+  isHebrew,
 } from '../../core/';
 import { useStyles } from './useStyles';
+import { formatTextOnPaste } from './helpers';
 
 function BlockEditable({
   markdown,
@@ -21,12 +23,16 @@ function BlockEditable({
   editable,
 }) {
   const _oldMarkdown = { markdown };
-
   const classes = useStyles();
+
+  useEffect(() => {
+    const removeListener = formatTextOnPaste('raw-markdown-input');
+    return removeListener;
+  }, []);
 
   const _style = useMemo(
     () =>
-      helpers.isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style,
+      isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style,
     [style, markdown]
   );
 
@@ -43,9 +49,11 @@ function BlockEditable({
 
       _oldMarkdown.markdown = _markdown;
 
-      if (oldHTML !== newHTML) onEdit(_markdown);
+      if (oldHTML !== newHTML) {
+        onEdit(_markdown);
+      }
     },
-    [markdown, inputFilters, onEdit]
+    [_oldMarkdown.markdown, inputFilters, onEdit]
   );
 
   const handleHTMLBlur = useCallback(
@@ -78,6 +86,7 @@ function BlockEditable({
       _component = (
         <pre className={classes.pre}>
           <code
+            id="raw-markdown-input"
             className={classes.markdown}
             style={_style}
             dir='auto'
@@ -88,9 +97,7 @@ function BlockEditable({
         </pre>
       );
     } else {
-      const dangerouslySetInnerHTML = {
-        __html: markdownToHtml({ markdown, inputFilters }),
-      };
+      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
 
       _component = (
         <div
@@ -104,7 +111,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, editable]);
+  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleHTMLBlur]);
 
   return <div className={classes.root}>{component}</div>;
 }
