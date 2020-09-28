@@ -99,7 +99,7 @@ function BlockEditable(props) {
         dir="auto"
         className={classes.html}
         disabled={!editable}
-        style={{ ..._style, display: preview ? 'block' : 'none' }}
+        style={_style}
         innerRef={htmlEditable}
         html={htmlDisplay} // innerHTML of the editable div
         onChange={handleHTMLChange} // handle innerHTML change
