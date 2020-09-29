@@ -8,11 +8,7 @@
     "skipLibCheck": false,
     "noImplicitAny": false,
     "sourceMap": true,
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
@@ -21,10 +17,6 @@
     "noEmit": true,
     "jsx": "react"
   },
-  "include": [
-    "**/*"
-  ],
-  "exclude": [
-    "**/node_modules/**"
-  ]
+  "include": ["**/*", "**/*.js"],
+  "exclude": ["**/node_modules/**"]
 }
