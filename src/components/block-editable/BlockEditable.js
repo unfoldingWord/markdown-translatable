@@ -1,7 +1,12 @@
 import React, {
-  useMemo, useCallback, useRef, useEffect,
+  useRef, useState , useEffect, memo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash.isequal';
+import debounce from 'lodash.debounce';
+import ContentEditable from 'react-contenteditable';
+
+import { withStyles } from '@material-ui/core';
 import {
   markdownToHtml,
   htmlToMarkdown,
@@ -10,110 +15,104 @@ import {
   fromDisplay,
   isHebrew,
 } from '../../core/';
-import { useStyles } from './useStyles';
+import styles from './useStyles';
 import { formatTextOnPaste } from './helpers';
 
-function BlockEditable({
-  markdown,
-  onEdit,
-  inputFilters,
-  outputFilters,
-  style,
-  preview,
-  editable,
-}) {
-  const _oldMarkdown = { markdown };
-  const classes = useStyles();
+function BlockEditable(props) {
+  const {
+    markdown,
+    style,
+    preview,
+    editable,
+    inputFilters,
+    outputFilters,
+    onEdit,
+    classes,
+    debounce: debounceTime,
+  } = props;
+  const markdownEditable = useRef(null);
+  const htmlEditable = useRef(null);
+
+  const [markdownDisplay, setMarkdownDisplay] = useState('');
+  const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
 
   useEffect(() => {
     const removeListener = formatTextOnPaste('raw-markdown-input');
     return removeListener;
   }, []);
 
-  const _style = useMemo(
-    () =>
-      isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style,
-    [style, markdown]
-  );
+  useEffect(() => {
+    const code = filter({ string: markdown, filters: inputFilters });
+    const _markdownDisplay = toDisplay(code);
+    setMarkdownDisplay(_markdownDisplay);
+  }, [inputFilters, markdown]);
 
-  const handleBlur = useCallback(
-    (_markdown) => {
-      const oldHTML = markdownToHtml({
-        markdown: _oldMarkdown.markdown,
-        inputFilters: inputFilters,
-      });
-      const newHTML = markdownToHtml({
-        markdown: _markdown,
-        inputFilters: inputFilters,
-      });
+  const _onEdit = useCallback(onEdit, []);
+  const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
-      _oldMarkdown.markdown = _markdown;
+  function handleChange(newMarkdown) {
+    const oldHTML = markdownToHtml({
+      markdown,
+      inputFilters: inputFilters,
+    });
+    const newHTML = markdownToHtml({
+      markdown: newMarkdown,
+      inputFilters: inputFilters,
+    });
 
-      if (oldHTML !== newHTML) {
-        onEdit(_markdown);
-      }
-    },
-    [_oldMarkdown.markdown, inputFilters, onEdit]
-  );
 
-  const handleHTMLBlur = useCallback(
-    (e) => {
-      const html = e.target.innerHTML;
-      const _markdown = htmlToMarkdown({ html, outputFilters });
-      handleBlur(_markdown);
-    },
-    [handleBlur, outputFilters]
-  );
-
-  const handleRawBlur = useCallback(
-    (e) => {
-      let string = e.target.innerText;
-      string = fromDisplay(string);
-      const _markdown = filter({ string, filters: outputFilters });
-      handleBlur(_markdown);
-    },
-    [handleBlur, outputFilters]
-  );
-
-  const component = useMemo(() => {
-    let _component;
-
-    if (!preview) {
-      let code = filter({ string: markdown, filters: inputFilters });
-      code = toDisplay(code);
-      const dangerouslySetInnerHTML = { __html: code };
-
-      _component = (
-        <pre className={classes.pre}>
-          <code
-            id="raw-markdown-input"
-            className={classes.markdown}
-            style={_style}
-            dir='auto'
-            contentEditable={editable}
-            onBlur={handleRawBlur}
-            dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-          />
-        </pre>
-      );
-    } else {
-      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
-
-      _component = (
-        <div
-          style={_style}
-          className={classes.html}
-          dir='auto'
-          contentEditable={editable}
-          dangerouslySetInnerHTML={dangerouslySetInnerHTML}
-          onBlur={handleHTMLBlur}
-        />
-      );
+    if (oldHTML !== newHTML) {
+      onEditThrottled(newMarkdown);
+      const code = filter({ string: newMarkdown, filters: inputFilters });
+      setMarkdownDisplay(toDisplay(code));
+      setHtmlDisplay(newHTML);
     }
-    return _component;
-  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleHTMLBlur]);
+  }
 
-  return <div className={classes.root}>{component}</div>;
+  function handleHTMLChange(e) {
+    const html = e.target.value;
+    const _markdown = htmlToMarkdown({ html, outputFilters });
+    handleChange(_markdown, e);
+  }
+
+
+  function handleRawChange(e) {
+    let string = e.target.value;
+    string = fromDisplay(string);
+    const _markdown = filter({ string, filters: outputFilters });
+    handleChange(_markdown);
+  }
+
+
+  const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
+  return (
+    <div className={classes.root}>
+      {!preview &&
+      <pre className={classes.pre}>
+        <ContentEditable
+          dir="auto"
+          id="raw-markdown-input"
+          className={classes.markdown}
+          style={_style}
+          innerRef={markdownEditable}
+          disabled={!editable}
+          html={markdownDisplay} // innerHTML of the editable div
+          onChange={handleRawChange} // handle innerHTML change
+        />
+      </pre>
+      }
+      {preview &&
+      <ContentEditable
+        dir="auto"
+        className={classes.html}
+        disabled={!editable}
+        style={_style}
+        innerRef={htmlEditable}
+        html={htmlDisplay} // innerHTML of the editable div
+        onChange={handleHTMLChange} // handle innerHTML change
+      />}
+    </div>
+  );
 }
 
 BlockEditable.propTypes = {
@@ -131,6 +130,10 @@ BlockEditable.propTypes = {
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
+  /** CSS clasess from material-ui */
+  classes: PropTypes.object.isRequired,
+  /** Amount of time to debounce edits */
+  debounce: PropTypes.number,
 };
 
 BlockEditable.defaultProps = {
@@ -141,6 +144,14 @@ BlockEditable.defaultProps = {
   style: {},
   preview: true,
   editable: true,
+  debounce: 0,
 };
 
-export default BlockEditable;
+const propsAreEqual = (prevProps, nextProps) => prevProps.preview === nextProps.preview &&
+prevProps.editable === nextProps.editable &&
+  isEqual(prevProps.style, nextProps.style) &&
+ isEqual(prevProps.outputFilters, nextProps.outputFilters) &&
+ isEqual(prevProps.inputFilters, nextProps.inputFilters) &&
+prevProps.markdown === nextProps.markdown;
+
+export default withStyles(styles)(memo(BlockEditable, propsAreEqual));

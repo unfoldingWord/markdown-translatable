@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useReducer, useMemo, useCallback,
+  useEffect, useReducer, useMemo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
@@ -23,14 +23,12 @@ function SectionTranslatable({
   inputFilters,
   outputFilters,
   onTranslation,
-  onExpanded,
-  expanded,
+  onExpanded = () => {},
+  expanded = true,
   blockable,
   style,
 }) {
   const classes = useStyles();
-  const [editedTranslation, setEditedTranslation] = useState(translation);
-
   const originalBlocks = useMemo(() => (
     (blockable) ? blocksFromMarkdown({ markdown: original }) : [original]
   ), [blockable, original]);
@@ -42,22 +40,19 @@ function SectionTranslatable({
 
   const _onExpanded = useCallback(onExpanded, []);
 
-  // update translationBlocks to match blockable chained through _translationBlocks
+  // // update translationBlocks to match blockable chained through _translationBlocks
   useEffect(() => {
     dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
   }, [_translationBlocks]);
   // update onTranslation when translationBlocks are updated
   useEffect(() => {
     const _translation = markdownFromBlocks({ blocks: translationBlocks });
-    setEditedTranslation(_translation);
-  }, [translationBlocks]);
 
-  useEffect(() => {
-    if (editedTranslation !== translation) {
-      onTranslation(editedTranslation);
-      // console.log('SectionTranslatable got updated editedTranslation');
+    if (_translation !== translation) {
+      onTranslation(_translation);
     }
-  }, [editedTranslation, onTranslation, translation]);
+  }, [onTranslation, translation, translationBlocks]);
+
 
   const expandedToggle = useCallback(() => {
     _onExpanded(!expanded);
@@ -67,17 +62,17 @@ function SectionTranslatable({
     dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
 
-  const blockTranslatables = useCallback(() => {
-    const mostBlocks = originalBlocks.length > translationBlocks.length ?
-      originalBlocks : translationBlocks;
+  const mostBlocks = originalBlocks.length > translationBlocks.length ?
+    originalBlocks : translationBlocks;
 
+  const blocksTranslatables = useMemo(() => {
     const _blocksTranslatables = [];
 
     for ( let i=0; i < mostBlocks.length; i++ ) {
       const _onTranslation = (item) => setTranslationBlock({ index: i, item });
       const translationBlock = translationBlocks[i];
       const originalBlock = originalBlocks[i];
-      const key = i + md5(JSON.stringify(originalBlock + translationBlock));
+      const key = md5(JSON.stringify(originalBlock + i.toString()));
 
       _blocksTranslatables.push(
         <BlockTranslatable
@@ -92,7 +87,7 @@ function SectionTranslatable({
       );
     };
     return _blocksTranslatables;
-  }, [inputFilters, originalBlocks, outputFilters, preview, setTranslationBlock, translationBlocks]);
+  }, [inputFilters, mostBlocks.length, originalBlocks, outputFilters, preview, setTranslationBlock, translationBlocks]);
 
   const titleBlock = originalBlocks[0].split('\n\n')[0] || translationBlocks[0].split('\n\n')[0];
 
@@ -100,17 +95,16 @@ function SectionTranslatable({
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
 
-  const component = useMemo(() => (
+  return (
     <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
       <ExpansionPanelSummary
         expandIcon={<ExpandMore />}
-        // classes={{content: 'summaryContent'}}
         className={classes.content}
         onClick={expandedToggle}>
         {summaryTitle}
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.details}>
-        {blockTranslatables()}
+        {blocksTranslatables}
       </ExpansionPanelDetails>
       <ExpansionPanelActions className={classes.actions}>
         <IconButton onClick={expandedToggle}>
@@ -118,12 +112,6 @@ function SectionTranslatable({
         </IconButton>
       </ExpansionPanelActions>
     </ExpansionPanel>
-  ), [blockTranslatables, classes, expanded, expandedToggle, style, summaryTitle]);
-
-  return (
-    <>
-      {component}
-    </>
   );
 };
 

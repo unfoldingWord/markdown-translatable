@@ -1,4 +1,5 @@
 ### Based on BlockTranslatable components.
+
 1. Original/source on the Left, un-editable.
 1. Translation/target on the right, editable with changes that propagate.
 
@@ -15,10 +16,8 @@ initialState = {
 <SectionTranslatable
   original={markdown}
   translation={state.translation}
-  onTranslation={(translation) =>
-    setState({translation})
-  }
-/>
+  onTranslation={(translation) => setState({ translation })}
+/>;
 ```
 
 ### A more complex example...
@@ -53,25 +52,27 @@ const _translation = `
 `;
 
 const style = {
-  fontSize: '0.9em',
-  color: 'gray',
-  border: '1px solid',
-  fontFamily: 'Arial',
+  fontSize: "0.9em",
+  color: "gray",
+  border: "1px solid",
+  fontFamily: "Arial",
 };
 
 const [translation, setTranslation] = React.useState(_translation);
 const [sectionFocus, setSectionFocus] = React.useState(false);
 const [mode, setMode] = React.useState(true);
-const toggleMode = () => { setMode(!mode); };
+const toggleMode = () => {
+  setMode(!mode);
+};
 
 React.useEffect(() => {
   if (mode) setTranslation(_translation);
   else setTranslation(markdown);
-},[mode, _translation, markdown]);
+}, [mode, _translation, markdown]);
 
 <>
   <div onClick={toggleMode}>
-    Click to switch mode to {!mode ? 'Translate' : 'Edit Source' }
+    Click to switch mode to {!mode ? "Translate" : "Edit Source"}
   </div>
   <SectionTranslatable
     original={markdown}
@@ -79,9 +80,12 @@ React.useEffect(() => {
     sectionFocus={sectionFocus}
     onSectionFocus={setSectionFocus}
     onTranslation={setTranslation}
-    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
+    inputFilters={[
+      [/<br>/gi, "\n"],
+      [/(<u>|<\/u>)/gi, "__"],
+    ]}
     outputFilters={[]}
     style={style}
   />
-</>
+</>;
 ```

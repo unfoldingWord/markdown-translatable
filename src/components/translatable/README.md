@@ -1,10 +1,13 @@
 ### Based on DocumentTranslatable and SectionTranslatable components.
+
 1. Original/source on the Left, un-editable.
 1. Translation/target on the right, editable with changes that propagate.
 
 ```jsx
-const markdown = "**Hello** __world__\n\nTesting\n\nHello\n\nOne\n\nTwo\n\nThree";
-const _translation = "**नमस्ते** __दुनिया__\n\nपरिक्षण\n\nनमस्ते\n\nएक\n\nदो\n\nतीन";
+const markdown =
+  "**Hello** __world__\n\nTesting\n\nHello\n\nOne\n\nTwo\n\nThree";
+const _translation =
+  "**नमस्ते** __दुनिया__\n\nपरिक्षण\n\nनमस्ते\n\nएक\n\nदो\n\nतीन";
 
 function Component() {
   const [translation, setTranslation] = React.useState(_translation);
@@ -17,9 +20,9 @@ function Component() {
       sectionable={true}
     />
   );
-};
+}
 
-<Component />
+<Component />;
 ```
 
 ### A more complex example...
@@ -104,21 +107,14 @@ It might be end notes or appendices.
 
 const [translation, setTranslation] = React.useState(_translation);
 const [mode, setMode] = React.useState(true);
-const toggleMode = () => { setMode(!mode); };
+const toggleMode = () => {
+  setMode(!mode);
+};
 
 React.useEffect(() => {
   if (mode) setTranslation(_translation);
   else setTranslation(markdown);
-},[mode, _translation, markdown]);
+}, [mode, _translation, markdown]);
 
-<>
-  <Translatable
-    original={markdown}
-    translation={translation}
-    onTranslation={setTranslation}
-    inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
-    outputFilters={[]}
-    sectionable={true}
-  />
-</>
+<Component />;
 ```

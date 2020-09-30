@@ -1,8 +1,13 @@
-import React, {useCallback, useMemo} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
-import {Grid} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import { Grid } from '@material-ui/core';
 import BlockEditable from '../block-editable';
+const useStyles = makeStyles(theme => ({
+  root: {},
+  original: { background: '#eee4' },
+  translation: {},
+}));
 
 function BlockTranslatable({
   original,
@@ -15,27 +20,6 @@ function BlockTranslatable({
 }) {
   const classes = useStyles();
 
-  const originalBlock = useMemo(() => (
-    <BlockEditable
-      markdown={original}
-      inputFilters={inputFilters}
-      outputFilters={outputFilters}
-      preview={preview}
-      editable={false}
-    />
-  ), [original, inputFilters, outputFilters, preview]);
-
-  const translationBlock = useMemo(() => (
-    <BlockEditable
-      markdown={translation}
-      onEdit={onTranslation}
-      inputFilters={inputFilters}
-      outputFilters={outputFilters}
-      preview={preview}
-      editable={true}
-    />
-  ), [translation, onTranslation, inputFilters, outputFilters, preview]);
-
   return (
     <Grid
       container
@@ -45,10 +29,23 @@ function BlockTranslatable({
       style={style}
     >
       <Grid item xs={12} className={classes.original}>
-        {originalBlock}
+        <BlockEditable
+          markdown={original}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
+          preview={preview}
+          editable={false}
+        />
       </Grid>
       <Grid item xs={12} className={classes.translation}>
-        {translationBlock}
+        <BlockEditable
+          markdown={translation}
+          onEdit={onTranslation}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
+          preview={preview}
+          editable={true}
+        />
       </Grid>
     </Grid>
   );
@@ -79,15 +76,5 @@ BlockTranslatable.defaultProps = {
   style: {},
   preview: true,
 };
-
-const useStyles = makeStyles(theme => ({
-  root: {
-  },
-  original: {
-    background: '#eee4',
-  },
-  translation: {
-  },
-}));
 
 export default BlockTranslatable;
