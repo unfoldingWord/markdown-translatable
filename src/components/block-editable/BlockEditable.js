@@ -37,9 +37,11 @@ function BlockEditable(props) {
   const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
 
   useEffect(() => {
-    const removeListener = formatTextOnPaste('raw-markdown-input');
+    if (markdownEditable?.current) {
+    const removeListener = formatTextOnPaste(markdownEditable.current);
     return removeListener;
-  }, []);
+    }
+  }, [markdownEditable?.current]);
 
   useEffect(() => {
     const code = filter({ string: markdown, filters: inputFilters });
@@ -77,7 +79,7 @@ function BlockEditable(props) {
 
 
   function handleRawChange(e) {
-    let string = e.target.value;
+    let string = e.target.innerText;
     string = fromDisplay(string);
     const _markdown = filter({ string, filters: outputFilters });
     handleChange(_markdown);
@@ -89,16 +91,15 @@ function BlockEditable(props) {
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable
+        <div
+          contentEditable={true}
           dir="auto"
-          id="raw-markdown-input"
           className={classes.markdown}
           style={_style}
-          innerRef={markdownEditable}
+          ref={markdownEditable}
           disabled={!editable}
-          html={markdownDisplay} // innerHTML of the editable div
-          onChange={handleRawChange} // handle innerHTML change
-        />
+          onInput={handleRawChange} // handle innerHTML change
+      >{markdownDisplay}</div>
       </pre>
       }
       {preview &&
