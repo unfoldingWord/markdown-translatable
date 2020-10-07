@@ -16,7 +16,6 @@ import {
   isHebrew,
 } from '../../core/';
 import styles from './useStyles';
-import { formatTextOnPaste } from './helpers';
 
 function BlockEditable(props) {
   const {
@@ -30,18 +29,10 @@ function BlockEditable(props) {
     classes,
     debounce: debounceTime,
   } = props;
-  const markdownEditable = useRef(null);
   const htmlEditable = useRef(null);
 
   const [markdownDisplay, setMarkdownDisplay] = useState('');
   const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
-
-  useEffect(() => {
-    if (markdownEditable?.current) {
-    const removeListener = formatTextOnPaste(markdownEditable.current);
-    return removeListener;
-    }
-  }, [markdownEditable?.current]);
 
   useEffect(() => {
     const code = filter({ string: markdown, filters: inputFilters });
@@ -96,7 +87,6 @@ function BlockEditable(props) {
           dir="auto"
           className={classes.markdown}
           style={_style}
-          ref={markdownEditable}
           disabled={!editable}
           onInput={handleRawChange} // handle innerHTML change
       >{markdownDisplay}</div>
