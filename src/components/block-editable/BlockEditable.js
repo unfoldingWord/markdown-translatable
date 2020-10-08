@@ -30,6 +30,7 @@ function BlockEditable(props) {
     debounce: debounceTime,
   } = props;
   const markdownRef = useRef(null);
+  const htmlRef = useRef(null);
 
   const [markdownDisplay, setMarkdownDisplay] = useState('');
   const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
@@ -41,7 +42,7 @@ function BlockEditable(props) {
   }, [inputFilters, markdown]);
 
   const _onEdit = useCallback(onEdit, []);
-  const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
+  // const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
   function handleChange(newMarkdown) {
     const oldHTML = markdownToHtml({
@@ -55,7 +56,7 @@ function BlockEditable(props) {
 
 
     if (oldHTML !== newHTML) {
-      onEditThrottled(newMarkdown);
+      _onEdit(newMarkdown);
       const code = filter({ string: newMarkdown, filters: inputFilters });
       setMarkdownDisplay(toDisplay(code));
       setHtmlDisplay(newHTML);
@@ -63,6 +64,8 @@ function BlockEditable(props) {
   }
 
   function handleHTMLChange(e) {
+    e.stopPropagation();
+    e.preventDefault();
     const html = e.target.value;
     const _markdown = htmlToMarkdown({ html, outputFilters });
     handleChange(_markdown, e);
@@ -70,6 +73,8 @@ function BlockEditable(props) {
 
 
   function handleRawChange(e) {
+    e.stopPropagation();
+    e.preventDefault();
     let string = e.target.value;
     string = fromDisplay(string);
     const _markdown = filter({ string, filters: outputFilters });
@@ -113,6 +118,7 @@ useEffect(() => {
       {preview &&
       <ContentEditable
         dir="auto"
+        innerRef={htmlRef}
         className={classes.html}
         disabled={!editable}
         style={_style}
