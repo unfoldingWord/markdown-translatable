@@ -2,7 +2,6 @@ import TurndownService from 'turndown';
 import { gfm } from 'turndown-plugin-gfm';
 import showdown from 'showdown';
 import { filter } from './string';
-import sanitizeHtml from 'sanitize-html';
 
 const turndownService = new TurndownService({ headingStyle: 'atx' });
 turndownService.use(gfm);
@@ -42,8 +41,7 @@ export const fromDisplay = (content) =>
   content.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
 
 export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
-  const htmlSanitized = sanitizeHtml(html);
-  let markdown = turndownService.turndown(htmlSanitized);
+  let markdown = turndownService.turndown(html);
   markdown = filter({ string: markdown, filters: outputFilters });
 
   if (markdown === '&#8203;') {
