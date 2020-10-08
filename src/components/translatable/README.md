@@ -116,5 +116,17 @@ React.useEffect(() => {
   else setTranslation(markdown);
 }, [mode, _translation, markdown]);
 
-<Component />;
+<>
+  <Translatable
+    original={markdown}
+    translation={translation}
+    onTranslation={setTranslation}
+    inputFilters={[
+      [/<br>/gi, "\n"],
+      [/(<u>|<\/u>)/gi, "__"],
+    ]}
+    outputFilters={[]}
+    sectionable={true}
+  />
+</>;
 ```

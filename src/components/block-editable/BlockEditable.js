@@ -16,7 +16,6 @@ import {
   isHebrew,
 } from '../../core/';
 import styles from './useStyles';
-import { formatTextOnPaste } from './helpers';
 
 function BlockEditable(props) {
   const {
@@ -30,16 +29,11 @@ function BlockEditable(props) {
     classes,
     debounce: debounceTime,
   } = props;
-  const markdownEditable = useRef(null);
-  const htmlEditable = useRef(null);
+  const markdownRef = useRef(null);
+  const htmlRef = useRef(null);
 
   const [markdownDisplay, setMarkdownDisplay] = useState('');
   const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
-
-  useEffect(() => {
-    const removeListener = formatTextOnPaste('raw-markdown-input');
-    return removeListener;
-  }, []);
 
   useEffect(() => {
     const code = filter({ string: markdown, filters: inputFilters });
@@ -48,7 +42,7 @@ function BlockEditable(props) {
   }, [inputFilters, markdown]);
 
   const _onEdit = useCallback(onEdit, []);
-  const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
+  // const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
   function handleChange(newMarkdown) {
     const oldHTML = markdownToHtml({
@@ -62,7 +56,7 @@ function BlockEditable(props) {
 
 
     if (oldHTML !== newHTML) {
-      onEditThrottled(newMarkdown);
+      _onEdit(newMarkdown);
       const code = filter({ string: newMarkdown, filters: inputFilters });
       setMarkdownDisplay(toDisplay(code));
       setHtmlDisplay(newHTML);
@@ -70,6 +64,8 @@ function BlockEditable(props) {
   }
 
   function handleHTMLChange(e) {
+    e.stopPropagation();
+    e.preventDefault();
     const html = e.target.value;
     const _markdown = htmlToMarkdown({ html, outputFilters });
     handleChange(_markdown, e);
@@ -77,39 +73,57 @@ function BlockEditable(props) {
 
 
   function handleRawChange(e) {
+    e.stopPropagation();
+    e.preventDefault();
     let string = e.target.value;
     string = fromDisplay(string);
     const _markdown = filter({ string, filters: outputFilters });
     handleChange(_markdown);
   }
 
+useEffect(() => {
+  const el = markdownRef.current;
+  if (el) {
+    el.addEventListener("paste", function(e) {
+    // cancel paste
+    e.preventDefault();
+
+    // get text representation of clipboard
+    var text = e.clipboardData.getData("text/plain");
+
+    // insert text manually
+    document.execCommand("insertHTML", false, text);
+  })
+};
+}, [markdownRef.current, preview])
+
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
+
   return (
-    <div className={classes.root}>
+    <div  className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
         <ContentEditable
+          innerRef={markdownRef}
           dir="auto"
-          id="raw-markdown-input"
           className={classes.markdown}
           style={_style}
-          innerRef={markdownEditable}
+          html={markdownDisplay}
           disabled={!editable}
-          html={markdownDisplay} // innerHTML of the editable div
-          onChange={handleRawChange} // handle innerHTML change
-        />
+          onChange={handleRawChange}
+          />
       </pre>
       }
       {preview &&
       <ContentEditable
         dir="auto"
+        innerRef={htmlRef}
         className={classes.html}
         disabled={!editable}
         style={_style}
-        innerRef={htmlEditable}
-        html={htmlDisplay} // innerHTML of the editable div
-        onChange={handleHTMLChange} // handle innerHTML change
+        html={htmlDisplay}
+        onChange={handleHTMLChange}
       />}
     </div>
   );
