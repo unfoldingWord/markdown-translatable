@@ -2,27 +2,36 @@
 
 ```jsx
 initialState = {
-  markdown: '**Hello** __world__',
+  markdown: `#### Having BIRTH PAINS mean suffering that is necessary to achieve a new condition
+  
+> ***Be in pain and labor to give birth***, daughter of Zion, like a ***woman in labor***.  
+> For now you will go out of the city, live in the field, and go to Babylon.  
+> There you will be rescued.  
+> There Yahweh will rescue you from the hand of your enemies. (Micah 4:10 ULT)
+  
+> For nation will rise against nation, and kingdom against kingdom. There will be famines and earthquakes in various places. But all these things are only the beginning of ***birth pains***. (Matthew 24:7-8 ULT)
+  
+> My little children, I am suffering ***labor pains*** for you again, until Christ will have been formed in you! (Galatians 4:19 ULT)`,
   preview: false,
 };
 
 <div>
   <button
     onClick={() => {
-      console.log('--- --- ---');
-      console.log('Current state:' + state.markdown);
+      console.log("--- --- ---");
+      console.log("Current state:" + state.markdown);
       setState({ preview: !state.preview });
     }}
   >
-    {!state.preview ? 'Markdown' : 'HTML'}
+    {!state.preview ? "Markdown" : "HTML"}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
     onEdit={(_markdown) => {
-      console.log('--- --- ---');
-      console.log('Current state:' + state.markdown);
-      console.log('Setting new state: ' + _markdown);
+      console.log("--- --- ---");
+      console.log("Current state:" + state.markdown);
+      console.log("Setting new state: " + _markdown);
       setState({ _markdown });
     }}
   />
@@ -36,27 +45,27 @@ If the text includes over 75% hebrew characters it will zoom by 150% using `font
 ```jsx
 initialState = {
   markdown:
-    'שֻׁדַּ֣ד שָׂדֶ֔ה אָבְלָ֖האֲדָמָ֑ה כִּ֚י שֻׁדַּ֣ד דָּגָ֔ןהוֹבִ֥ישׁ תִּיר֖וֹשׁ אֻמְלַ֥ליִצְהָֽר׃',
+    "שֻׁדַּ֣ד שָׂדֶ֔ה אָבְלָ֖האֲדָמָ֑ה כִּ֚י שֻׁדַּ֣ד דָּגָ֔ןהוֹבִ֥ישׁ תִּיר֖וֹשׁ אֻמְלַ֥ליִצְהָֽר׃",
   preview: false,
 };
 
 <div>
   <button
     onClick={() => {
-      console.log('--- --- ---');
-      console.log('Current state:' + state.markdown);
+      console.log("--- --- ---");
+      console.log("Current state:" + state.markdown);
       setState({ preview: !state.preview });
     }}
   >
-    {!state.preview ? 'Markdown' : 'HTML'}
+    {!state.preview ? "Markdown" : "HTML"}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
     onEdit={(_markdown) => {
-      console.log('--- --- ---');
-      console.log('Current state:' + state.markdown);
-      console.log('Setting new state: ' + _markdown);
+      console.log("--- --- ---");
+      console.log("Current state:" + state.markdown);
+      console.log("Setting new state: " + _markdown);
       setState({ _markdown });
     }}
   />
@@ -83,10 +92,10 @@ const _markdown = `
 `;
 
 const style = {
-  width: '20em',
-  color: 'gray',
-  border: '1px dashed',
-  fontFamily: 'Arial',
+  width: "20em",
+  color: "gray",
+  border: "1px dashed",
+  fontFamily: "Arial",
 };
 
 initialState = {
@@ -102,17 +111,17 @@ const callback = (markdown) => {
 
 <div>
   <button onClick={() => setState({ preview: !state.preview })}>
-    {!state.preview ? 'Markdown' : 'HTML'}
+    {!state.preview ? "Markdown" : "HTML"}
   </button>
   <BlockEditable
     markdown={state.markdown}
     preview={state.preview}
     onEdit={callback}
     inputFilters={[
-      [/<br>/gi, '\n'],
-      [/(<u>|<\/u>)/gi, '__'],
+      [/<br>/gi, "\n"],
+      [/(<u>|<\/u>)/gi, "__"],
     ]}
-    outputFilters={[[/\n/gi, '<br>']]}
+    outputFilters={[[/\n/gi, "<br>"]]}
     style={style}
   />
 </div>;
