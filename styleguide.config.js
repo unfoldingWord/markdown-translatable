@@ -11,6 +11,7 @@ module.exports = {
     url: 'https://github.com/unfoldingWord-box3/markdown-translatable',
     text: 'View me on GitHub'
   },
+  serverPort: 6062,
   webpackConfig: {
     devtool: 'cheap-module-eval-source-map',
     module: {

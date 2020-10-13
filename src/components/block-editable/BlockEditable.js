@@ -77,22 +77,24 @@ function BlockEditable(props) {
     handleChange(_markdown);
   }
 
-useEffect(() => {
-  const el = markdownRef.current;
-  if (el) {
-    el.addEventListener("paste", function(e) {
-    // cancel paste
+  const handlePaste = useCallback((e) => {
     e.preventDefault();
-
-    // get text representation of clipboard
     var text = e.clipboardData.getData("text/plain");
+    var temp = document.createElement("div");
+    temp.innerHTML = text;
+    document.execCommand("insertHTML", false, temp.textContent);
+  }, [])
 
-    // insert text manually
-    document.execCommand("insertHTML", false, text);
-  })
+useEffect(() => {
+  if (markdownRef.current) {
+    markdownRef.current.addEventListener("paste", handlePaste)
 };
-}, [markdownRef.current, preview])
-
+() => {
+  if (markdownRef.current) {
+    markdownRef.current.removeEventListener("paste", handlePaste)
+  }
+}
+}, [markdownRef.current])
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
 
