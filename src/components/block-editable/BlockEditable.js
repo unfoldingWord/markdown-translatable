@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
 import ContentEditable from 'react-contenteditable';
-
 import { withStyles } from '@material-ui/core';
 import {
   markdownToHtml,
   htmlToMarkdown,
   isHebrew,
+  fromDisplay,
 } from '../../core/';
 import styles from './useStyles';
 
@@ -95,7 +95,7 @@ function BlockEditable(props) {
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(e.target.value)} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
+        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(fromDisplay(e.target.value))} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
       </pre>
       }
       {preview &&
