@@ -79,13 +79,11 @@ function BlockEditable(props) {
 
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-  const code = filter({ string: markdown, filters: inputFilters });
-  const _markdown = toDisplay(code);
   return (
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <input onChange={(e) => handleMarkdownChange(e.target.value)} value={_markdown} dir="auto" className={classes.markdown} style={_style} ref={markdownRef} />
+        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(e.target.value)} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
       </pre>
       }
       {preview &&
