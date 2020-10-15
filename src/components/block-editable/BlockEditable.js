@@ -10,9 +10,6 @@ import { withStyles } from '@material-ui/core';
 import {
   markdownToHtml,
   htmlToMarkdown,
-  filter,
-  toDisplay,
-  fromDisplay,
   isHebrew,
 } from '../../core/';
 import styles from './useStyles';
@@ -34,6 +31,7 @@ function BlockEditable(props) {
   const htmlRef = useRef(null);
   const [html, setHTML] = useState(null);
   const _onEdit = useCallback(onEdit, []);
+  const [lastValues, setLastValues] = useState([]);
   const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
   useEffect(() => {
@@ -61,24 +59,39 @@ function BlockEditable(props) {
     const pastedData = e.clipboardData.getData('text/plain');
     const doc = new DOMParser().parseFromString(pastedData, 'text/html');
     const text = doc.body.textContent || '';
-    e.target.innerHTML = text;
+    document.execCommand('insertHTML', false, text);
   }, []);
+
+  const handleUndo = useCallback((e) => {
+    if (e.metaKey && e.key === 'z' && lastValues.length) {
+      e.target.innerHTML = lastValues.pop();
+    }
+
+    if (!e.metaKey || (e.metaKey && e.key === 'v')) {
+      const copy = lastValues.slice(0);
+      copy.push(e.target.innerHTML);
+      setLastValues(copy);
+    }
+  }, [lastValues]);
 
   useEffect(() => {
     const el = markdownRef.current;
 
     if (el) {
       el.addEventListener('paste', handlePaste);
+      el.addEventListener('keydown', handleUndo);
     };
     return () => {
       if (el) {
         el.removeEventListener('paste', handlePaste);
+        el.removeEventListener('keydown', handleUndo);
       }
     };
-  }, [handlePaste, preview]);
+  }, [handlePaste, handleUndo, preview]);
 
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
+  console.log('lastValues', lastValues);
   return (
     <div className={classes.root}>
       {!preview &&
