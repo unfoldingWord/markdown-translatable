@@ -30,63 +30,41 @@ function BlockEditable(props) {
     debounce: debounceTime,
   } = props;
 
-  useEffect(() => {
-    console.log('mounted');
-  }, []);
-
   const markdownRef = useRef(null);
   const htmlRef = useRef(null);
-
-  const [pasteListenerTimestamp, setPasteListenerTimestamp] = useState(null);
-  const [markdownDisplay, setMarkdownDisplay] = useState('');
-  const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
-
-  useEffect(() => {
-    const code = filter({ string: markdown, filters: inputFilters });
-    const _markdownDisplay = toDisplay(code);
-    setMarkdownDisplay(_markdownDisplay);
-  }, [inputFilters, markdown]);
-
+  const [html, setHTML] = useState(null);
   const _onEdit = useCallback(onEdit, []);
   const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
-  function handleChange(newMarkdown) {
-    const oldHTML = markdownToHtml({
-      markdown,
-      inputFilters: inputFilters,
-    });
-    const newHTML = markdownToHtml({
-      markdown: newMarkdown,
-      inputFilters: inputFilters,
-    });
-
-
-    if (oldHTML !== newHTML) {
-      onEditThrottled(newMarkdown);
-      const code = filter({ string: newMarkdown, filters: inputFilters });
-      setMarkdownDisplay(toDisplay(code));
-      setHtmlDisplay(newHTML);
+  const handleMarkdownChange = useCallback((_markdown) => {
+    if (_markdown !== '') {
+      onEditThrottled(_markdown);
     }
-  }
+  }, [onEditThrottled]);
 
-  function handleHTMLChange(e) {
-    const html = e.target.value;
-    const _markdown = htmlToMarkdown({ html, outputFilters });
-    handleChange(_markdown, e);
-  }
+  useEffect(() => {
+    const _markdown = htmlToMarkdown({ html, filters: inputFilters });
 
+    if (_markdown !== markdown) {
+      handleMarkdownChange(_markdown);
+    }
+  }, [handleMarkdownChange, html, inputFilters, markdown]);
 
-  function handleRawChange(e) {
-    let string = e.target.value;
-    string = fromDisplay(string);
-    const _markdown = filter({ string, filters: outputFilters });
-    handleChange(_markdown);
-  }
+  useEffect(() => {
+    const _html = markdownToHtml({
+      markdown,
+      filters: outputFilters,
+    });
+
+    if (html !== _html) {
+      setHTML(_html);
+    }
+  }, [outputFilters, markdown, html]);
 
   const handlePaste = useCallback((e) => {
     e.preventDefault();
-    const html = e.clipboardData.getData('text/plain');
-    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const pastedData = e.clipboardData.getData('text/plain');
+    const doc = new DOMParser().parseFromString(pastedData, 'text/html');
     const text = doc.body.textContent || '';
     e.target.innerHTML = text;
   }, []);
@@ -106,20 +84,15 @@ function BlockEditable(props) {
 
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-
+  const code = filter({ string: markdown, filters: inputFilters });
+  const _markdown = toDisplay(code);
   return (
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable
-          innerRef={markdownRef}
-          dir="auto"
-          className={classes.markdown}
-          style={_style}
-          html={markdownDisplay}
-          disabled={!editable}
-          onChange={handleRawChange}
-        />
+        <input onChange={(e) => {
+          handleMarkdownChange(e.target.value);
+        }} value={_markdown} dir="auto" className={classes.markdown} style={_style} ref={markdownRef} />
       </pre>
       }
       {preview &&
@@ -129,8 +102,7 @@ function BlockEditable(props) {
         className={classes.html}
         disabled={!editable}
         style={_style}
-        html={htmlDisplay}
-        onChange={handleHTMLChange}
+        html={html}
       />}
     </div>
   );
@@ -160,13 +132,14 @@ BlockEditable.propTypes = {
 BlockEditable.defaultProps = {
   markdown: '',
   onEdit: () => {},
-  inputFilters: [],
+  inputFilters: [
+    [/>/gi, '&gt;'],
+    [/</gi, '&lt;'],
+  ],
   outputFilters: [
-    [/&gt;/gi, '>'],
-    [/&lt;/gi, '<'],
-    [/<div>(.*)<\/div>/gi, '\n$1'],
-    [/<br>/gi, '\n'],
-    [/<\/div><div>/gi, '\n'],
+    // [/&gt;/gi, '>'],
+    // [/&lt;/gi, '<'],
+    // [/<br>/gi, '\n'],
   ],
   style: {},
   preview: true,
