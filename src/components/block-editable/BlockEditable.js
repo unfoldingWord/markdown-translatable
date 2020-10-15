@@ -135,11 +135,7 @@ BlockEditable.defaultProps = {
     [/>/gi, '&gt;'],
     [/</gi, '&lt;'],
   ],
-  outputFilters: [
-    // [/&gt;/gi, '>'],
-    // [/&lt;/gi, '<'],
-    // [/<br>/gi, '\n'],
-  ],
+  outputFilters: [],
   style: {},
   preview: true,
   editable: true,
