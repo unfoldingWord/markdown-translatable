@@ -42,17 +42,12 @@ function BlockEditable(props) {
     setHTML(_html);
   }, [inputFilters, markdown]);
 
-  const handleMarkdownChange = useCallback((_markdown) => {
-    if (_markdown !== '') {
-      onEditThrottled(_markdown);
-    }
-  }, [onEditThrottled]);
 
   const handleHTMLChange = useCallback((_html) => {
     setHTML(_html);
     const _markdown = htmlToMarkdown({ html: _html, filters: outputFilters });
-    handleMarkdownChange(_markdown);
-  }, [handleMarkdownChange, outputFilters]);
+    onEditThrottled(_markdown);
+  }, [onEditThrottled, outputFilters]);
 
   const handlePaste = useCallback((e) => {
     e.preventDefault();
@@ -91,12 +86,11 @@ function BlockEditable(props) {
 
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-  console.log('lastValues', lastValues);
   return (
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(e.target.value)} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
+        <ContentEditable disabled={!editable} onChange={(e) => onEditThrottled(e.target.value)} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
       </pre>
       }
       {preview &&
