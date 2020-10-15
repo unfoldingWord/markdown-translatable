@@ -29,9 +29,15 @@ function BlockEditable(props) {
     classes,
     debounce: debounceTime,
   } = props;
+
+  useEffect(() => {
+    console.log('mounted');
+  }, []);
+
   const markdownRef = useRef(null);
   const htmlRef = useRef(null);
 
+  const [pasteListenerTimestamp, setPasteListenerTimestamp] = useState(null);
   const [markdownDisplay, setMarkdownDisplay] = useState('');
   const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
 
@@ -77,27 +83,32 @@ function BlockEditable(props) {
     handleChange(_markdown);
   }
 
-useEffect(() => {
-  const el = markdownRef.current;
-  if (el) {
-    el.addEventListener("paste", function(e) {
-    // cancel paste
+  const handlePaste = useCallback((e) => {
     e.preventDefault();
+    const html = e.clipboardData.getData('text/plain');
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const text = doc.body.textContent || '';
+    e.target.innerHTML = text;
+  }, []);
 
-    // get text representation of clipboard
-    var text = e.clipboardData.getData("text/plain");
+  useEffect(() => {
+    const el = markdownRef.current;
 
-    // insert text manually
-    document.execCommand("insertHTML", false, text);
-  })
-};
-}, [markdownRef.current, preview])
+    if (el) {
+      el.addEventListener('paste', handlePaste);
+    };
+    return () => {
+      if (el) {
+        el.removeEventListener('paste', handlePaste);
+      }
+    };
+  }, [handlePaste, preview]);
 
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
 
   return (
-    <div  className={classes.root}>
+    <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
         <ContentEditable
@@ -108,7 +119,7 @@ useEffect(() => {
           html={markdownDisplay}
           disabled={!editable}
           onChange={handleRawChange}
-          />
+        />
       </pre>
       }
       {preview &&
@@ -151,11 +162,11 @@ BlockEditable.defaultProps = {
   onEdit: () => {},
   inputFilters: [],
   outputFilters: [
-    [/&gt;/gi, ">"],
-    [/&lt;/gi, "<"],
-    [/<div>(.*)<\/div>/gi, "\n$1"],
-    [/<br>/gi, "\n"],
-    [/<\/div><div>/gi, "\n"],
+    [/&gt;/gi, '>'],
+    [/&lt;/gi, '<'],
+    [/<div>(.*)<\/div>/gi, '\n$1'],
+    [/<br>/gi, '\n'],
+    [/<\/div><div>/gi, '\n'],
   ],
   style: {},
   preview: true,
