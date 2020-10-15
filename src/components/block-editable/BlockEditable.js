@@ -36,30 +36,25 @@ function BlockEditable(props) {
   const _onEdit = useCallback(onEdit, []);
   const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
 
+  useEffect(() => {
+    const _html = markdownToHtml({
+      markdown,
+      filters: inputFilters,
+    });
+    setHTML(_html);
+  }, [inputFilters, markdown]);
+
   const handleMarkdownChange = useCallback((_markdown) => {
     if (_markdown !== '') {
       onEditThrottled(_markdown);
     }
   }, [onEditThrottled]);
 
-  useEffect(() => {
-    const _markdown = htmlToMarkdown({ html, filters: inputFilters });
-
-    if (_markdown !== markdown) {
-      handleMarkdownChange(_markdown);
-    }
-  }, [handleMarkdownChange, html, inputFilters, markdown]);
-
-  useEffect(() => {
-    const _html = markdownToHtml({
-      markdown,
-      filters: outputFilters,
-    });
-
-    if (html !== _html) {
-      setHTML(_html);
-    }
-  }, [outputFilters, markdown, html]);
+  const handleHTMLChange = useCallback((_html) => {
+    setHTML(_html);
+    const _markdown = htmlToMarkdown({ html: _html, filters: outputFilters });
+    handleMarkdownChange(_markdown);
+  }, [handleMarkdownChange, outputFilters]);
 
   const handlePaste = useCallback((e) => {
     e.preventDefault();
@@ -90,9 +85,7 @@ function BlockEditable(props) {
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <input onChange={(e) => {
-          handleMarkdownChange(e.target.value);
-        }} value={_markdown} dir="auto" className={classes.markdown} style={_style} ref={markdownRef} />
+        <input onChange={(e) => handleMarkdownChange(e.target.value)} value={_markdown} dir="auto" className={classes.markdown} style={_style} ref={markdownRef} />
       </pre>
       }
       {preview &&
@@ -103,6 +96,7 @@ function BlockEditable(props) {
         disabled={!editable}
         style={_style}
         html={html}
+        onChange={(e) => handleHTMLChange(e.target.value)}
       />}
     </div>
   );
