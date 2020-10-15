@@ -16,7 +16,7 @@ import styles from './useStyles';
 
 function BlockEditable(props) {
   const {
-    markdown,
+    markdown: __markdown,
     style,
     preview,
     editable,
@@ -29,6 +29,7 @@ function BlockEditable(props) {
 
   const markdownRef = useRef(null);
   const htmlRef = useRef(null);
+  const [markdown, setMarkdown] = useState(__markdown);
   const [html, setHTML] = useState(null);
   const _onEdit = useCallback(onEdit, []);
   const [lastValues, setLastValues] = useState([]);
@@ -42,6 +43,10 @@ function BlockEditable(props) {
     setHTML(_html);
   }, [inputFilters, markdown]);
 
+  const handleMarkdownChange = useCallback((value) => {
+    onEditThrottled(value);
+    setMarkdown(value);
+  }, [onEditThrottled]);
 
   const handleHTMLChange = useCallback((_html) => {
     setHTML(_html);
@@ -90,7 +95,7 @@ function BlockEditable(props) {
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable disabled={!editable} onChange={(e) => onEditThrottled(e.target.value)} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
+        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(e.target.value)} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
       </pre>
       }
       {preview &&
@@ -139,7 +144,7 @@ BlockEditable.defaultProps = {
   style: {},
   preview: true,
   editable: true,
-  debounce: 0,
+  debounce: 200,
 };
 
 const propsAreEqual = (prevProps, nextProps) => prevProps.preview === nextProps.preview &&
