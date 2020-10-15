@@ -12,7 +12,7 @@ initialState = {
 > For nation will rise against nation, and kingdom against kingdom. There will be famines and earthquakes in various places. But all these things are only the beginning of ***birth pains***. (Matthew 24:7-8 ULT)
   
 > My little children, I am suffering ***labor pains*** for you again, until Christ will have been formed in you! (Galatians 4:19 ULT)`,
-  preview: true,
+  preview: false,
 };
 
 <div>

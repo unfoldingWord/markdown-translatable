@@ -11,6 +11,7 @@ import {
   htmlToMarkdown,
   isHebrew,
   fromDisplay,
+  toDisplay,
 } from '../../core/';
 import styles from './useStyles';
 
@@ -95,7 +96,7 @@ function BlockEditable(props) {
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(fromDisplay(e.target.value))} html={markdown} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
+        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(fromDisplay(e.target.value))} html={toDisplay(markdown)} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
       </pre>
       }
       {preview &&
