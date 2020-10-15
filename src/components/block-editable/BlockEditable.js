@@ -136,10 +136,7 @@ BlockEditable.propTypes = {
 BlockEditable.defaultProps = {
   markdown: '',
   onEdit: () => {},
-  inputFilters: [
-    [/>/gi, '&gt;'],
-    [/</gi, '&lt;'],
-  ],
+  inputFilters: [],
   outputFilters: [],
   style: {},
   preview: true,
