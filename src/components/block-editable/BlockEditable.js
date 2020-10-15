@@ -30,7 +30,7 @@ function BlockEditable(props) {
   const markdownRef = useRef(null);
   const htmlRef = useRef(null);
   const [markdown, setMarkdown] = useState(__markdown);
-  const [html, setHTML] = useState(null);
+  const [html, setHTML] = useState('');
   const _onEdit = useCallback(onEdit, []);
   const [lastValues, setLastValues] = useState([]);
   const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
