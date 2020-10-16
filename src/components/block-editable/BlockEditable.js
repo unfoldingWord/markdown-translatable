@@ -40,7 +40,11 @@ function BlockEditable(props) {
     markdown: _markdown,
     filters: inputFilters,
   }));
-  useHandleUndo(markdownRef.current);
+  /** Manage undo state and listeners because content editable*/
+  useHandleUndo(markdownRef.current, markdown);
+  /** Because we are not using normal inputs we need
+   * to hijack the paste event and insert it manually
+   * into the markdown div */
   useHandlePaste(markdownRef.current, preview);
   /** onEdit is called on each change which can
    * lead to performance issues when changing rapidly.
@@ -49,12 +53,14 @@ function BlockEditable(props) {
   const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
   /** Helper function to update the markdown state and
-   * send changes to the callback as well */
+   * send changes to the callback function `onEdit` as well */
   const handleMarkdownChange = useCallback((value) => {
     onEditThrottled(value);
     setMarkdown(value);
   }, [onEditThrottled]);
 
+  /** Only updating the HTML when the mode
+   * switches to show it */
   useEffect(() => {
     if (preview) {
       const newHTML = markdownToHtml({
@@ -66,6 +72,8 @@ function BlockEditable(props) {
     }
   }, [inputFilters, markdown, preview]);
 
+  /** Only updating the markdown when the mode
+   * switches to show it */
   useEffect(() => {
     if (!preview) {
       const newMarkdown = htmlToMarkdown({

@@ -2,8 +2,8 @@ import {
   useCallback, useState, useEffect,
 } from 'react';
 
-export function useHandleUndo(el) {
-  const [lastValues, setLastValues] = useState([]);
+export function useHandleUndo(el, initialState) {
+  const [lastValues, setLastValues] = useState([initialState]);
   const handleUndo = useCallback((e) => {
     if (e.metaKey && e.key === 'z' && lastValues.length) {
       e.target.innerHTML = lastValues.pop();

@@ -30,12 +30,16 @@ turndownService.addRule('emphasis', {
 const markdownToHtmlConverter = new showdown.Converter({ noHeaderId: true });
 export const toDisplay = (content) => content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-export const fromDisplay = (content) => content.replace(/&nbsp;/, ' ').replace(/<div><br\\?><\/div>/, '\n').replace(/<br\\?>/, '\n').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+export const fromDisplay = (content) => content.replace(/&nbsp;/, ' ')
+  .replace(/<div>([\s\S]*)<\/div>/, '\n$1')
+  .replace(/<br\\?>/, '\n')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&amp;/g, '&');
 
 export const htmlToMarkdown = ({ html, filters = [] }) => {
   let string = turndownService.turndown((html || ''));
   string = filter({ string, filters });
-  // string = string.replace(/\n/ig, '<br/>');
 
   if (string === '&#8203;') {
     string = '';
