@@ -38,11 +38,11 @@ function BlockEditable(props) {
   const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
   useEffect(() => {
-    const _html = markdownToHtml({
+    const newHTML = markdownToHtml({
       markdown,
       filters: inputFilters,
     });
-    setHTML(_html);
+    setHTML(newHTML);
   }, [inputFilters, markdown]);
 
   const handleMarkdownChange = useCallback((value) => {
@@ -50,10 +50,10 @@ function BlockEditable(props) {
     setMarkdown(value);
   }, [onEditThrottled]);
 
-  const handleHTMLChange = useCallback((_html) => {
-    setHTML(_html);
-    const _markdown = htmlToMarkdown({ html: _html, filters: outputFilters });
-    onEditThrottled(_markdown);
+  const handleHTMLChange = useCallback((newHTML) => {
+    setHTML(newHTML);
+    const newMarkdown = htmlToMarkdown({ html: newHTML, filters: outputFilters });
+    onEditThrottled(newMarkdown);
   }, [onEditThrottled, outputFilters]);
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
