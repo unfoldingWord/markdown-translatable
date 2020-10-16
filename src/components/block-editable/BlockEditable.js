@@ -16,9 +16,13 @@ import {
 import styles from './useStyles';
 import { useHandleUndo, useHandlePaste } from './helpers';
 
+/**
+ * Note: The markdown state is handled within the
+ * component and changes are propagated up to the parent
+ */
 function BlockEditable(props) {
   const {
-    markdown: __markdown,
+    markdown: _markdown,
     style,
     preview,
     editable,
@@ -31,30 +35,44 @@ function BlockEditable(props) {
   } = props;
 
   const markdownRef = useRef(null);
-  const [markdown, setMarkdown] = useState(__markdown);
-  const [html, setHTML] = useState('');
+  const [markdown, setMarkdown] = useState(_markdown);
+  const [html, setHTML] = useState(null);
   useHandleUndo(markdownRef.current);
   useHandlePaste(markdownRef.current, preview);
+  /** onEdit is called on each change which can
+   * lead to performance issues when changing rapidly.
+   * The debounce is optional, if not set it will remain at 0 and
+   * function as normal */
   const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
-  useEffect(() => {
-    const newHTML = markdownToHtml({
-      markdown,
-      filters: inputFilters,
-    });
-    setHTML(newHTML);
-  }, [inputFilters, markdown]);
-
+  /** Helper function to update the markdown state and
+   * send changes to the callback as well */
   const handleMarkdownChange = useCallback((value) => {
     onEditThrottled(value);
     setMarkdown(value);
   }, [onEditThrottled]);
 
-  const handleHTMLChange = useCallback((newHTML) => {
-    setHTML(newHTML);
-    const newMarkdown = htmlToMarkdown({ html: newHTML, filters: outputFilters });
-    onEditThrottled(newMarkdown);
-  }, [onEditThrottled, outputFilters]);
+  useEffect(() => {
+    if (preview) {
+      const newHTML = markdownToHtml({
+        markdown,
+        filters: inputFilters,
+      });
+
+      setHTML(newHTML);
+    }
+  }, [html, inputFilters, markdown, preview]);
+
+  useEffect(() => {
+    if (!preview && html !== null) {
+      const newMarkdown = htmlToMarkdown({
+        html,
+        filters: outputFilters,
+      });
+
+      setMarkdown(newMarkdown);
+    }
+  }, [html, outputFilters, preview]);
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
   const markdownDisplay = toDisplay(markdown);
@@ -80,7 +98,7 @@ function BlockEditable(props) {
         disabled={!editable}
         style={_style}
         html={html}
-        onChange={(e) => handleHTMLChange(e.target.value)}
+        onChange={(e) => setHTML(e.target.value)}
       />}
     </div>
   );

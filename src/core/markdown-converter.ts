@@ -35,7 +35,7 @@ export const fromDisplay = (content) => content.replace(/<div><br\\?><\/div>/, '
 export const htmlToMarkdown = ({ html, filters = [] }) => {
   let string = turndownService.turndown((html || ''));
   string = filter({ string, filters });
-  string = string.replace(/\n/ig, '<br>');
+  // string = string.replace(/\n/ig, '<br/>');
 
   if (string === '&#8203;') {
     string = '';
@@ -47,6 +47,7 @@ export const markdownToHtml = ({ markdown, filters = [] }) => {
   let _markdown = (markdown || '').slice(0);
   _markdown = filter({ string: _markdown, filters });
   let html = markdownToHtmlConverter.makeHtml(_markdown);
+  html = html.replace(/<br\s.\\?>/ig, '<br/>');
 
   if (!html || html === '') {
     html = '<p>&#8203;</p>';
