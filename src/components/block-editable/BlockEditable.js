@@ -36,7 +36,10 @@ function BlockEditable(props) {
 
   const markdownRef = useRef(null);
   const [markdown, setMarkdown] = useState(_markdown);
-  const [html, setHTML] = useState(null);
+  const [html, setHTML] = useState(markdownToHtml({
+    markdown: _markdown,
+    filters: inputFilters,
+  }));
   useHandleUndo(markdownRef.current);
   useHandlePaste(markdownRef.current, preview);
   /** onEdit is called on each change which can
@@ -64,7 +67,7 @@ function BlockEditable(props) {
   }, [inputFilters, markdown, preview]);
 
   useEffect(() => {
-    if (!preview && html !== null) {
+    if (!preview) {
       const newMarkdown = htmlToMarkdown({
         html,
         filters: outputFilters,
