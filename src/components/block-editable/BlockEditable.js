@@ -94,8 +94,7 @@ function BlockEditable(props) {
   const markdownDisplay = toDisplay(markdown);
   return (
     <div className={classes.root}>
-      {!preview &&
-      <pre className={classes.pre}>
+      <pre style={{ display: !preview ? 'block' : 'none' }} className={classes.pre}>
         <ContentEditable
           onBlur={() => onBlur(markdownDisplay)}
           disabled={!editable}
@@ -106,16 +105,14 @@ function BlockEditable(props) {
           style={_style}
           innerRef={markdownRef} />
       </pre>
-      }
-      {preview &&
       <ContentEditable
         dir="auto"
         className={classes.html}
         disabled={!editable}
-        style={_style}
+        style={{ ..._style, display: preview ? 'block' : 'none' }}
         html={html}
         onChange={(e) => setHTML(e.target.value)}
-      />}
+      />
     </div>
   );
 }
