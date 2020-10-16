@@ -61,7 +61,7 @@ function BlockEditable(props) {
 
       setHTML(newHTML);
     }
-  }, [html, inputFilters, markdown, preview]);
+  }, [inputFilters, markdown, preview]);
 
   useEffect(() => {
     if (!preview && html !== null) {
