@@ -14,6 +14,7 @@ import {
   toDisplay,
 } from '../../core/';
 import styles from './useStyles';
+import { useHandleUndo, useHandlePaste } from './helpers';
 
 function BlockEditable(props) {
   const {
@@ -26,15 +27,15 @@ function BlockEditable(props) {
     onEdit,
     classes,
     debounce: debounceTime,
+    onBlur,
   } = props;
 
   const markdownRef = useRef(null);
-  const htmlRef = useRef(null);
   const [markdown, setMarkdown] = useState(__markdown);
   const [html, setHTML] = useState('');
-  const _onEdit = useCallback(onEdit, []);
-  const [lastValues, setLastValues] = useState([]);
-  const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
+  useHandleUndo(markdownRef.current);
+  useHandlePaste(markdownRef.current, preview);
+  const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
   useEffect(() => {
     const _html = markdownToHtml({
@@ -55,54 +56,26 @@ function BlockEditable(props) {
     onEditThrottled(_markdown);
   }, [onEditThrottled, outputFilters]);
 
-  const handlePaste = useCallback((e) => {
-    e.preventDefault();
-    const pastedData = e.clipboardData.getData('text/plain');
-    const doc = new DOMParser().parseFromString(pastedData, 'text/html');
-    const text = doc.body.textContent || '';
-    document.execCommand('insertHTML', false, text);
-  }, []);
-
-  const handleUndo = useCallback((e) => {
-    if (e.metaKey && e.key === 'z' && lastValues.length) {
-      e.target.innerHTML = lastValues.pop();
-    }
-
-    if (!e.metaKey || (e.metaKey && e.key === 'v')) {
-      const copy = lastValues.slice(0);
-      copy.push(e.target.innerHTML);
-      setLastValues(copy);
-    }
-  }, [lastValues]);
-
-  useEffect(() => {
-    const el = markdownRef.current;
-
-    if (el) {
-      el.addEventListener('paste', handlePaste);
-      el.addEventListener('keydown', handleUndo);
-    };
-    return () => {
-      if (el) {
-        el.removeEventListener('paste', handlePaste);
-        el.removeEventListener('keydown', handleUndo);
-      }
-    };
-  }, [handlePaste, handleUndo, preview]);
-
-
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
+  const markdownDisplay = toDisplay(markdown);
   return (
     <div className={classes.root}>
       {!preview &&
       <pre className={classes.pre}>
-        <ContentEditable disabled={!editable} onChange={(e) => handleMarkdownChange(fromDisplay(e.target.value))} html={toDisplay(markdown)} dir="auto" className={classes.markdown} style={_style} innerRef={markdownRef} />
+        <ContentEditable
+          onBlur={() => onBlur(markdownDisplay)}
+          disabled={!editable}
+          onChange={(e) => handleMarkdownChange(fromDisplay(e.target.value))}
+          html={markdownDisplay}
+          dir="auto"
+          className={classes.markdown}
+          style={_style}
+          innerRef={markdownRef} />
       </pre>
       }
       {preview &&
       <ContentEditable
         dir="auto"
-        innerRef={htmlRef}
         className={classes.html}
         disabled={!editable}
         style={_style}
@@ -116,7 +89,8 @@ function BlockEditable(props) {
 BlockEditable.propTypes = {
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
-  /** Function to propogate changes to the markdown. */
+  /** Debounced callback containing the value
+   * of the markdown, called on every change */
   onEdit: PropTypes.func,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
@@ -124,18 +98,23 @@ BlockEditable.propTypes = {
   outputFilters: PropTypes.array,
   /** CSS for the component. */
   style: PropTypes.object,
-  /** Display Raw Markdown or HTML. */
+  /** If true will display the rendered HTML of the markdown
+   * text */
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
-  /** CSS clasess from material-ui */
+  /** CSS classes from material-ui */
   classes: PropTypes.object.isRequired,
   /** Amount of time to debounce edits */
   debounce: PropTypes.number,
+  /** Debounced callback containing the value
+   * of the markdown, called on blur */
+  onBlur: PropTypes.func,
 };
 
 BlockEditable.defaultProps = {
   markdown: '',
+  onBlur: () => {},
   onEdit: () => {},
   inputFilters: [],
   outputFilters: [],
