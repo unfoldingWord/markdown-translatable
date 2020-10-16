@@ -28,9 +28,12 @@ turndownService.addRule('emphasis', {
 });
 
 const markdownToHtmlConverter = new showdown.Converter({ noHeaderId: true });
-export const toDisplay = (content) => content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+export const toDisplay = (content) => content.replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
 
 export const fromDisplay = (content) => content.replace(/&nbsp;/, ' ')
+  .replace(/<br><div>/, '<div>')
   .replace(/<div>([\s\S]*)<\/div>/, '\n$1')
   .replace(/<br\\?>/, '\n')
   .replace(/&lt;/g, '<')

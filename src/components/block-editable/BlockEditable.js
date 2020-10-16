@@ -14,7 +14,9 @@ import {
   toDisplay,
 } from '../../core/';
 import styles from './useStyles';
-import { useHandleUndo, useHandlePaste } from './helpers';
+import {
+  useHandleUndo, useHandlePaste, useFixCursorOnNewLine,
+} from './helpers';
 
 /**
  * Note: The markdown state is handled within the
@@ -40,6 +42,7 @@ function BlockEditable(props) {
     markdown: _markdown,
     filters: inputFilters,
   }));
+  useFixCursorOnNewLine(markdownRef.current);
   /** Manage undo state and listeners because content editable*/
   useHandleUndo(markdownRef.current, markdown);
   /** Because we are not using normal inputs we need
