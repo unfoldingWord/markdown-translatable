@@ -42,6 +42,8 @@ function BlockEditable(props) {
     markdown: _markdown,
     filters: inputFilters,
   }));
+  /** Cursor will get reset after pressing Enter key,
+   * this will watch the cursor state and fix it after */
   useFixCursorOnNewLine(markdownRef.current);
   /** Manage undo state and listeners because content editable*/
   useHandleUndo(markdownRef.current, markdown);
