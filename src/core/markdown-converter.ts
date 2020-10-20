@@ -47,17 +47,25 @@ export const htmlToMarkdown = ({ html, filters = [] }) => {
   if (string === '&#8203;') {
     string = '';
   }
+
   return string;
 };
 
 export const markdownToHtml = ({ markdown, filters = [] }) => {
-  let _markdown = (markdown || '').slice(0);
+  let _markdown = (markdown || '');
+
+  // Make "easy" blockquote:
+  _markdown = markdown.replace(/\n\>/g, '  \n\>');
+
+  _markdown = _markdown.slice(0);
   _markdown = filter({ string: _markdown, filters });
+
   let html = markdownToHtmlConverter.makeHtml(_markdown);
   html = html.replace(/<br\s.\\?>/ig, '<br/>');
 
   if (!html || html === '') {
     html = '<p>&#8203;</p>';
   }
+
   return html;
 };
