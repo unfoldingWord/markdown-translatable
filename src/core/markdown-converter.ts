@@ -52,7 +52,7 @@ export const htmlToMarkdown = ({ html, filters = [] }) => {
 
 export const markdownToHtml = ({ markdown, filters = [] }) => {
   let _markdown = (markdown || '').slice(0);
-  _markdown = filter({ string: _markdown, filters });
+  _markdown = filter({ string: _markdown, filters: [[/<br>/gi, '\n'], ...filters ] });
   let html = markdownToHtmlConverter.makeHtml(_markdown);
   html = html.replace(/<br\s.\\?>/ig, '<br/>');
 
