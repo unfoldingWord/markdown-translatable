@@ -1,5 +1,5 @@
 export const filter = ({ string, filters }) => {
-  let _string = string.slice(0);
+  let _string = (string || '').slice(0);
 
   filters.forEach((filter) => {
     const [replace, replacer] = filter;
@@ -33,11 +33,11 @@ function getCaretPosition(editableDiv) {
     range = document.selection.createRange();
 
     if (range.parentElement() == editableDiv) {
-      const tempEl = document.createElement("span");
+      const tempEl = document.createElement('span');
       editableDiv.insertBefore(tempEl, editableDiv.firstChild);
       const tempRange = range.duplicate();
       tempRange.moveToElementText(tempEl);
-      tempRange.setEndPoint("EndToEnd", range);
+      tempRange.setEndPoint('EndToEnd', range);
       caretPos = tempRange.text.length;
     }
   }

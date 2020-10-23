@@ -16,44 +16,45 @@ turndownService.addRule('underline', {
 // bold-italic <strong><em>...</em></strong>
 // See below: emphasis rule allows bold-italic to pass through as _content_.
 turndownService.addRule('bold-italic', {
-  filter: (node, options) => {
-    return node.nodeName === 'STRONG' && node.childNodes && node.childNodes.length == 1 && node.childNodes[0].nodeName === 'EM';
-  },
-  replacement: (content) => {
-    return `**${content}**`;
-  },
+  filter: (node, options) => node.nodeName === 'STRONG' && node.childNodes && node.childNodes.length == 1 && node.childNodes[0].nodeName === 'EM',
+  replacement: (content) => `**${content}**`,
 });
 // <em> node NOT under a <strong> node.
 // Will allow the embedded <em>content</em> to pass through as _content_
 turndownService.addRule('emphasis', {
   //filter: ['em'],filter: (node, options) => {
-  filter: (node, options) => {
-    return node.nodeName === 'EM' && node.parentNode && node.parentNode.nodeName != 'STRONG';
-  },
+  filter: (node, options) => node.nodeName === 'EM' && node.parentNode && node.parentNode.nodeName != 'STRONG',
   replacement: (content) => `*${content}*`,
 });
 
-const markdownToHtmlConverter = new showdown.Converter({noHeaderId: true});
-export const toDisplay = (content) =>
-  content.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+const markdownToHtmlConverter = new showdown.Converter({ noHeaderId: true });
+export const toDisplay = (content) => content.replace(/&/g, '&amp;')
+  .replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;');
 
-export const fromDisplay = (content) =>
-  content.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
+export const fromDisplay = (content) => content.replace(/&nbsp;/, ' ')
+  .replace(/<br><div>/, '<div>')
+  .replace(/<div>([\s\S]*)<\/div>/, '\n$1')
+  .replace(/<br\\?>/, '\n')
+  .replace(/&lt;/g, '<')
+  .replace(/&gt;/g, '>')
+  .replace(/&amp;/g, '&');
 
-export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
-  let markdown = turndownService.turndown(html);
-  markdown = filter({ string: markdown, filters: outputFilters });
+export const htmlToMarkdown = ({ html, filters = [] }) => {
+  let string = turndownService.turndown((html || ''));
+  string = filter({ string, filters });
 
-  if (markdown === '&#8203;') {
-    markdown = '';
+  if (string === '&#8203;') {
+    string = '';
   }
-  return markdown;
+  return string;
 };
 
-export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
-  let _markdown = markdown.slice(0);
-  _markdown = filter({ string: _markdown, filters: inputFilters });
+export const markdownToHtml = ({ markdown, filters = [] }) => {
+  let _markdown = (markdown || '').slice(0);
+  _markdown = filter({ string: _markdown, filters: [[/<br>/gi, '\n'], ...filters ] });
   let html = markdownToHtmlConverter.makeHtml(_markdown);
+  html = html.replace(/<br\s.\\?>/ig, '<br/>');
 
   if (!html || html === '') {
     html = '<p>&#8203;</p>';

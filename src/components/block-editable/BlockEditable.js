@@ -5,21 +5,26 @@ import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import debounce from 'lodash.debounce';
 import ContentEditable from 'react-contenteditable';
-
 import { withStyles } from '@material-ui/core';
 import {
   markdownToHtml,
   htmlToMarkdown,
-  filter,
-  toDisplay,
-  fromDisplay,
   isHebrew,
+  fromDisplay,
+  toDisplay,
 } from '../../core/';
 import styles from './useStyles';
+import {
+  useHandleUndo, useHandlePaste, useFixCursorOnNewLine,
+} from './helpers';
 
+/**
+ * Note: The markdown state is handled within the
+ * component and changes are propagated up to the parent
+ */
 function BlockEditable(props) {
   const {
-    markdown,
+    markdown: _markdown,
     style,
     preview,
     editable,
@@ -28,99 +33,86 @@ function BlockEditable(props) {
     onEdit,
     classes,
     debounce: debounceTime,
+    onBlur,
   } = props;
+
   const markdownRef = useRef(null);
-  const htmlRef = useRef(null);
+  const [markdown, setMarkdown] = useState(_markdown);
+  const [html, setHTML] = useState(markdownToHtml({
+    markdown: _markdown,
+    filters: inputFilters,
+  }));
+  /** Cursor will get reset after pressing Enter key,
+   * this will watch the cursor state and fix it after */
+  useFixCursorOnNewLine(markdownRef.current);
+  /** Manage undo state and listeners because content editable*/
+  useHandleUndo(markdownRef.current, markdown);
+  /** Because we are not using normal inputs we need
+   * to hijack the paste event and insert it manually
+   * into the markdown div */
+  useHandlePaste(markdownRef.current, preview);
+  /** onEdit is called on each change which can
+   * lead to performance issues when changing rapidly.
+   * The debounce is optional, if not set it will remain at 0 and
+   * function as normal */
+  const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
-  const [markdownDisplay, setMarkdownDisplay] = useState('');
-  const [htmlDisplay, setHtmlDisplay] = useState(markdownToHtml({ markdown, inputFilters }));
+  /** Helper function to update the markdown state and
+   * send changes to the callback function `onEdit` as well */
+  const handleMarkdownChange = useCallback((value) => {
+    onEditThrottled(value);
+    setMarkdown(value);
+  }, [onEditThrottled]);
 
+  /** Only updating the HTML when the mode
+   * switches to show it */
   useEffect(() => {
-    const code = filter({ string: markdown, filters: inputFilters });
-    const _markdownDisplay = toDisplay(code);
-    setMarkdownDisplay(_markdownDisplay);
-  }, [inputFilters, markdown]);
+    if (preview) {
+      const newHTML = markdownToHtml({
+        markdown,
+        filters: inputFilters,
+      });
 
-  const _onEdit = useCallback(onEdit, []);
-  const onEditThrottled = useCallback(debounce(_onEdit, debounceTime, { leading: false, trailing: true }), [_onEdit]);
-
-  function handleChange(newMarkdown) {
-    const oldHTML = markdownToHtml({
-      markdown,
-      inputFilters: inputFilters,
-    });
-    const newHTML = markdownToHtml({
-      markdown: newMarkdown,
-      inputFilters: inputFilters,
-    });
-
-
-    if (oldHTML !== newHTML) {
-      onEditThrottled(newMarkdown);
-      const code = filter({ string: newMarkdown, filters: inputFilters });
-      setMarkdownDisplay(toDisplay(code));
-      setHtmlDisplay(newHTML);
+      setHTML(newHTML);
     }
-  }
+  }, [inputFilters, markdown, preview]);
 
-  function handleHTMLChange(e) {
-    const html = e.target.value;
-    const _markdown = htmlToMarkdown({ html, outputFilters });
-    handleChange(_markdown, e);
-  }
+  /** Only updating the markdown when the mode
+   * switches to show it */
+  useEffect(() => {
+    if (!preview) {
+      const newMarkdown = htmlToMarkdown({
+        html,
+        filters: outputFilters,
+      });
 
-
-  function handleRawChange(e) {
-    let string = e.target.value;
-    string = fromDisplay(string);
-    const _markdown = filter({ string, filters: outputFilters });
-    handleChange(_markdown);
-  }
-
-useEffect(() => {
-  const el = markdownRef.current;
-  if (el) {
-    el.addEventListener("paste", function(e) {
-    // cancel paste
-    e.preventDefault();
-
-    // get text representation of clipboard
-    var text = e.clipboardData.getData("text/plain");
-
-    // insert text manually
-    document.execCommand("insertHTML", false, text);
-  })
-};
-}, [markdownRef.current, preview])
-
+      setMarkdown(newMarkdown);
+    }
+  }, [html, outputFilters, preview]);
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-
+  const markdownDisplay = toDisplay(markdown);
   return (
-    <div  className={classes.root}>
-      {!preview &&
-      <pre className={classes.pre}>
+    <div className={classes.root}>
+      <pre style={{ display: !preview ? 'block' : 'none' }} className={classes.pre}>
         <ContentEditable
-          innerRef={markdownRef}
+          onBlur={() => onBlur(markdownDisplay)}
+          disabled={!editable}
+          onChange={(e) => handleMarkdownChange(fromDisplay(e.target.value))}
+          html={markdownDisplay}
           dir="auto"
           className={classes.markdown}
           style={_style}
-          html={markdownDisplay}
-          disabled={!editable}
-          onChange={handleRawChange}
-          />
+          innerRef={markdownRef} />
       </pre>
-      }
-      {preview &&
       <ContentEditable
         dir="auto"
-        innerRef={htmlRef}
         className={classes.html}
         disabled={!editable}
-        style={_style}
-        html={htmlDisplay}
-        onChange={handleHTMLChange}
-      />}
+        style={{ ..._style, display: preview ? 'block' : 'none' }}
+        html={html}
+        onChange={(e) => setHTML(e.target.value)}
+      />
     </div>
   );
 }
@@ -128,7 +120,8 @@ useEffect(() => {
 BlockEditable.propTypes = {
   /** Initial markdown for the editor. */
   markdown: PropTypes.string.isRequired,
-  /** Function to propogate changes to the markdown. */
+  /** Debounced callback containing the value
+   * of the markdown, called on every change */
   onEdit: PropTypes.func,
   /** Replace strings before rendering. */
   inputFilters: PropTypes.array,
@@ -136,31 +129,30 @@ BlockEditable.propTypes = {
   outputFilters: PropTypes.array,
   /** CSS for the component. */
   style: PropTypes.object,
-  /** Display Raw Markdown or HTML. */
+  /** If true will display the rendered HTML of the markdown
+   * text */
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
-  /** CSS clasess from material-ui */
+  /** CSS classes from material-ui */
   classes: PropTypes.object.isRequired,
   /** Amount of time to debounce edits */
   debounce: PropTypes.number,
+  /** Debounced callback containing the value
+   * of the markdown, called on blur */
+  onBlur: PropTypes.func,
 };
 
 BlockEditable.defaultProps = {
   markdown: '',
+  onBlur: () => {},
   onEdit: () => {},
   inputFilters: [],
-  outputFilters: [
-    [/&gt;/gi, ">"],
-    [/&lt;/gi, "<"],
-    [/<div>(.*)<\/div>/gi, "\n$1"],
-    [/<br>/gi, "\n"],
-    [/<\/div><div>/gi, "\n"],
-  ],
+  outputFilters: [],
   style: {},
   preview: true,
   editable: true,
-  debounce: 0,
+  debounce: 200,
 };
 
 const propsAreEqual = (prevProps, nextProps) => prevProps.preview === nextProps.preview &&
