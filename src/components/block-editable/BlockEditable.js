@@ -62,33 +62,24 @@ function BlockEditable(props) {
   const handleMarkdownChange = useCallback((value) => {
     onEditThrottled(value);
     setMarkdown(value);
-  }, [onEditThrottled]);
+    const newHTML = markdownToHtml({
+      markdown: value,
+      filters: inputFilters,
+    });
 
-  /** Only updating the HTML when the mode
-   * switches to show it */
-  useEffect(() => {
-    if (preview) {
-      const newHTML = markdownToHtml({
-        markdown,
-        filters: inputFilters,
-      });
-
+    if (!preview && newHTML !== html) {
       setHTML(newHTML);
     }
-  }, [inputFilters, markdown, preview]);
+  }, [html, inputFilters, onEditThrottled, preview]);
 
-  /** Only updating the markdown when the mode
-   * switches to show it */
-  useEffect(() => {
-    if (!preview) {
-      const newMarkdown = htmlToMarkdown({
-        html,
-        filters: outputFilters,
-      });
-
-      setMarkdown(newMarkdown);
-    }
-  }, [html, outputFilters, preview]);
+  function handleHTMLChange(value) {
+    setHTML(value);
+    const newMarkdown = htmlToMarkdown({
+      html: value,
+      filters: outputFilters,
+    });
+    handleMarkdownChange(newMarkdown);
+  }
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
   const markdownDisplay = toDisplay(markdown);
@@ -111,7 +102,7 @@ function BlockEditable(props) {
         disabled={!editable}
         style={{ ..._style, display: preview ? 'block' : 'none' }}
         html={html}
-        onChange={(e) => setHTML(e.target.value)}
+        onChange={(e) => handleHTMLChange(e.target.value)}
       />
     </div>
   );

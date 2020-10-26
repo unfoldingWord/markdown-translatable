@@ -55,7 +55,7 @@ export const markdownToHtml = ({ markdown, filters = [] }) => {
   let _markdown = (markdown || '');
 
   // Make "easy" blockquote:
-  _markdown = markdown.replace(/\n\>/g, '  \n\>');
+  _markdown = markdown.replace(/\n\\>/g, '  \n\\>');
 
   _markdown = _markdown.slice(0);
   _markdown = filter({ string: _markdown, filters });
