@@ -2,6 +2,7 @@ export const blocksFromMarkdown = ({ markdown }) => {
   const blocks = markdown.replace(/<br>/gi, '\n').split(/\n\n/g);
 
   const _blocks = [];
+
   blocks.forEach((block) => {
     // Delete a block by emptying it.
     if (block.length > 0) {
@@ -10,7 +11,7 @@ export const blocksFromMarkdown = ({ markdown }) => {
   });
 
   if (_blocks.length == 0) {
-    _blocks.push("");
+    _blocks.push('');
   }
 
   return _blocks;
@@ -31,20 +32,23 @@ export const sectionsFromMarkdown = ({ markdown }) => {
       sections.push(section);
       section = [];
     }
+
     // Delete a block by emptying it.
     if (block.length > 0) {
       section.push(block);
     }
   });
+
   // don't leave a dangling section (orphaned)
   if (section !== []) {
     sections.push(section);
     section = [];
   }
+
   // Don't allow empty section,
   // (since originalBlocks will be compared to translationBlock).
   if (sections.length == 0) {
-    sections.push("");
+    sections.push('');
   }
 
   sections = sections.map((blocks) => blocks.join(`\n\n`));
