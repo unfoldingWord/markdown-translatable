@@ -21,4 +21,10 @@ describe('HTML To Markdown Converter', () => {
   it(`convert bold italic html tag to markdown`, () => {
     generateTest('bold_italic');
   });
+  it(`convert occurrence note html to markdown`, () => {
+    generateTest('occurrence-note');
+  });
+  it(`convert occurrence note html to markdown`, () => {
+    generateTest('occurrence-note-1');
+  });
 });
