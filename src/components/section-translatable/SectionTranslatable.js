@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useReducer, useMemo, useCallback,
+  useEffect, useMemo, useCallback, useState,
 } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
@@ -11,9 +11,7 @@ import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
 import BlockTranslatable from '../block-translatable';
 
-import {
-  blocksFromMarkdown, markdownFromBlocks, itemsReducer,
-} from '../../core/';
+import { blocksFromMarkdown, markdownFromBlocks } from '../../core/';
 import { useStyles } from './styles';
 
 function SectionTranslatable({
@@ -28,28 +26,30 @@ function SectionTranslatable({
   blockable,
   style,
 }) {
+  const [translationBlocks, setTranslationBlocks] = useState(null);
+  const [originalBlocks, setOriginalBlocks] = useState(null);
   const classes = useStyles();
-  const originalBlocks = useMemo(() => (
-    (blockable) ? blocksFromMarkdown({ markdown: original }) : [original]
-  ), [blockable, original]);
 
-  const _translationBlocks = useMemo(() => (
-    (blockable) ? blocksFromMarkdown({ markdown: translation }) : [translation]
-  ), [blockable, translation]);
-  const [translationBlocks, dispatch] = useReducer(itemsReducer, _translationBlocks);
+  useEffect(() => {
+    const _originalBlocks = (blockable) ? blocksFromMarkdown({ markdown: original }) : [original];
+    setOriginalBlocks(_originalBlocks);
+  }, [blockable, original]);
+
+  useEffect(() => {
+    const _translationBlocks = (blockable) ? blocksFromMarkdown({ markdown: translation }) : [translation];
+    setTranslationBlocks(_translationBlocks);
+  }, [blockable, translation]);
 
   const _onExpanded = useCallback(onExpanded, []);
 
-  // // update translationBlocks to match blockable chained through _translationBlocks
-  useEffect(() => {
-    dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
-  }, [_translationBlocks]);
   // update onTranslation when translationBlocks are updated
   useEffect(() => {
-    const _translation = markdownFromBlocks({ blocks: translationBlocks });
+    if (translationBlocks) {
+      const _translation = markdownFromBlocks({ blocks: translationBlocks });
 
-    if (_translation !== translation) {
-      onTranslation(_translation);
+      if (_translation !== translation) {
+        onTranslation(_translation);
+      }
     }
   }, [onTranslation, translation, translationBlocks]);
 
@@ -58,43 +58,40 @@ function SectionTranslatable({
     _onExpanded(!expanded);
   }, [_onExpanded, expanded]);
 
-  const setTranslationBlock = useCallback(({ index, item }) => {
-    dispatch({ type: 'SET_ITEM', value: { index, item } });
-  }, []);
-
-  const mostBlocks = originalBlocks.length > translationBlocks.length ?
+  const mostBlocks = originalBlocks?.length > translationBlocks?.length ?
     originalBlocks : translationBlocks;
 
-  const blocksTranslatables = useMemo(() => {
-    const _blocksTranslatables = [];
+  const blocksTranslatables = [];
 
-    for ( let i=0; i < mostBlocks.length; i++ ) {
-      const _onTranslation = (item) => setTranslationBlock({ index: i, item });
-      const translationBlock = translationBlocks[i];
-      const originalBlock = originalBlocks[i];
-      const key = md5(JSON.stringify(originalBlock + i.toString()));
-
-      _blocksTranslatables.push(
-        <BlockTranslatable
-          key={key}
-          original={originalBlock}
-          translation={translationBlock}
-          inputFilters={inputFilters}
-          outputFilters={outputFilters}
-          onTranslation={_onTranslation}
-          preview={preview}
-        />
-      );
+  for ( let i=0; i < mostBlocks?.length; i++ ) {
+    const _onTranslation = (item) => {
+      const temp = [...translationBlocks];
+      temp[i] = item;
+      setTranslationBlocks(temp);
     };
-    return _blocksTranslatables;
-  }, [inputFilters, mostBlocks.length, originalBlocks, outputFilters, preview, setTranslationBlock, translationBlocks]);
 
-  const titleBlock = originalBlocks[0].split('\n\n')[0] || translationBlocks[0].split('\n\n')[0];
+    const translationBlock = translationBlocks && translationBlocks[i];
+    const originalBlock = originalBlocks && originalBlocks[i];
+    const key = md5(JSON.stringify(originalBlock + i.toString()));
+
+    blocksTranslatables.push(
+      <BlockTranslatable
+        key={key}
+        original={originalBlock}
+        translation={translationBlock}
+        inputFilters={inputFilters}
+        outputFilters={outputFilters}
+        onTranslation={_onTranslation}
+        preview={preview}
+      />
+    );
+  };
+
+  const titleBlock = (originalBlocks && originalBlocks[0]?.split('\n\n')[0]) || (translationBlocks && translationBlocks[0]?.split('\n\n')[0]);
 
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
-
   return (
     <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
       <ExpansionPanelSummary

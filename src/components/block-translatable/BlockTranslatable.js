@@ -19,7 +19,6 @@ function BlockTranslatable({
   preview,
 }) {
   const classes = useStyles();
-
   return (
     <Grid
       container
