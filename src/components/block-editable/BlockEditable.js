@@ -22,23 +22,20 @@ import {
  * Note: The markdown state is handled within the
  * component and changes are propagated up to the parent
  */
-function BlockEditable(props) {
-  const {
-    markdown: _markdown,
-    style,
-    preview,
-    editable,
-    inputFilters,
-    outputFilters,
-    onEdit,
-    classes,
-    debounce: debounceTime,
-    onBlur,
-  } = props;
-
+function BlockEditable({
+  markdown: _markdown,
+  style,
+  preview,
+  editable,
+  inputFilters,
+  outputFilters,
+  onEdit,
+  classes,
+  debounce: debounceTime,
+  onBlur,
+}) {
   const markdownRef = useRef(null);
   const [markdown, setMarkdown] = useState(_markdown);
-  console.log('markdown', markdown);
   const [html, setHTML] = useState(markdownToHtml({
     markdown,
     filters: inputFilters,
