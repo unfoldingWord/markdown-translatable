@@ -39,13 +39,13 @@ function BlockEditable(props) {
   const markdownRef = useRef(null);
   const [markdown, setMarkdown] = useState(_markdown);
   const [html, setHTML] = useState(markdownToHtml({
-    markdown: _markdown,
+    markdown,
     filters: inputFilters,
   }));
 
   useEffect(() => {
     setMarkdown(_markdown);
-  }, [_markdown])
+  }, [_markdown]);
 
   /** Cursor will get reset after pressing Enter key,
    * this will watch the cursor state and fix it after */
