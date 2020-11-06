@@ -44,7 +44,7 @@ function BlockEditable(props) {
   }));
 
   useEffect(() => {
-    setMarkdown(setMarkdown);
+    setMarkdown(_markdown);
   }, [_markdown])
 
   /** Cursor will get reset after pressing Enter key,
