@@ -1,9 +1,6 @@
-import React, {
-  useRef, useState, useEffect, memo, useCallback,
-} from 'react';
+import React, { memo, useState } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
-import debounce from 'lodash.debounce';
 import ContentEditable from 'react-contenteditable';
 import { withStyles } from '@material-ui/core';
 import {
@@ -31,7 +28,9 @@ function BlockEditable({
   classes,
   onBlur,
 }) {
-
+  const [html, setHTML] = useState(markdownToHtml({
+    markdown
+  }))
   // /** Cursor will get reset after pressing Enter key,
   //  * this will watch the cursor state and fix it after */
   // useFixCursorOnNewLine(markdownRef.current);
@@ -47,27 +46,31 @@ function BlockEditable({
   //  * function as normal */
   // const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
-  // function handleHTMLChange(value) {
-  //   const newMarkdown = htmlToMarkdown({
-  //     html: value,
-  //     filters: outputFilters,
-  //   });
-  //   onEditThrottled(newMarkdown);
-  // }
+  function handleHTMLChange(value) {
+    setHTML(value);
+    const newMarkdown = htmlToMarkdown({
+      html: value,
+    });
+    onEdit(newMarkdown);
+  }
 
-  const html = markdownToHtml({
-    markdown
-  });
+  function handleMarkdownChange(value) {
+    onEdit(value);
+    const newHTML = markdownToHtml({
+      markdown: value,
+    });
+    setHTML(newHTML);
+  }
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-  // const markdownDisplay = toDisplay(markdown);
+  console.log("markdown", markdown);
   return (
     <div className={classes.root}>
       <pre style={{ display: !preview ? 'block' : 'none' }} className={classes.pre}>
         <ContentEditable
           onBlur={() => onBlur(markdown)}
           disabled={!editable}
-          onChange={(e) => onEdit(e.target.value)}
+          onChange={(e) => handleMarkdownChange(e.target.value)}
           html={markdown}
           dir="auto"
           className={classes.markdown}
@@ -79,7 +82,7 @@ function BlockEditable({
         disabled={!editable}
         style={{ ..._style, display: preview ? 'block' : 'none' }}
         html={html}
-      // onChange={(e) => handleHTMLChange(e.target.value)}
+        onChange={(e) => handleHTMLChange(e.target.value)}
       />
     </div>
   );
