@@ -32,9 +32,6 @@ function BlockEditable({
   const [html, setHTML] = useState(markdownToHtml({
     markdown
   }))
-  /** Cursor will get reset after pressing Enter key,
-   * this will watch the cursor state and fix it after */
-  useFixCursorOnNewLine(markdownRef.current);
   /** Manage undo state and listeners because content editable*/
   useHandleUndo(markdownRef.current, markdown);
   /** Because we are not using normal inputs we need
@@ -45,7 +42,6 @@ function BlockEditable({
    * lead to performance issues when changing rapidly.
    * The debounce is optional, if not set it will remain at 0 and
    * function as normal */
-  // const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
   function handleHTMLChange(value) {
     setHTML(value);
@@ -55,10 +51,10 @@ function BlockEditable({
     onEdit(newMarkdown);
   }
 
-  function handleMarkdownChange(value) {
-    onEdit(value);
+  function handleMarkdownChange(_markdown) {
+    onEdit(_markdown);
     const newHTML = markdownToHtml({
-      markdown: value,
+      markdown: _markdown,
     });
     setHTML(newHTML);
   }

@@ -37,8 +37,8 @@ export function useFixCursorOnNewLine(el) {
       if (node.nodeType == 3) {
         const nextCharIndex = charIndex + node.length;
 
-        if (!foundStart && _savedSelection.start >= charIndex && _savedSelection.start <= nextCharIndex) {
-          range.setStart(node, _savedSelection.start - charIndex);
+        if (!foundStart && _savedSelection?.start >= charIndex && _savedSelection?.start <= nextCharIndex) {
+          range.setStart(node, _savedSelection?.start - charIndex);
           foundStart = true;
         }
 
@@ -61,7 +61,7 @@ export function useFixCursorOnNewLine(el) {
     sel.addRange(range);
   }, []);
 
-  const handleRestore = useCallback((e) =>{
+  const handleRestore = useCallback((e) => {
     /** Only listening for newline key character code */
     if (e.keyCode === 13) {
       restoreSelection(el, savedSelection);
