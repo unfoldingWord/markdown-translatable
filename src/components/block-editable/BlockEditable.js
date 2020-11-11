@@ -64,15 +64,15 @@ function BlockEditable({
   return (
     <div className={classes.root}>
       <pre style={{ display: !preview ? 'block' : 'none' }} className={classes.pre}>
-        <ContentEditable
+        <textarea
           onBlur={() => onBlur(markdown)}
           disabled={!editable}
           onChange={(e) => handleMarkdownChange(e.target.value)}
-          html={markdown}
+          value={markdown}
           dir="auto"
           className={classes.markdown}
           style={_style}
-          innerRef={markdownRef} />
+          ref={markdownRef} />
       </pre>
       <ContentEditable
         dir="auto"
