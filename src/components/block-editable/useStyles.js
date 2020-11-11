@@ -22,6 +22,12 @@ module.exports = {
     fontFamily: 'unset',
     padding: '0 0.5em',
     lineHeight: '1.4',
+    border: 'none',
+    overflow: 'auto',
+    outline: 'none',
+    webkitBoxShadow: 'none',
+    boxShadow: 'none',
+    resize: 'none' /*remove the resize handle on the bottom right*/
   },
   pre: {
     margin: 0,

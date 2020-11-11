@@ -12,8 +12,10 @@ import {
 } from '../../core/';
 import styles from './useStyles';
 import {
-  useHandleUndo, useHandlePaste, useFixCursorOnNewLine,
+  useHandleUndo, useHandlePaste,
 } from './helpers';
+import TextField from '@material-ui/core/TextField';
+
 
 /**
  * Note: The markdown state is handled within the
@@ -60,25 +62,24 @@ function BlockEditable({
   }
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
-  console.log("markdown", markdown);
   return (
     <div className={classes.root}>
-      <pre style={{ display: !preview ? 'block' : 'none' }} className={classes.pre}>
-        <textarea
-          onBlur={() => onBlur(markdown)}
-          disabled={!editable}
-          onChange={(e) => handleMarkdownChange(e.target.value)}
-          value={markdown}
-          dir="auto"
-          className={classes.markdown}
-          style={_style}
-          ref={markdownRef} />
-      </pre>
+      <TextField
+        InputProps={{ disableUnderline: true }}
+        multiline
+        style={{ display: !preview ? 'grid' : 'none', ..._style }}
+        onBlur={() => onBlur(markdown)}
+        disabled={!editable}
+        onChange={(e) => handleMarkdownChange(e.target.value)}
+        value={markdown}
+        dir="auto"
+        className={classes.markdown}
+        ref={markdownRef} />
       <ContentEditable
         dir="auto"
         className={classes.html}
         disabled={!editable}
-        style={{ ..._style, display: preview ? 'block' : 'none' }}
+        style={{ ..._style, display: preview ? 'grid' : 'none' }}
         html={html}
         onChange={(e) => handleHTMLChange(e.target.value)}
       />
