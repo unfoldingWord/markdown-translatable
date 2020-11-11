@@ -43,15 +43,15 @@ function BlockEditable({
 		})
 	);
 
-	// useEffect(() => {
-	// 	setMarkdown(_markdown);
-	// 	setHTML(
-	// 		markdownToHtml({
-	// 			markdown: _markdown,
-	// 			filters: inputFilters,
-	// 		})
-	// 	);
-	// }, [_markdown, inputFilters]);
+	useEffect(() => {
+		setMarkdown(_markdown);
+		setHTML(
+			markdownToHtml({
+				markdown: _markdown,
+				filters: inputFilters,
+			})
+		);
+	}, [_markdown, inputFilters]);
 
 	/** Cursor will get reset after pressing Enter key,
 	 * this will watch the cursor state and fix it after */
