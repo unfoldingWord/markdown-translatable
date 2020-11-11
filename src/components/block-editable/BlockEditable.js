@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import ContentEditable from 'react-contenteditable';
@@ -28,22 +28,23 @@ function BlockEditable({
   classes,
   onBlur,
 }) {
+  const markdownRef = useRef();
   const [html, setHTML] = useState(markdownToHtml({
     markdown
   }))
-  // /** Cursor will get reset after pressing Enter key,
-  //  * this will watch the cursor state and fix it after */
-  // useFixCursorOnNewLine(markdownRef.current);
-  // /** Manage undo state and listeners because content editable*/
-  // useHandleUndo(markdownRef.current, markdown);
-  // /** Because we are not using normal inputs we need
-  //  * to hijack the paste event and insert it manually
-  //  * into the markdown div */
-  // useHandlePaste(markdownRef.current, preview);
-  // /** onEdit is called on each change which can
-  //  * lead to performance issues when changing rapidly.
-  //  * The debounce is optional, if not set it will remain at 0 and
-  //  * function as normal */
+  /** Cursor will get reset after pressing Enter key,
+   * this will watch the cursor state and fix it after */
+  useFixCursorOnNewLine(markdownRef.current);
+  /** Manage undo state and listeners because content editable*/
+  useHandleUndo(markdownRef.current, markdown);
+  /** Because we are not using normal inputs we need
+   * to hijack the paste event and insert it manually
+   * into the markdown div */
+  useHandlePaste(markdownRef.current, preview);
+  /** onEdit is called on each change which can
+   * lead to performance issues when changing rapidly.
+   * The debounce is optional, if not set it will remain at 0 and
+   * function as normal */
   // const onEditThrottled = useCallback(debounce(onEdit, debounceTime, { leading: false, trailing: true }), [onEdit]);
 
   function handleHTMLChange(value) {
@@ -74,7 +75,8 @@ function BlockEditable({
           html={markdown}
           dir="auto"
           className={classes.markdown}
-          style={_style} />
+          style={_style}
+          innerRef={markdownRef} />
       </pre>
       <ContentEditable
         dir="auto"
