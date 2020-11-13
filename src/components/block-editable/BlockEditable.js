@@ -1,8 +1,11 @@
-import React, { memo, useState, useRef } from 'react';
+import React, {
+  memo, useState, useRef,
+} from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import ContentEditable from 'react-contenteditable';
 import { withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 import {
   markdownToHtml,
   htmlToMarkdown,
@@ -11,10 +14,7 @@ import {
   toDisplay,
 } from '../../core/';
 import styles from './useStyles';
-import {
-  useHandleUndo, useHandlePaste,
-} from './helpers';
-import TextField from '@material-ui/core/TextField';
+import { useHandleUndo, useHandlePaste } from './helpers';
 
 
 /**
@@ -31,15 +31,13 @@ function BlockEditable({
   onBlur,
 }) {
   const markdownRef = useRef();
-  const [html, setHTML] = useState(markdownToHtml({
-    markdown
-  }))
+  const [html, setHTML] = useState(markdownToHtml({ markdown }));
   /** Manage undo state and listeners because content editable*/
-  useHandleUndo(markdownRef.current, markdown);
+  // useHandleUndo(markdownRef.current, markdown);
   /** Because we are not using normal inputs we need
    * to hijack the paste event and insert it manually
    * into the markdown div */
-  useHandlePaste(markdownRef.current, preview);
+  // useHandlePaste(markdownRef.current, preview);
   /** onEdit is called on each change which can
    * lead to performance issues when changing rapidly.
    * The debounce is optional, if not set it will remain at 0 and
@@ -47,17 +45,14 @@ function BlockEditable({
 
   function handleHTMLChange(value) {
     setHTML(value);
-    const newMarkdown = htmlToMarkdown({
-      html: value,
-    });
+    const newMarkdown = htmlToMarkdown({ html: value });
     onEdit(newMarkdown);
   }
 
   function handleMarkdownChange(_markdown) {
+    debugger;
     onEdit(_markdown);
-    const newHTML = markdownToHtml({
-      markdown: _markdown,
-    });
+    const newHTML = markdownToHtml({ markdown: _markdown });
     setHTML(newHTML);
   }
 
@@ -65,24 +60,25 @@ function BlockEditable({
   return (
     <div className={classes.root}>
       <TextField
-        InputProps={{ disableUnderline: true }}
+        // InputProps={{ disableUnderline: true }}
         multiline
-        style={{ display: !preview ? 'grid' : 'none', ..._style }}
-        onBlur={() => onBlur(markdown)}
-        disabled={!editable}
-        onChange={(e) => handleMarkdownChange(e.target.value)}
+        // style={{ display: !preview ? 'grid' : 'none', ..._style }}
+        // onBlur={() => onBlur(markdown)}
+        // disabled={!editable}
+        onChange={(e) => onEdit(e.target.value)}
         value={markdown}
-        dir="auto"
-        className={classes.markdown}
-        ref={markdownRef} />
-      <ContentEditable
+      // dir="auto"
+      // className={classes.markdown}
+      // ref={markdownRef}
+      />
+      {/* <ContentEditable
         dir="auto"
         className={classes.html}
         disabled={!editable}
-        style={{ ..._style, display: preview ? 'grid' : 'none' }}
+        style={{ ..._style, display: preview ? 'grid' : 'none', color: 'black' }}
         html={html}
         onChange={(e) => handleHTMLChange(e.target.value)}
-      />
+      /> */}
     </div>
   );
 }

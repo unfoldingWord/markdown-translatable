@@ -37,6 +37,7 @@ function SectionTranslatable({
 
   useEffect(() => {
     const _translationBlocks = (blockable) ? blocksFromMarkdown({ markdown: translation }) : [translation];
+    debugger;
     setTranslationBlocks(_translationBlocks);
   }, [blockable, translation]);
 
@@ -73,7 +74,7 @@ function SectionTranslatable({
     const translationBlock = translationBlocks && translationBlocks[i];
     const originalBlock = originalBlocks && originalBlocks[i];
     const key = md5(JSON.stringify(originalBlock + i.toString()));
-
+    console.log('translationBlock', translationBlock);
     blocksTranslatables.push(
       <BlockTranslatable
         key={key}

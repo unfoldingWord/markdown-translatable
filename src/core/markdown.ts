@@ -1,5 +1,6 @@
 export const blocksFromMarkdown = ({ markdown }) => {
-  const blocks = markdown.replace(/<br>/gi, '\n').split(/\n\n/g);
+  debugger;
+  const blocks = markdown.replace(/<br>/gi, '\n').split(/\n\n/gi);
 
   const _blocks = [];
 

@@ -20,7 +20,7 @@ initialState = {
 />;
 ```
 
-### A more complex example...
+<!-- ### A more complex example...
 
 ```jsx
 const markdown = `
@@ -88,4 +88,4 @@ React.useEffect(() => {
     style={style}
   />
 </>;
-```
+``` -->

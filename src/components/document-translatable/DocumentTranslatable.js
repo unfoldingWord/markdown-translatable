@@ -51,7 +51,7 @@ function DocumentTranslatable({
 
   const sectionsTranslatables = [];
 
-  for ( let i=0; i < totalSections; i++ ) {
+  for (let i = 0; i < totalSections; i++) {
     const originalSection = originalSections && originalSections[i];
     const translationSection = translationSections && translationSections[i];
     const key = md5(JSON.stringify(originalSection + i.toString()));
