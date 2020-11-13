@@ -1,20 +1,19 @@
-import React, { memo, useState, useRef } from 'react';
+import React, {
+  memo, useState, useRef, useEffect,
+} from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash.isequal';
 import ContentEditable from 'react-contenteditable';
 import { withStyles } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 import {
   markdownToHtml,
   htmlToMarkdown,
   isHebrew,
   fromDisplay,
-  toDisplay,
 } from '../../core/';
 import styles from './useStyles';
-import {
-  useHandleUndo, useHandlePaste,
-} from './helpers';
-import TextField from '@material-ui/core/TextField';
+import { useHandleUndo, useHandlePaste } from './helpers';
 
 
 /**
@@ -31,9 +30,16 @@ function BlockEditable({
   onBlur,
 }) {
   const markdownRef = useRef();
-  const [html, setHTML] = useState(markdownToHtml({
-    markdown
-  }))
+  const [html, setHTML] = useState(markdownToHtml({ markdown }));
+
+  useEffect(() => {
+    const oldMarkdown = htmlToMarkdown({ html:html });
+
+    if (oldMarkdown.trim() !== markdown.trim()) {
+      const newHTML = markdownToHtml({ markdown });
+      setHTML(newHTML);
+    }
+  }, [html, markdown]);
   /** Manage undo state and listeners because content editable*/
   useHandleUndo(markdownRef.current, markdown);
   /** Because we are not using normal inputs we need
@@ -47,17 +53,13 @@ function BlockEditable({
 
   function handleHTMLChange(value) {
     setHTML(value);
-    const newMarkdown = htmlToMarkdown({
-      html: value,
-    });
-    onEdit(newMarkdown);
+    const newMarkdown = htmlToMarkdown({ html: value });
+    onEdit(fromDisplay(newMarkdown));
   }
 
   function handleMarkdownChange(_markdown) {
     onEdit(_markdown);
-    const newHTML = markdownToHtml({
-      markdown: _markdown,
-    });
+    const newHTML = markdownToHtml({ markdown: _markdown });
     setHTML(newHTML);
   }
 

@@ -19,7 +19,7 @@ initialState = {
   onTranslation={(translation) => setState({ translation })}
 />;
 ```
-
+<!-- 
 ### A more complex example...
 
 ```jsx
@@ -88,4 +88,4 @@ React.useEffect(() => {
     style={style}
   />
 </>;
-```
+``` -->

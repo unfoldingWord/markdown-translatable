@@ -92,6 +92,7 @@ function SectionTranslatable({
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
+  console.log('blocksTranslatables', blocksTranslatables);
   return (
     <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
       <ExpansionPanelSummary
