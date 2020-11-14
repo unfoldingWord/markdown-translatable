@@ -17,6 +17,7 @@ function BlockTranslatable({
   outputFilters,
   style,
   preview,
+  focused,
 }) {
   const classes = useStyles();
   return (
@@ -38,6 +39,7 @@ function BlockTranslatable({
       </Grid>
       <Grid item xs={12} className={classes.translation}>
         <BlockEditable
+          focused={focused}
           markdown={translation}
           onEdit={onTranslation}
           inputFilters={inputFilters}

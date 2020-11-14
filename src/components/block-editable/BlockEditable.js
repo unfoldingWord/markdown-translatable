@@ -13,7 +13,9 @@ import {
   fromDisplay,
 } from '../../core/';
 import styles from './useStyles';
-import { useHandleUndo, useHandlePaste } from './helpers';
+import {
+  useHandleUndo, useHandlePaste, setEndOfContenteditable,
+} from './helpers';
 
 
 /**
@@ -28,9 +30,20 @@ function BlockEditable({
   onEdit,
   classes,
   onBlur,
+  focused,
 }) {
   const markdownRef = useRef();
+  const htmlRef = useRef();
   const [html, setHTML] = useState(markdownToHtml({ markdown }));
+
+  useEffect(() => {
+    console.log('focused', focused, markdown);
+
+    if (focused && htmlRef.current && preview) {
+      htmlRef.current.focus();
+      setEndOfContenteditable(htmlRef.current);
+    }
+  }, [focused, markdown, preview]);
 
   useEffect(() => {
     const oldMarkdown = htmlToMarkdown({ html:html });
@@ -76,13 +89,14 @@ function BlockEditable({
         value={markdown}
         dir="auto"
         className={classes.markdown}
-        ref={markdownRef} />
+        innerRef={markdownRef} />
       <ContentEditable
         dir="auto"
         className={classes.html}
         disabled={!editable}
         style={{ ..._style, display: preview ? 'grid' : 'none' }}
         html={html}
+        innerRef={htmlRef}
         onChange={(e) => handleHTMLChange(e.target.value)}
       />
     </div>

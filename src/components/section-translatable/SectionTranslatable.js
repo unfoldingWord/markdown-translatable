@@ -8,9 +8,8 @@ import {
   ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, ExpansionPanelActions, IconButton,
 } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
-
+import isEqual from 'lodash.isequal';
 import BlockTranslatable from '../block-translatable';
-
 import { blocksFromMarkdown, markdownFromBlocks } from '../../core/';
 import { useStyles } from './styles';
 
@@ -26,6 +25,7 @@ function SectionTranslatable({
   blockable,
   style,
 }) {
+  const [currentBlockFocus, setCurrentBlockFocus] = useState(0);
   const [translationBlocks, setTranslationBlocks] = useState(null);
   const [originalBlocks, setOriginalBlocks] = useState(null);
   const classes = useStyles();
@@ -64,10 +64,19 @@ function SectionTranslatable({
   const blocksTranslatables = [];
 
   for ( let i=0; i < mostBlocks?.length; i++ ) {
-    const _onTranslation = (item) => {
+    const _onTranslation = (_translation) => {
       const temp = [...translationBlocks];
-      temp[i] = item;
-      setTranslationBlocks(temp);
+      temp[i] = _translation;
+      const newTranslation = markdownFromBlocks({ blocks: temp });
+      const newBlocks = (blockable) ? blocksFromMarkdown({ markdown: newTranslation }) : [newTranslation];
+
+      if (newBlocks && translationBlocks && newBlocks?.length !== translationBlocks?.length) {
+        setCurrentBlockFocus(newBlocks?.length - 1);
+      }
+
+      if (!isEqual(newBlocks, translationBlocks)) {
+        setTranslationBlocks(newBlocks);
+      }
     };
 
     const translationBlock = translationBlocks && translationBlocks[i];
@@ -76,6 +85,7 @@ function SectionTranslatable({
 
     blocksTranslatables.push(
       <BlockTranslatable
+        focused={currentBlockFocus === i}
         key={key}
         original={originalBlock}
         translation={translationBlock}
@@ -92,7 +102,6 @@ function SectionTranslatable({
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
-  console.log('blocksTranslatables', blocksTranslatables);
   return (
     <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
       <ExpansionPanelSummary
