@@ -31,15 +31,17 @@ function BlockEditable({
   classes,
   onBlur,
   focused,
+  updateFocus,
 }) {
+  console.log('markdown', markdown);
+  console.log('focused', focused);
   const markdownRef = useRef();
   const htmlRef = useRef();
   const [html, setHTML] = useState(markdownToHtml({ markdown }));
 
   useEffect(() => {
-    console.log('focused', focused, markdown);
-
     if (focused && htmlRef.current && preview) {
+      debugger;
       htmlRef.current.focus();
       setEndOfContenteditable(htmlRef.current);
     }
@@ -78,7 +80,7 @@ function BlockEditable({
 
   const _style = isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style;
   return (
-    <div className={classes.root}>
+    <div onFocus={updateFocus} className={classes.root}>
       <TextField
         InputProps={{ disableUnderline: true }}
         multiline
@@ -127,6 +129,8 @@ BlockEditable.propTypes = {
   /** Debounced callback containing the value
    * of the markdown, called on blur */
   onBlur: PropTypes.func,
+  /** update focus on parent state */
+  updateFocus: PropTypes.func,
 };
 
 BlockEditable.defaultProps = {
@@ -146,6 +150,7 @@ const propsAreEqual = (prevProps, nextProps) => prevProps.preview === nextProps.
   isEqual(prevProps.style, nextProps.style) &&
   isEqual(prevProps.outputFilters, nextProps.outputFilters) &&
   isEqual(prevProps.inputFilters, nextProps.inputFilters) &&
-  prevProps.markdown === nextProps.markdown;
+  prevProps.markdown === nextProps.markdown &&
+  prevProps.focused === nextProps.focused;
 
 export default withStyles(styles)(memo(BlockEditable, propsAreEqual));

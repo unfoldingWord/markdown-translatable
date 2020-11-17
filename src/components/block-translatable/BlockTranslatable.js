@@ -18,6 +18,7 @@ function BlockTranslatable({
   style,
   preview,
   focused,
+  updateFocus,
 }) {
   const classes = useStyles();
   return (
@@ -39,6 +40,7 @@ function BlockTranslatable({
       </Grid>
       <Grid item xs={12} className={classes.translation}>
         <BlockEditable
+          updateFocus={updateFocus}
           focused={focused}
           markdown={translation}
           onEdit={onTranslation}
@@ -67,6 +69,8 @@ BlockTranslatable.propTypes = {
   style: PropTypes.object,
   /** Display Raw Markdown or HTML. */
   preview: PropTypes.bool,
+  /** Boolean to set the user cursor focus */
+  focused: PropTypes.bool,
 };
 
 BlockTranslatable.defaultProps = {
@@ -76,6 +80,7 @@ BlockTranslatable.defaultProps = {
   outputFilters: [],
   style: {},
   preview: true,
+  focused: false,
 };
 
 export default BlockTranslatable;

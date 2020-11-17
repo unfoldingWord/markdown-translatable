@@ -70,12 +70,14 @@ function SectionTranslatable({
       const newTranslation = markdownFromBlocks({ blocks: temp });
       const newBlocks = (blockable) ? blocksFromMarkdown({ markdown: newTranslation }) : [newTranslation];
 
-      if (newBlocks && translationBlocks && newBlocks?.length !== translationBlocks?.length) {
-        setCurrentBlockFocus(newBlocks?.length - 1);
-      }
-
       if (!isEqual(newBlocks, translationBlocks)) {
         setTranslationBlocks(newBlocks);
+      }
+
+      if (newBlocks && translationBlocks && newBlocks?.length > translationBlocks?.length) {
+        setCurrentBlockFocus(currentBlockFocus + 1);
+      } else if (newBlocks && translationBlocks && newBlocks?.length < translationBlocks?.length) {
+        setCurrentBlockFocus(Math.max(currentBlockFocus - 1, 0));
       }
     };
 
@@ -93,6 +95,7 @@ function SectionTranslatable({
         outputFilters={outputFilters}
         onTranslation={_onTranslation}
         preview={preview}
+        updateFocus={() => setCurrentBlockFocus(i)}
       />
     );
   };
@@ -102,6 +105,8 @@ function SectionTranslatable({
   const summaryTitle = useMemo(() => (
     (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
+  console.log('currentBlockFocus', currentBlockFocus);
+
   return (
     <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
       <ExpansionPanelSummary
