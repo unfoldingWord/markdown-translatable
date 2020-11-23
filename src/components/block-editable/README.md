@@ -66,6 +66,9 @@ initialState = {
 ### A more complex example...
 
 ```jsx
+import React, { useContext, useMemo } from 'react';
+import { MarkdownContext, MarkdownContextProvider } from '../Markdown.context'
+
 const _markdown = `
 # Edit Markdown as HTML!<br><br>No *Frills* **Markdown** __WYSIWYG__.
 
@@ -100,20 +103,33 @@ const callback = (markdown) => {
   alert(markdown);
 };
 
+function Component() {
+  const { state: markdownState } = useContext(MarkdownContext);
+
+  return useMemo(() => (
+    <>
+      <div>Changed? {markdownState.isChanged.toString()}</div>
+      <BlockEditable
+        markdown={state.markdown}
+        preview={state.preview}
+        onEdit={callback}
+        inputFilters={[
+          [/<br>/gi, '\n'],
+          [/(<u>|<\/u>)/gi, '__'],
+        ]}
+        outputFilters={[[/\n/gi, '<br>']]}
+        style={style}
+      />
+    </>
+  ), [markdownState]);
+}
+
 <div>
   <button onClick={() => setState({ preview: !state.preview })}>
     {!state.preview ? 'Markdown' : 'HTML'}
   </button>
-  <BlockEditable
-    markdown={state.markdown}
-    preview={state.preview}
-    onEdit={callback}
-    inputFilters={[
-      [/<br>/gi, '\n'],
-      [/(<u>|<\/u>)/gi, '__'],
-    ]}
-    outputFilters={[[/\n/gi, '<br>']]}
-    style={style}
-  />
+  <MarkdownContextProvider>
+    <Component/>
+  </MarkdownContextProvider>
 </div>;
 ```

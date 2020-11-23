@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 
 import * as helpers from '../../core/';
@@ -11,6 +11,8 @@ import {
 } from '../../core/';
 import { useStyles } from './useStyles';
 
+import { MarkdownContext } from '../Markdown.context'
+
 function BlockEditable({
   markdown,
   onEdit,
@@ -21,6 +23,17 @@ function BlockEditable({
   editable,
 }) {
   const _oldMarkdown = { markdown };
+
+  const { actions } = useContext(MarkdownContext);
+
+  // const context = useContext(MarkdownContext);
+  // let actions;
+  // if (context && context.actions) {
+  //   [actions] = context;
+  // }
+
+  // const [actions] = (Array.isArray(useContext(MarkdownContext)) ? useContext(MarkdownContext) : [{}, function () { }]);
+  // alert(actions.setIsChanged);
 
   const classes = useStyles();
 
@@ -67,6 +80,14 @@ function BlockEditable({
     [handleBlur, outputFilters]
   );
 
+  const handleKeyPress = useCallback(
+    () => {
+      if (actions) {
+        actions.setIsChanged(true);
+      }
+    }, [actions]
+  );
+
   const component = useMemo(() => {
     let _component;
 
@@ -82,8 +103,9 @@ function BlockEditable({
             style={_style}
             dir='auto'
             contentEditable={editable}
-            onBlur={handleRawBlur}
             dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+            onBlur={handleRawBlur}
+            onKeyPress={handleKeyPress}
           />
         </pre>
       );
@@ -100,6 +122,7 @@ function BlockEditable({
           contentEditable={editable}
           dangerouslySetInnerHTML={dangerouslySetInnerHTML}
           onBlur={handleHTMLBlur}
+          onKeyPress={handleKeyPress}
         />
       );
     }
