@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback, useMemo, useRef,
+  useState, useEffect, useCallback, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,12 +16,10 @@ const useStyles = makeStyles(theme => ({ root: {} }));
 function Translatable({
   original,
   translation,
-  inputFilters: _inputFilters,
-  outputFilters: _outputFilters,
+  inputFilters,
+  outputFilters,
   onTranslation,
 }) {
-  const { current:inputFilters } = useRef(_inputFilters);
-  const { current:outputFilters } = useRef(_outputFilters);
   const classes = useStyles();
   const [preview, setPreview] = useState(true);
   const [sectionable, setSectionable] = useState(true);
@@ -36,14 +34,31 @@ function Translatable({
     onTranslation(editedTranslation);
   }, [onTranslation, editedTranslation]);
 
+  const component = useMemo(() => {
+    const props = {
+      original, translation: editedTranslation, onTranslation: setEditedTranslation,
+      preview, onPreview: setPreview, inputFilters, outputFilters, blockable,
+    };
+    let _component;
+
+    if (sectionable) {
+      _component = <DocumentTranslatable {...props} />;
+    } else {
+      const _props = {
+        ...props, expanded: true, onExpanded: ()=>{},
+      };
+      _component = <SectionTranslatable {..._props} />;
+    }
+    return _component;
+  }, [
+    original, editedTranslation, setEditedTranslation, inputFilters,
+    outputFilters, sectionable, blockable, preview,
+  ]);
+
   const changed = useMemo(() => (
     editedTranslation !== translation
   ), [editedTranslation, translation]);
 
-  const props = {
-    original, translation: editedTranslation, onTranslation: setEditedTranslation,
-    preview, onPreview: setPreview, inputFilters, outputFilters, blockable,
-  };
   return (
     <div className={classes.root}>
       <Paper>
@@ -58,9 +73,7 @@ function Translatable({
           onSave={saveTranslation}
         />
       </Paper>
-      {
-        sectionable ? (<DocumentTranslatable {...props} />) : (<SectionTranslatable {...props} />)
-      }
+      {component}
     </div>
   );
 };
