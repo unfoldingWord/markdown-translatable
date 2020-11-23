@@ -26,15 +26,6 @@ function BlockEditable({
 
   const { actions } = useContext(MarkdownContext);
 
-  // const context = useContext(MarkdownContext);
-  // let actions;
-  // if (context && context.actions) {
-  //   [actions] = context;
-  // }
-
-  // const [actions] = (Array.isArray(useContext(MarkdownContext)) ? useContext(MarkdownContext) : [{}, function () { }]);
-  // alert(actions.setIsChanged);
-
   const classes = useStyles();
 
   const _style = useMemo(
@@ -82,7 +73,7 @@ function BlockEditable({
 
   const handleKeyPress = useCallback(
     () => {
-      if (actions) {
+      if (actions && actions.setIsChanged) {
         actions.setIsChanged(true);
       }
     }, [actions]

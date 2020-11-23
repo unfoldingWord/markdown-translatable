@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback, useMemo,
+  useState, useEffect, useCallback, useContext, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -9,6 +9,8 @@ import {
   SectionTranslatable,
   Actions,
 } from '../';
+
+import { MarkdownContext } from '../Markdown.context'
 
 const useStyles = makeStyles(theme => ({ root: {} }));
 
@@ -26,13 +28,18 @@ function Translatable({
   const [blockable, setBlockable] = useState(true);
   const [editedTranslation, setEditedTranslation] = useState(translation);
 
+  const { state: markdownState, actions: markdownActions } = useContext(MarkdownContext);
+
   useEffect(() => {
     setEditedTranslation(translation);
   }, [translation]);
 
   const saveTranslation = useCallback(() => {
     onTranslation(editedTranslation);
-  }, [onTranslation, editedTranslation]);
+    if (markdownActions && markdownActions.setIsChanged) {
+      markdownActions.setIsChanged(false);
+    }
+  }, [onTranslation, editedTranslation, markdownActions.setIsChanged]);
 
   const component = useMemo(() => {
     const props = {
@@ -45,7 +52,7 @@ function Translatable({
       _component = <DocumentTranslatable {...props} />;
     } else {
       const _props = {
-        ...props, expanded: true, onExpanded: ()=>{},
+        ...props, expanded: true, onExpanded: () => { },
       };
       _component = <SectionTranslatable {..._props} />;
     }
@@ -56,8 +63,8 @@ function Translatable({
   ]);
 
   const changed = useMemo(() => (
-    editedTranslation !== translation
-  ), [editedTranslation, translation]);
+    (editedTranslation !== translation) || (markdownState.isChanged)
+  ), [editedTranslation, translation, markdownState.isChanged]);
 
   return (
     <div className={classes.root}>

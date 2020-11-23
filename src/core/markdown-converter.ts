@@ -62,6 +62,7 @@ export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
 
   // Make "easy" blockquote:
   _markdown = _markdown.replace(/\n\>/g, '  \n\>');
+  _markdown = _markdown.replace(/\<br\>\>/g, '  \<br\>\>');
 
   _markdown = filter({ string: _markdown, filters: inputFilters });
 
