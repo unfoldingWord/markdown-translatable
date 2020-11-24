@@ -1,4 +1,6 @@
-module.exports = {
+import { makeStyles } from '@material-ui/core/styles';
+
+export const useStyles = makeStyles(theme => ({
   root: {
     height: '100%',
     width: '100%',
@@ -29,4 +31,4 @@ module.exports = {
     fontSize: 'unset',
     whiteSpace: 'normal',
   },
-};
+}));

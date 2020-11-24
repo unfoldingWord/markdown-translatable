@@ -16,18 +16,24 @@ turndownService.addRule('underline', {
 // bold-italic <strong><em>...</em></strong>
 // See below: emphasis rule allows bold-italic to pass through as _content_.
 turndownService.addRule('bold-italic', {
-  filter: (node, options) => node.nodeName === 'STRONG' && node.childNodes && node.childNodes.length == 1 && node.childNodes[0].nodeName === 'EM',
-  replacement: (content) => `**${content}**`,
+  filter: (node, options) => {
+    return node.nodeName === 'STRONG' && node.childNodes && node.childNodes.length == 1 && node.childNodes[0].nodeName === 'EM';
+  },
+  replacement: (content) => {
+    return `**${content}**`;
+  },
 });
 // <em> node NOT under a <strong> node.
 // Will allow the embedded <em>content</em> to pass through as _content_
 turndownService.addRule('emphasis', {
   //filter: ['em'],filter: (node, options) => {
-  filter: (node, options) => node.nodeName === 'EM' && node.parentNode && node.parentNode.nodeName != 'STRONG',
+  filter: (node, options) => {
+    return node.nodeName === 'EM' && node.parentNode && node.parentNode.nodeName != 'STRONG';
+  },
   replacement: (content) => `*${content}*`,
 });
 
-const markdownToHtmlConverter = new showdown.Converter({ noHeaderId: true });
+const markdownToHtmlConverter = new showdown.Converter();
 export const toDisplay = (content) => content.replace(/&/g, '&amp;')
   .replace(/<br\\?>/g, '\n')
   .replace(/</g, '&lt;')
@@ -41,24 +47,24 @@ export const fromDisplay = (content) => content.replace(/&nbsp;/, ' ')
   .replace(/&gt;/g, '>')
   .replace(/&amp;/g, '&');
 
-export const htmlToMarkdown = ({ html, filters = [] }) => {
-  let string = turndownService.turndown((html || ''));
-  string = filter({ string, filters });
+export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
+  let markdown = turndownService.turndown(html);
+  markdown = filter({ string: markdown, filters: outputFilters });
 
-  if (string === '&#8203;') {
-    string = '';
+  if (markdown === '&#8203;') {
+    markdown = '';
   }
-
-  return string;
+  return markdown;
 };
 
-export const markdownToHtml = ({ markdown, filters = [] }) => {
-  let _markdown = (markdown || '');
+export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
+  let _markdown = (markdown || '').slice(0);
 
-  _markdown = markdown.replace(/\n>/g, '  \n>');
+  // Make "easy" blockquote:
+  _markdown = _markdown.replace(/\n\>/g, '  \n\>');
+  _markdown = _markdown.replace(/\<br\>\>/g, '  \<br\>\>');
 
-  _markdown = _markdown.slice(0);
-  _markdown = filter({ string: _markdown, filters });
+  _markdown = filter({ string: _markdown, filters: inputFilters });
 
   let html = markdownToHtmlConverter.makeHtml(_markdown);
   html = html.replace(/<br\s.\\?>/ig, '<br/>');
@@ -66,6 +72,5 @@ export const markdownToHtml = ({ markdown, filters = [] }) => {
   if (!html || html === '') {
     html = '<p>&#8203;</p>';
   }
-
   return html;
 };

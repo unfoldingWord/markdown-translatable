@@ -1,13 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, {
+  useState, useEffect, useMemo, useCallback, useReducer,
+} from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import md5 from 'md5';
+
 import SectionTranslatable from '../section-translatable';
+
 import {
   sectionsFromMarkdown,
   markdownFromSections,
 } from '../../core/';
 
+import { itemsReducer } from '../../core/itemsReducer';
 const useStyles = makeStyles(theme => ({ root: { marginTop: `${theme.spacing(2)}px` } }));
 
 function DocumentTranslatable({
@@ -20,78 +25,87 @@ function DocumentTranslatable({
   blockable,
   style,
 }) {
-  const [translationSections, setTranslationSections] = useState(null);
-  const [originalSections, setOriginalSections] = useState(null);
   const classes = useStyles();
   const [sectionFocus, setSectionFocus] = useState(0);
+  const [editedTranslation, setEditedTranslation] = useState(translation);
 
-  useEffect(() => {
-    const _originalSections = sectionsFromMarkdown({ markdown: original });
-    setOriginalSections(_originalSections);
-  }, [original]);
+  const _translationSections = useMemo(() => (
+    sectionsFromMarkdown({ markdown: editedTranslation })
+  ), [editedTranslation]);
+  const [translationSections, dispatch] = useReducer(itemsReducer, _translationSections);
+
+  const originalSections = useMemo(() => (
+    sectionsFromMarkdown({ markdown: original })
+  ), [original]);
 
   useEffect(() => {
     const _translationSections = sectionsFromMarkdown({ markdown: translation });
-    setTranslationSections(_translationSections);
+    dispatch({ type: 'SET_ITEMS', value: { items: _translationSections } });
   }, [translation]);
 
   useEffect(() => {
-    if (translationSections) {
-      const _translation = markdownFromSections({ sections: translationSections });
+    const _translation = markdownFromSections({ sections: translationSections });
+    setEditedTranslation(_translation);
+  }, [translationSections]);
 
-      if (_translation !== translation) {
-        onTranslation(_translation);
-      }
+  useEffect(() => {
+    if (editedTranslation !== translation) {
+      onTranslation(editedTranslation);
+      //console.log('DocumentTranslatable got updated editedTranslation');
     }
-  }, [onTranslation, translation, translationSections]);
+  }, [editedTranslation, onTranslation, translation]); // adding onTranslation to memoized array causes infinite loop
+
+  const setTranslationSection = useCallback(({ index, item }) => {
+    dispatch({ type: 'SET_ITEM', value: { index, item } });
+  }, []);
 
 
-  const totalSections = originalSections?.length > translationSections?.length ?
-    originalSections?.length : translationSections?.length;
 
-  const sectionsTranslatables = [];
+  const sectionTranslatables = () => {
+    const totalSections = originalSections.length > translationSections.length ?
+      originalSections.length : translationSections.length;
 
-  for ( let i=0; i < totalSections; i++ ) {
-    const originalSection = originalSections && originalSections[i];
-    const translationSection = translationSections && translationSections[i];
-    const key = md5(JSON.stringify(originalSection + i.toString()));
+    const _sectionsTranslatables = [];
 
-    const _onTranslation = (item) => {
-      const temp = [...translationSections];
-      temp[i] = item;
-      setTranslationSections(temp);
+    for ( let i=0; i < totalSections; i++ ) {
+      const originalSection = originalSections[i];
+      const translationSection = translationSections[i];
+      const key = md5(i + JSON.stringify(originalSection) + JSON.stringify(translationSection));
+      const __onTranslation = (item) => setTranslationSection({ index: i, item });
+
+      const onExpanded = (expanded) => {
+        if (expanded) {
+          setSectionFocus(i);
+        } else {
+          setSectionFocus(null);
+        }
+      };
+
+      const expanded = (sectionFocus === i);
+
+      _sectionsTranslatables.push (
+        <SectionTranslatable
+          key={key}
+          original={originalSection}
+          translation={translationSection}
+          inputFilters={inputFilters}
+          outputFilters={outputFilters}
+          onTranslation={__onTranslation}
+          onExpanded={onExpanded}
+          expanded={expanded}
+          preview={preview}
+          blockable={blockable}
+          style={style}
+        />
+      );
     };
-
-    const onExpanded = (expanded) => {
-      if (expanded) {
-        setSectionFocus(i);
-      } else {
-        setSectionFocus(null);
-      }
-    };
-
-    const expanded = (sectionFocus === i);
-
-    sectionsTranslatables.push(
-      <SectionTranslatable
-        key={key}
-        original={originalSection}
-        translation={translationSection}
-        inputFilters={inputFilters}
-        outputFilters={outputFilters}
-        onTranslation={_onTranslation}
-        onExpanded={onExpanded}
-        expanded={expanded}
-        preview={preview}
-        blockable={blockable}
-        style={style}
-      />
-    );
+    return _sectionsTranslatables;
   };
+
 
   return (
     <div className={classes.root}>
-      {sectionsTranslatables}
+      {sectionTranslatables()}
     </div>
   );
 };
