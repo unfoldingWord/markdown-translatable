@@ -51,9 +51,20 @@ export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
   let markdown = turndownService.turndown(html);
   markdown = filter({ string: markdown, filters: outputFilters });
 
-  if (markdown === '&#8203;') {
-    markdown = '';
+  // Strip NBSP from beginning or end.
+  // See below (markdownToHtml) where this NBSP is added to empty blocks.
+  while (markdown.match(/^\u200B/))
+  {
+    markdown = markdown.replace(/\u200B/, '');
   }
+  while (markdown.match(/\u200B$/))
+  {
+    markdown = markdown.replace(/\u200B$/, '');
+  }
+
+  // Replace double space.
+  markdown = markdown.replace(/ {2,}/g,' ');
+
   return markdown;
 };
 
@@ -69,6 +80,8 @@ export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
   let html = markdownToHtmlConverter.makeHtml(_markdown);
   html = html.replace(/<br\s.\\?>/ig, '<br/>');
 
+  // Insert NBSP into empty blocks.
+  // See above (htmlToMarkdown) where this NBSP is later stripped out.
   if (!html || html === '') {
     html = '<p>&#8203;</p>';
   }
