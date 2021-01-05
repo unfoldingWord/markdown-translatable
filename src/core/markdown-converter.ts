@@ -49,6 +49,14 @@ export const fromDisplay = (content) => content.replace(/&nbsp;/, ' ')
 
 export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
   let markdown = turndownService.turndown(html);
+
+  // Fix up resource links:
+  markdown = markdown.replace(/\\\[\\\[rc:/g, '[[rc:');
+  markdown = markdown.replace(/\\\]\\\]/g, ']]');
+  markdown = markdown.replace(/\[\]\(rc:\/\/([^)]*)\)/g, '[[rc://$1]]');
+  // Asterisk inside of RC link:
+  markdown = markdown.replace(/(\[\[.*)(\\\*)(.*\]\])/g, '$1*$3');
+
   markdown = filter({ string: markdown, filters: outputFilters });
 
   // Strip NBSP from beginning or end.
@@ -63,7 +71,7 @@ export const htmlToMarkdown = ({ html, outputFilters = [] }) => {
   }
 
   // Replace double space.
-  markdown = markdown.replace(/ {2,}/g,' ');
+  markdown = markdown.replace(/(\d+)\. {2,}/g, '$1. ');
 
   return markdown;
 };

@@ -4,9 +4,9 @@
 
 ### Outline of the Book of Titus
 
-1.  Paul instructs Titus to appoint godly leaders (1:1-16)
-2.  Paul instructs Titus to train people to live godly lives (2:1-3:11)
-3.  Paul ends by sharing some of his plans and sending greetings to various believers (3:12-15)
+1. Paul instructs Titus to appoint godly leaders (1:1-16)
+2. Paul instructs Titus to train people to live godly lives (2:1-3:11)
+3. Paul ends by sharing some of his plans and sending greetings to various believers (3:12-15)
 
 ### Who wrote the Book of Titus?
 

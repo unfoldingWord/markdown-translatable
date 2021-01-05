@@ -1,0 +1,1 @@
+This refers to John, the apostle and disciple of Jesus. He refers to himself as **elder** either because of his old age or because he is a leader in the church. The name of the author can be made explicit: “I, John the elder, am writing” (See: [[rc://*/ta/man/translate/figs-explicit]])
