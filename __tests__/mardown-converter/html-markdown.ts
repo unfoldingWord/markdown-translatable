@@ -3,12 +3,17 @@ import path from 'path';
 import * as helpers from '../../src/core';
 
 function generateTest(fileName: string) {
-  const markdown = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.md`), { encoding: 'utf-8' });
+  let markdown = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.md`), { encoding: 'utf-8' });
   const html = fs.readFileSync(path.join(__dirname, './fixtures', `${fileName}.html`), { encoding: 'utf-8' });
   const res = helpers.htmlToMarkdown({ html });
   const markdownToDisplay = helpers.toDisplay(res);
-  const fromDisplay = helpers.fromDisplay(markdownToDisplay);
-  expect(markdown).toBe(fromDisplay);
+  let fromDisplay = helpers.fromDisplay(markdownToDisplay);
+
+  // Ignore differences in linebreak formats:
+  markdown = markdown.replace(/\r\n/g, '\n');
+  fromDisplay = fromDisplay.replace(/\r\n/g, '\n');
+
+  expect(fromDisplay).toBe(markdown);
 }
 
 describe('HTML To Markdown Converter', () => {
@@ -61,5 +66,9 @@ describe('HTML To Markdown Converter', () => {
   });
   it(`convert occurrence note html markdown`, () => {
     generateTest('occurrence-note-1');
+  });
+
+  it(`convert RC link html markdown`, () => {
+    generateTest('rc-link');
   });
 });
