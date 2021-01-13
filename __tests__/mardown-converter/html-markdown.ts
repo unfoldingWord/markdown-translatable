@@ -71,4 +71,8 @@ describe('HTML To Markdown Converter', () => {
   it(`convert RC link html markdown`, () => {
     generateTest('rc-link');
   });
+  
+  it(`convert hyperlink html to markdown`, () => {
+    generateTest('hyperlink');
+  });
 });
