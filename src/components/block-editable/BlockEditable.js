@@ -45,9 +45,10 @@ function BlockEditable({
         inputFilters: inputFilters,
       });
 
-      _oldMarkdown.markdown = _markdown;
-
-      if (oldHTML !== newHTML) onEdit(_markdown);
+      if (oldHTML !== newHTML || _oldMarkdown.markdown !== _markdown) {
+        _oldMarkdown.markdown = _markdown;
+        onEdit(_markdown);
+      }
     },
     [markdown, inputFilters, onEdit]
   );
