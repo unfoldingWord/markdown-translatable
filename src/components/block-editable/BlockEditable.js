@@ -83,9 +83,20 @@ function BlockEditable({
   const component = useMemo(() => {
     let _component;
 
+    // if (markdown.includes("εὐσέβειαν"))
+    // {
+    //   alert("εὐσέβειαν! [ " + markdown.length);
+    // }
+
+    // Filter inputFilters on load:
+    let _markdown = filter({ string: markdown, filters: inputFilters });
+    if (markdown !== _markdown)
+    {
+      onEdit(_markdown);
+    }
+
     if (!preview) {
-      let code = filter({ string: markdown, filters: inputFilters });
-      code = toDisplay(code);
+      let code = toDisplay(_markdown);
       const dangerouslySetInnerHTML = { __html: code };
 
       _component = (
@@ -103,7 +114,7 @@ function BlockEditable({
       );
     } else {
       const dangerouslySetInnerHTML = {
-        __html: markdownToHtml({ markdown, inputFilters }),
+        __html: markdownToHtml({ markdown: _markdown, inputFilters }),
       };
 
       _component = (
