@@ -75,7 +75,6 @@ function BlockEditable({
   const handleKeyDown = useCallback(
     () => {
       if (actions && actions.setIsChanged) {
-        console.log("handleKeyDown");
         actions.setIsChanged(true);
       }
     }, [actions]
