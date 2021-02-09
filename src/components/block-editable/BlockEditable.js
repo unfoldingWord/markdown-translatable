@@ -72,9 +72,10 @@ function BlockEditable({
     [handleBlur, outputFilters]
   );
 
-  const handleKeyPress = useCallback(
+  const handleKeyDown = useCallback(
     () => {
       if (actions && actions.setIsChanged) {
+        console.log("handleKeyDown");
         actions.setIsChanged(true);
       }
     }, [actions]
@@ -97,7 +98,7 @@ function BlockEditable({
             contentEditable={editable}
             dangerouslySetInnerHTML={dangerouslySetInnerHTML}
             onBlur={handleRawBlur}
-            onKeyPress={handleKeyPress}
+            onKeyDown={handleKeyDown}
           />
         </pre>
       );
@@ -114,7 +115,7 @@ function BlockEditable({
           contentEditable={editable}
           dangerouslySetInnerHTML={dangerouslySetInnerHTML}
           onBlur={handleHTMLBlur}
-          onKeyPress={handleKeyPress}
+          onKeyPress={handleKeyDown}
         />
       );
     }
