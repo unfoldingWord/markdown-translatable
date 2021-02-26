@@ -33,7 +33,8 @@ turndownService.addRule('emphasis', {
   replacement: (content) => `*${content}*`,
 });
 
-const markdownToHtmlConverter = new showdown.Converter();
+const markdownToHtmlConverter = new showdown.Converter({openLinksInNewWindow: true});
+
 export const toDisplay = (content) => content.replace(/&/g, '&amp;')
   .replace(/<br\\?>/g, '\n')
   .replace(/</g, '&lt;')
