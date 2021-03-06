@@ -9,6 +9,7 @@ import {
   SectionTranslatable,
   Actions,
 } from '../';
+import Headroom from 'react-headroom';
 
 import { MarkdownContext } from '../Markdown.context'
 
@@ -66,22 +67,54 @@ function Translatable({
     (editedTranslation !== translation) || (markdownState.isChanged)
   ), [editedTranslation, translation, markdownState.isChanged]);
 
+  const onHeadroomPin = () =>
+  {
+    const el = document.getElementById("markdownTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '64px';
+    }
+  }
+
+  const onHeadroomUnfix = () =>
+  {
+    const el = document.getElementById("markdownTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '0px';
+    }
+  }
+
+  const onHeadroomUnpin = () =>
+  {
+    const el = document.getElementById("markdownTranslatableHeaderHeadroom");
+    if (el)
+    {
+      el.style.top = '0px';
+      el.style.transform = 'translate(-100%)';
+    }
+  }
+
   return (
-    <div className={classes.root}>
-      <Paper>
-        <Actions
-          sectionable={sectionable}
-          onSectionable={setSectionable}
-          blockable={blockable}
-          onBlockable={setBlockable}
-          preview={preview}
-          onPreview={setPreview}
-          changed={changed}
-          onSave={saveTranslation}
-        />
-      </Paper>
-      {component}
-    </div>
+      <div className={classes.root}>
+        <Headroom id="markdownTranslatableHeaderHeadroom" pinStart={48}
+          onPin={()=>{onHeadroomPin();}} onUnfix={()=>{onHeadroomUnfix();}} onUnpin={()=>{onHeadroomUnpin();}}
+        >
+          <Paper>
+          <Actions
+            sectionable={sectionable}
+            onSectionable={setSectionable}
+            blockable={blockable}
+            onBlockable={setBlockable}
+            preview={preview}
+            onPreview={setPreview}
+            changed={changed}
+            onSave={saveTranslation}
+          />
+          </Paper>
+        </Headroom>
+        {component}
+      </div>
   );
 };
 
