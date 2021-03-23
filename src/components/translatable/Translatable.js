@@ -4,6 +4,8 @@ import React, {
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Paper } from '@material-ui/core';
+import Headroom from 'react-headroom';
+
 import {
   DocumentTranslatable,
   SectionTranslatable,
@@ -68,18 +70,20 @@ function Translatable({
 
   return (
     <div className={classes.root}>
-      <Paper>
-        <Actions
-          sectionable={sectionable}
-          onSectionable={setSectionable}
-          blockable={blockable}
-          onBlockable={setBlockable}
-          preview={preview}
-          onPreview={setPreview}
-          changed={changed}
-          onSave={saveTranslation}
-        />
-      </Paper>
+      <Headroom pinStart={48} role='toolbar'>
+        <Paper>
+          <Actions
+            sectionable={sectionable}
+            onSectionable={setSectionable}
+            blockable={blockable}
+            onBlockable={setBlockable}
+            preview={preview}
+            onPreview={setPreview}
+            changed={changed}
+            onSave={saveTranslation}
+          />
+        </Paper>
+      </Headroom>
       {component}
     </div>
   );
