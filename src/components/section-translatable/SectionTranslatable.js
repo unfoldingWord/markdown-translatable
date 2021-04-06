@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
 import md5 from 'md5';
 import {
-  ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, ExpansionPanelActions, IconButton,
+  Accordion, AccordionSummary, AccordionDetails, AccordionActions, IconButton,
 } from '@material-ui/core';
 import { ExpandMore, ExpandLess } from '@material-ui/icons';
 
@@ -101,23 +101,23 @@ function SectionTranslatable({
   ), [expanded, titleBlock]);
 
   const component = useMemo(() => (
-    <ExpansionPanel style={style} className={classes.root} expanded={expanded}>
-      <ExpansionPanelSummary
+    <Accordion style={style} className={classes.root} expanded={expanded}>
+      <AccordionSummary
         expandIcon={<ExpandMore />}
         // classes={{content: 'summaryContent'}}
         className={classes.content}
         onClick={expandedToggle}>
         {summaryTitle}
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails className={classes.details}>
+      </AccordionSummary>
+      <AccordionDetails className={classes.details}>
         {blockTranslatables()}
-      </ExpansionPanelDetails>
-      <ExpansionPanelActions className={classes.actions}>
+      </AccordionDetails>
+      <AccordionActions className={classes.actions}>
         <IconButton onClick={expandedToggle}>
           <ExpandLess />
         </IconButton>
-      </ExpansionPanelActions>
-    </ExpansionPanel>
+      </AccordionActions>
+    </Accordion>
   ), [blockTranslatables, classes, expanded, expandedToggle, style, summaryTitle]);
 
   return (
