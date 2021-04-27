@@ -119,7 +119,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleKeyDown, handleHTMLBlur]);
+  }, [preview, markdown]);
 
   return <div className={classes.root}>{component}</div>;
 }
