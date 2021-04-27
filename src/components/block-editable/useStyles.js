@@ -15,15 +15,14 @@ export const useStyles = makeStyles(theme => ({
   markdown: {
     height: '100%',
     width: 'calc(100% - 1em)',
-    // fontSize: '1.1em',
     display: 'grid',
     whiteSpace: 'pre-wrap',
     paddingBlockStart: '1em',
     paddingBlockEnd: '1em',
-    fontSize: 'unset',
     fontFamily: 'unset',
     padding: '0 0.5em',
     lineHeight: '1.4',
+    fontSize: ({ fontSize }) => (fontSize || 'unset'),
   },
   pre: {
     margin: 0,

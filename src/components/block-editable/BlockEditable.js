@@ -1,4 +1,6 @@
-import React, { useMemo, useCallback, useContext } from 'react';
+import React, {
+  useMemo, useCallback, useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import * as helpers from '../../core/';
@@ -9,9 +11,9 @@ import {
   fromDisplay,
   toDisplay,
 } from '../../core/';
+import { MarkdownContext } from '../Markdown.context';
 import { useStyles } from './useStyles';
 
-import { MarkdownContext } from '../Markdown.context'
 
 function BlockEditable({
   markdown,
@@ -50,7 +52,7 @@ function BlockEditable({
         onEdit(_markdown);
       }
     },
-    [markdown, inputFilters, onEdit]
+    [_oldMarkdown.markdown, inputFilters, onEdit]
   );
 
   const handleHTMLBlur = useCallback(
@@ -102,9 +104,7 @@ function BlockEditable({
         </pre>
       );
     } else {
-      const dangerouslySetInnerHTML = {
-        __html: markdownToHtml({ markdown, inputFilters }),
-      };
+      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
 
       _component = (
         <div
@@ -119,7 +119,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, editable]);
+  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleKeyDown, handleHTMLBlur]);
 
   return <div className={classes.root}>{component}</div>;
 }
@@ -139,6 +139,8 @@ BlockEditable.propTypes = {
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
+  /** fontSize for Markdown class, e.g. '100%' */
+  fontSize: PropTypes.string,
 };
 
 BlockEditable.defaultProps = {
