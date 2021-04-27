@@ -23,12 +23,13 @@ function BlockEditable({
   style,
   preview,
   editable,
+  fontSize,
 }) {
   const _oldMarkdown = { markdown };
 
   const { actions } = useContext(MarkdownContext);
 
-  const classes = useStyles();
+  const classes = useStyles({ fontSize });
 
   const _style = useMemo(
     () =>
