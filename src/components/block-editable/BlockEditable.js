@@ -138,7 +138,7 @@ BlockEditable.propTypes = {
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
-  /** fontSize for Markdown class, e.g. '100%' */
+  /** fontSize e.g. '100%' */
   fontSize: PropTypes.string,
 };
 
