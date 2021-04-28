@@ -118,7 +118,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [fontSize, preview, markdown, inputFilters]);
+  }, [fontSize, preview, markdown]);
 
   return <div className={classes.root}>{component}</div>;
 }
