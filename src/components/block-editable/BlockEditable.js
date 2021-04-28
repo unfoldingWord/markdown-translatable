@@ -25,11 +25,11 @@ function BlockEditable({
   editable,
   fontSize,
 }) {
+  const classes = useStyles();
+  const { actions } = useContext(MarkdownContext);
   const _oldMarkdown = { markdown };
 
-  const { actions } = useContext(MarkdownContext);
-
-  const classes = useStyles({ fontSize });
+  console.log({ fontSize });
 
   const _style = useMemo(
     () =>
@@ -95,7 +95,7 @@ function BlockEditable({
         <pre className={classes.pre}>
           <code
             className={classes.markdown}
-            style={_style}
+            style={{ ..._style, fontSize }}
             dir='auto'
             contentEditable={editable}
             dangerouslySetInnerHTML={dangerouslySetInnerHTML}
@@ -109,7 +109,7 @@ function BlockEditable({
 
       _component = (
         <div
-          style={_style}
+          style={{ ..._style, fontSize }}
           className={classes.html}
           dir='auto'
           contentEditable={editable}
@@ -120,7 +120,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleKeyDown, handleHTMLBlur]);
+  }, [fontSize, preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, editable, handleRawBlur, handleKeyDown, handleHTMLBlur]);
 
   return <div className={classes.root}>{component}</div>;
 }

@@ -22,7 +22,7 @@ export const useStyles = makeStyles(theme => ({
     fontFamily: 'unset',
     padding: '0 0.5em',
     lineHeight: '1.4',
-    fontSize: ({ fontSize }) => (fontSize || 'unset'),
+    fontSize: 'unset',
   },
   pre: {
     margin: 0,
