@@ -29,8 +29,6 @@ function BlockEditable({
   const { actions } = useContext(MarkdownContext);
   const _oldMarkdown = { markdown };
 
-  console.log({ fontSize });
-
   const _style = useMemo(
     () =>
       helpers.isHebrew(markdown) ? { ...style, fontSize: '1.5em' } : style,
