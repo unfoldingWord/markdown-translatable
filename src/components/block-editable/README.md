@@ -25,6 +25,7 @@ initialState = {
       console.log('Setting new state: ' + _markdown);
       setState({ _markdown });
     }}
+    fontSize="100%"
   />
 </div>;
 ```

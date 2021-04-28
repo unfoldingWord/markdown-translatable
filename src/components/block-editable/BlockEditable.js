@@ -1,4 +1,6 @@
-import React, { useMemo, useCallback, useContext } from 'react';
+import React, {
+  useMemo, useCallback, useContext,
+} from 'react';
 import PropTypes from 'prop-types';
 
 import * as helpers from '../../core/';
@@ -9,9 +11,9 @@ import {
   fromDisplay,
   toDisplay,
 } from '../../core/';
+import { MarkdownContext } from '../Markdown.context';
 import { useStyles } from './useStyles';
 
-import { MarkdownContext } from '../Markdown.context'
 
 function BlockEditable({
   markdown,
@@ -21,12 +23,11 @@ function BlockEditable({
   style,
   preview,
   editable,
+  fontSize,
 }) {
-  const _oldMarkdown = { markdown };
-
-  const { actions } = useContext(MarkdownContext);
-
   const classes = useStyles();
+  const { actions } = useContext(MarkdownContext);
+  const _oldMarkdown = { markdown };
 
   const _style = useMemo(
     () =>
@@ -50,7 +51,7 @@ function BlockEditable({
         onEdit(_markdown);
       }
     },
-    [markdown, inputFilters, onEdit]
+    [_oldMarkdown.markdown, inputFilters, onEdit]
   );
 
   const handleHTMLBlur = useCallback(
@@ -92,7 +93,7 @@ function BlockEditable({
         <pre className={classes.pre}>
           <code
             className={classes.markdown}
-            style={_style}
+            style={{ ..._style, fontSize }}
             dir='auto'
             contentEditable={editable}
             dangerouslySetInnerHTML={dangerouslySetInnerHTML}
@@ -102,13 +103,11 @@ function BlockEditable({
         </pre>
       );
     } else {
-      const dangerouslySetInnerHTML = {
-        __html: markdownToHtml({ markdown, inputFilters }),
-      };
+      const dangerouslySetInnerHTML = { __html: markdownToHtml({ markdown, inputFilters }) };
 
       _component = (
         <div
-          style={_style}
+          style={{ ..._style, fontSize }}
           className={classes.html}
           dir='auto'
           contentEditable={editable}
@@ -119,7 +118,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [preview, markdown, editable]);
+  }, [fontSize, preview, markdown, editable]);
 
   return <div className={classes.root}>{component}</div>;
 }
@@ -139,6 +138,8 @@ BlockEditable.propTypes = {
   preview: PropTypes.bool,
   /** Enable/Disable editability. */
   editable: PropTypes.bool,
+  /** fontSize e.g. '100%' */
+  fontSize: PropTypes.string,
 };
 
 BlockEditable.defaultProps = {
