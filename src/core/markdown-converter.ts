@@ -85,7 +85,7 @@ export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
   _markdown = _markdown.replace(/\<br\>\>/g, '  \<br\>\>');
 
   // Prevent "    *" from being considered as <pre><code>....
-  _markdown = _markdown.replace('    *', '*');
+  _markdown = _markdown.replace(/^\ \ \ \ \*/mg, '*');
 
   _markdown = filter({ string: _markdown, filters: inputFilters });
 
