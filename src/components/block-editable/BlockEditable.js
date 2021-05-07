@@ -25,7 +25,7 @@ function BlockEditable({
   editable,
   fontSize,
 }) {
-  const classes = useStyles();
+  const classes = useStyles({ fontSize });
   const { actions } = useContext(MarkdownContext);
   const _oldMarkdown = { markdown };
 
@@ -118,7 +118,7 @@ function BlockEditable({
       );
     }
     return _component;
-  }, [fontSize, preview, markdown, editable]);
+  }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, fontSize, editable, handleRawBlur, handleKeyDown, handleHTMLBlur]);
 
   return <div className={classes.root}>{component}</div>;
 }
