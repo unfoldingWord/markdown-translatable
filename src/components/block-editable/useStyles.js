@@ -11,7 +11,7 @@ export const useStyles = makeStyles(() => ({
     'display': 'grid',
     'padding': '0 0.5em',
     'lineHeight': '1.4',
-    '& h1, h2, h3, h4, h5, h6': { fontSize: ({ fontSize }) => (fontSize ? fontSize : 'unset') },
+    '& h1, h2, h3, h4, h5, h6': { fontSize: ({ fontSize }) => (fontSize ? `${fontSize} !important` : 'unset') },
   },
   markdown: {
     height: '100%',
