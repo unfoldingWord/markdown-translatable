@@ -6,12 +6,12 @@ export const useStyles = makeStyles(() => ({
     width: '100%',
   },
   html: {
-    height: '100%',
-    width: 'calc(100% - 1em)',
-    display: 'grid',
-    padding: '0 0.5em',
-    lineHeight: '1.4',
-    fontSize: ({ fontSize }) => (fontSize ? fontSize : 'unset'),
+    'height': '100%',
+    'width': 'calc(100% - 1em)',
+    'display': 'grid',
+    'padding': '0 0.5em',
+    'lineHeight': '1.4',
+    '& h1': { fontSize: ({ fontSize }) => (fontSize ? fontSize : 'unset') },
   },
   markdown: {
     height: '100%',
