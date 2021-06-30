@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import {FileContext} from 'gitea-react-toolkit';
 
 export const MarkdownContext = React.createContext({ state: {}, actions: [] });
 
@@ -10,6 +11,14 @@ export function MarkdownContextProvider({
 
   const state = { isChanged };
   const actions = { setIsChanged };
+
+  const { state: file, stateValues: fileStateValues, actions: fileActions } = useContext(FileContext);
+
+  useEffect(() => {
+    if (fileStateValues && fileActions) {
+      fileActions.setIsChanged(true);
+    }
+  }, [isChanged]);
 
   const context = {
     state,
