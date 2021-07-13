@@ -16,7 +16,7 @@ export function MarkdownContextProvider({
 
   useEffect(() => {
     if (fileStateValues && fileActions) {
-      fileActions.setIsChanged(true);
+      fileActions.setIsChanged(isChanged);
     }
   }, [isChanged]);
 
