@@ -23,7 +23,8 @@ function Translatable({
   inputFilters,
   outputFilters,
   onTranslation,
-  doPinToolbar = true
+  doPinToolbar = true,
+  onContentIsDirty,
 }) {
   const classes = useStyles();
   const [preview, setPreview] = useState(true);
@@ -43,6 +44,15 @@ function Translatable({
       markdownActions.setIsChanged(false);
     }
   }, [onTranslation, editedTranslation, markdownActions.setIsChanged]);
+  
+  // Push "isChanged," so app knows when SAVE button is enabled.
+  // See also Translatable in markdown-translatable.
+  useEffect(() => {
+    console.log("md-t // dirty // ", markdownState, onContentIsDirty);
+    if (onContentIsDirty) {
+      onContentIsDirty(markdownState.isChanged);
+    }
+  }, [markdownState.isChanged, onContentIsDirty]);
 
   const component = useMemo(() => {
     const props = {
