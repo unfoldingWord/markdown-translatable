@@ -12,7 +12,8 @@ export function MarkdownContextProvider({
   const state = { isChanged };
   const actions = { setIsChanged };
 
-  const { state: file, stateValues: fileStateValues, actions: fileActions } = useContext(FileContext);
+  // Optional context:
+  const { state: file, stateValues: fileStateValues, actions: fileActions } = useContext(FileContext) || {state: null, stateValues: null, actions: null};
 
   useEffect(() => {
     if (fileStateValues && fileActions) {
