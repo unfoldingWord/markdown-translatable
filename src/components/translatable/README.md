@@ -18,6 +18,7 @@ function Component() {
           translation={translation}
           onTranslation={setTranslation}
           sectionable={true}
+          doPinToolbar={false}
         />
     </MarkdownContextProvider>
   );
@@ -123,6 +124,7 @@ React.useEffect(() => {
     inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
     outputFilters={[]}
     sectionable={true}
+    doPinToolbar={false}
   />
 </>
 ```
@@ -275,6 +277,7 @@ React.useEffect(() => {
     inputFilters={[[/<br>/gi, "\n"],[/(<u>|<\/u>)/gi, '__']]}
     outputFilters={[]}
     sectionable={true}
+    doPinToolbar={false}
   />
 </>
 ```
