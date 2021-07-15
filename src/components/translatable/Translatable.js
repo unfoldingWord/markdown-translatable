@@ -48,7 +48,6 @@ function Translatable({
   // Push "isChanged," so app knows when SAVE button is enabled.
   // See also Translatable in markdown-translatable.
   useEffect(() => {
-    console.log("md-t // dirty // ", markdownState, onContentIsDirty);
     if (onContentIsDirty) {
       onContentIsDirty(markdownState.isChanged);
     }
