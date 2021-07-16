@@ -6,11 +6,12 @@ export const useStyles = makeStyles(theme => ({
     width: '100%',
   },
   html: {
-    height: '100%',
-    width: 'calc(100% - 1em)',
-    display: 'grid',
-    padding: '0 0.5em',
-    lineHeight: '1.4',
+    'height': '100%',
+    'width': 'calc(100% - 1em)',
+    'display': 'grid',
+    'padding': '0 0.5em',
+    'lineHeight': '1.4',
+    '&:focus-visible': { outline: '#38ADDF auto 1px' },
   },
   markdown: {
     height: '100%',
