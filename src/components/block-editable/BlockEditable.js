@@ -46,6 +46,7 @@ function BlockEditable({
         inputFilters: inputFilters,
       });
 
+      // TODO: do we need to calculate HTML each time??
       if (oldHTML !== newHTML || _oldMarkdown.markdown !== _markdown) {
         _oldMarkdown.markdown = _markdown;
         onEdit(_markdown);
@@ -73,7 +74,29 @@ function BlockEditable({
     [handleBlur, outputFilters]
   );
 
-  const handleKeyDown = useCallback(
+  const handleKeyPress = useCallback(
+    (keycode) => {
+      if (actions && actions.setIsChanged) {
+        actions.setIsChanged(true);
+      }
+    }, [actions]
+  );
+
+  const handledKeyCodes = [8/*Delete/Backspace*/];
+
+  const handleKeyUp = useCallback(
+    (event) => {
+      if (actions && actions.setIsChanged) {
+        if (handledKeyCodes.includes(event.keyCode)) {
+          // NOTE: we don't want to convert HTML on key keyUp.
+          // So we cant test for changes.
+          actions.setIsChanged(true);
+        }
+      }
+    }, [actions]
+  );
+
+  const handleCutPaste = useCallback(
     () => {
       if (actions && actions.setIsChanged) {
         actions.setIsChanged(true);
@@ -101,7 +124,10 @@ function BlockEditable({
             contentEditable={editable}
             dangerouslySetInnerHTML={dangerouslySetInnerHTML}
             onBlur={handleRawBlur}
-            onKeyDown={handleKeyDown}
+            onKeyPress={handleKeyPress}
+            onKeyUp={handleKeyUp}
+            onCut={handleCutPaste}
+            onPaste={handleCutPaste}
           />
         </pre>
       );
@@ -116,7 +142,10 @@ function BlockEditable({
           contentEditable={editable}
           dangerouslySetInnerHTML={dangerouslySetInnerHTML}
           onBlur={handleHTMLBlur}
-          onKeyPress={handleKeyDown}
+          onKeyPress={handleKeyPress}
+          onKeyUp={handleKeyUp}
+          onCut={handleCutPaste}
+          onPaste={handleCutPaste}
         />
       );
     }
