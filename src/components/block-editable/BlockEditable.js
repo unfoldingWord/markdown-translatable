@@ -83,13 +83,11 @@ export default function BlockEditable({
     if (actions && actions.setIsChanged) {
       actions.setIsChanged(true);
     }
-  };
 
-  // const component = useMemo(() => {
-  //   let _component;
-  // }
-  //   return _component;
-  // }, [preview, markdown, inputFilters, classes.pre, classes.markdown, classes.html, _style, fontSize, editable, handleRawBlur, handleKeyPress, handleKeyUp, handleCutPaste, handleHTMLBlur]);
+    if (actions && actions.setIsAutoSaveChanged) {
+      actions.setIsAutoSaveChanged(true);
+    }
+  };
 
   return (
     <div className={classes.root}>
