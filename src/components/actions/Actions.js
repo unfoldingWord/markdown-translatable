@@ -11,7 +11,6 @@ import {
   Subject,
   ViewStream,
   ViewStreamOutlined,
-  LocalGasStation,
 } from '@material-ui/icons';
 import { localString } from '../../core/localStrings';
 
