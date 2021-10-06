@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import {
   markdownToHtml,
   htmlToMarkdown,
-  filter,
   fromDisplay,
   toDisplay,
   isHebrew,
+  filter,
 } from '../../core/';
 import { MarkdownContext } from '../Markdown.context';
 import { useStyles } from './useStyles';
