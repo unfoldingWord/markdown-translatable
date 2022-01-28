@@ -128,6 +128,7 @@ function BlockEditable({
             onKeyUp={handleKeyUp}
             onCut={handleCutPaste}
             onPaste={handleCutPaste}
+            data-test="blockeditable-editable-markdown-pre"
           />
         </pre>
       );
@@ -146,6 +147,7 @@ function BlockEditable({
           onKeyUp={handleKeyUp}
           onCut={handleCutPaste}
           onPaste={handleCutPaste}
+          data-test="blockeditable-editable-markdown"
         />
       );
     }
