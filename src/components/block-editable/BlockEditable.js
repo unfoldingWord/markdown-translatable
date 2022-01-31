@@ -116,6 +116,7 @@ export default function BlockEditable({
             onKeyUp={handleKeyUp}
             onCut={handleCutPaste}
             onPaste={handleCutPaste}
+            data-test="blockeditable-editable-markdown-rawmarkdown"
             dangerouslySetInnerHTML={{ __html: markdownToHtml({ markdown, inputFilters }) }}
           />
       }
@@ -181,6 +182,7 @@ const RawMarkdown = ({
         onKeyUp={handleKeyUp}
         onCut={handleCutPaste}
         onPaste={handleCutPaste}
+        data-test="blockeditable-editable-markdown-pre"
       />
     </pre>
   );
