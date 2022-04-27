@@ -10,6 +10,7 @@ import {
 } from '../../core/';
 import { MarkdownContext } from '../Markdown.context';
 import { useStyles } from './useStyles';
+import { MarkdownEditor } from 'simple-text-editor-rcl';
 
 export default function BlockEditable({
   markdown,
@@ -93,17 +94,22 @@ export default function BlockEditable({
     <div className={classes.root}>
       {
         !preview ?
-          <RawMarkdown
-            _style={_style}
-            classes={classes}
-            fontSize={fontSize}
-            markdown={markdown}
+          <MarkdownEditor
+            text={markdown}
+            // onText: setText,
+            sectionable={false}
+            blockable={false}
+            preview={true}
+            // _style={_style}
+            // classes={classes}
+            // fontSize={fontSize}
+            // markdown={markdown}
             editable={editable}
-            handleKeyUp={handleKeyUp}
-            inputFilters={inputFilters}
-            handleRawBlur={handleRawBlur}
-            handleKeyPress={handleKeyPress}
-            handleCutPaste={handleCutPaste}
+            // handleKeyUp={handleKeyUp}
+            // inputFilters={inputFilters}
+            // handleRawBlur={handleRawBlur}
+            // handleKeyPress={handleKeyPress}
+            // handleCutPaste={handleCutPaste}
           />
           :
           <div

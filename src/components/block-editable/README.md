@@ -2,7 +2,8 @@
 
 ```jsx
 initialState = {
-  markdown: '**Hello** __world__',
+  markdown: `# Heading 1
+  **Hello** __world__`,
   preview: false,
 };
 

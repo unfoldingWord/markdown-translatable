@@ -30,6 +30,6 @@ export const useStyles = makeStyles(theme => ({
     margin: 0,
     fontFamily: 'unset',
     fontSize: 'unset',
-    whiteSpace: 'normal',
+    whiteSpace: 'pre-wrap',
   },
 }));
