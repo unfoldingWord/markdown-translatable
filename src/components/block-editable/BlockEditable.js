@@ -170,10 +170,9 @@ const RawMarkdown = ({
   const dangerouslySetInnerHTML = { __html: code };
 
   return (
-    <pre className={classes.pre}>
-      <code
+    <div 
         className={classes.markdown}
-        style={{ ..._style, fontSize }}
+        // style={{ ..._style, fontSize, whiteSpace: 'pre-wrap' }}
         dir='auto'
         contentEditable={editable}
         dangerouslySetInnerHTML={dangerouslySetInnerHTML}
@@ -183,8 +182,8 @@ const RawMarkdown = ({
         onCut={handleCutPaste}
         onPaste={handleCutPaste}
         data-test="blockeditable-editable-markdown-pre"
-      />
-    </pre>
+      >
+    </div>
   );
 };
 
