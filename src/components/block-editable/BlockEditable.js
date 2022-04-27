@@ -89,6 +89,13 @@ export default function BlockEditable({
     }
   };
 
+  document.querySelector('[contenteditable]')
+    ?.addEventListener('paste', function (e) {
+    e.preventDefault()
+    var text = e.clipboardData.getData('text/plain')
+    document.execCommand('insertText', false, text)
+    })
+
   return (
     <div className={classes.root}>
       {
