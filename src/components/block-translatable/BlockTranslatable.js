@@ -1,7 +1,7 @@
 import React, {useCallback, useMemo} from 'react';
 import PropTypes from 'prop-types';
-import {makeStyles} from '@material-ui/core/styles';
-import {Grid} from '@material-ui/core';
+import {makeStyles} from '@mui/styles';
+import {Grid} from '@mui/material';
 import BlockEditable from '../block-editable';
 
 function BlockTranslatable({

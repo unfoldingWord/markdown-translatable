@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { IconButton, Tooltip } from '@mui/material';
 import {
   Save,
   SaveOutlined,
@@ -11,7 +11,7 @@ import {
   Subject,
   ViewStream,
   ViewStreamOutlined,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 import { localString } from '../../core/localStrings';
 
 function Actions({
@@ -110,10 +110,10 @@ Actions.propTypes = {
 const useStyles = makeStyles(theme => ({
   actions: {
     textAlign: 'right',
-    paddingRight: `${theme.spacing(1.5)}px`,
+    // paddingRight: `${theme.spacing(1.5)}px`,
   },
   action: {
-    marginLeft: `${theme.spacing(1)}px`,
+    // marginLeft: `${theme.spacing(1)}px`,
   }
 }));
 

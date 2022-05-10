@@ -2,8 +2,8 @@ import React, {
   useState, useEffect, useCallback, useContext, useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { makeStyles } from '@mui/styles';
+import { Paper } from '@mui/material';
 import Headroom from 'react-headroom';
 
 import {

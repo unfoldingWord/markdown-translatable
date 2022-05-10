@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useMemo, useCallback, useReducer,
 } from 'react';
 import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import md5 from 'md5';
 
 import SectionTranslatable from '../section-translatable';
@@ -13,7 +13,9 @@ import {
 } from '../../core/';
 
 import { itemsReducer } from '../../core/itemsReducer';
-const useStyles = makeStyles(theme => ({ root: { marginTop: `${theme.spacing(2)}px` } }));
+const useStyles = makeStyles(theme => ({ 
+  // root: { marginTop: `${theme.spacing(2)}px` } 
+}));
 
 function DocumentTranslatable({
   original,

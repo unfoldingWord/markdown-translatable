@@ -6,8 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import md5 from 'md5';
 import {
   Accordion, AccordionSummary, AccordionDetails, AccordionActions, IconButton,
-} from '@material-ui/core';
-import { ExpandMore, ExpandLess } from '@material-ui/icons';
+} from '@mui/material';
+import { ExpandMore, ExpandLess } from '@mui/icons-material';
 
 import BlockTranslatable from '../block-translatable';
 
