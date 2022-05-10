@@ -89,7 +89,8 @@ export default function BlockEditable({
     }
   };
 
-  document.querySelector('[contenteditable]')
+  // document.querySelector('[contenteditable]')
+  document.querySelector('#rawmd')
     ?.addEventListener('paste', function (e) {
     e.preventDefault()
     var text = e.clipboardData.getData('text/plain')
@@ -110,7 +111,7 @@ export default function BlockEditable({
             inputFilters={inputFilters}
             handleRawBlur={handleRawBlur}
             handleKeyPress={handleKeyPress}
-            handleCutPaste={handleCutPaste}
+            handleCutPaste={handleCutPaste}          
           />
           :
           <div
@@ -186,9 +187,10 @@ const RawMarkdown = ({
         onBlur={handleRawBlur}
         onKeyPress={handleKeyPress}
         onKeyUp={handleKeyUp}
-        onCut={handleCutPaste}
-        onPaste={handleCutPaste}
+        // onCut={handleCutPaste}
+        // onPaste={handleCutPaste}
         data-test="blockeditable-editable-markdown-pre"
+        id={"rawmd"}
       >
     </div>
   );
