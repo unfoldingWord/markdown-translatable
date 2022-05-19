@@ -113,7 +113,6 @@ export default function BlockEditable({
             style={{ ..._style, fontSize }}
             className={classes.html}
             dir='auto'
-            contentEditable={editable}
             onBlur={handleHTMLBlur}
             onKeyPress={handleKeyPress}
             onKeyUp={handleKeyUp}

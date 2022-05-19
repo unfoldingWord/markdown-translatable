@@ -27,7 +27,7 @@ function Translatable({
   onContentIsDirty,
 }) {
   const classes = useStyles();
-  const [preview, setPreview] = useState(true);
+  const [preview, setPreview] = useState(false);
   const [sectionable, setSectionable] = useState(true);
   const [blockable, setBlockable] = useState(true);
   const [editedTranslation, setEditedTranslation] = useState(translation);
