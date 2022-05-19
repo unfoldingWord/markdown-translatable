@@ -35,7 +35,7 @@ function Actions({
   const toggleBlockable = useCallback(() => _onBlockable(!blockable), [blockable, _onBlockable]);
 
   const saveIcon = useMemo(() => (changed ? <Save /> : <SaveOutlined />), [changed]);
-  const previewIcon = useMemo(() => (!preview ? <Pageview /> : <PageviewOutlined />), [preview]);
+  const previewIcon = useMemo(() => (preview ? <Pageview /> : <PageviewOutlined />), [preview]);
   const sectionableIcon = useMemo(() => (sectionable ? <ViewStream /> : <ViewStreamOutlined /> ), [sectionable]);
   const blockableIcon = useMemo(() => (blockable ? <ShortText /> : <Subject />), [blockable]);
 
