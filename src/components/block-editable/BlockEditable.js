@@ -80,9 +80,12 @@ export default function BlockEditable({
   };
 
   const handleCutPaste = (event) => {
-    const pastedData = event.clipboardData.getData('text/plain');
-    event.preventDefault();
-    document.execCommand("insertText", false, pastedData);
+    if ( 'paste' === event.type) {
+      const pastedData = event.clipboardData.getData('text/plain');
+      event.preventDefault();
+      document.execCommand("insertText", false, pastedData);
+    }
+
     if (actions && actions.setIsChanged) {
       actions.setIsChanged(true);
     }
