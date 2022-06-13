@@ -36,7 +36,7 @@ describe('Markdown to HTML Converter', () => {
   it(`convert RC link markdown to html`, () => {
     generateTest('rc-link');
   });
-  
+
   it(`convert hyperlink markdown to html`, () => {
     generateTest('hyperlink');
   });
