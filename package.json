@@ -24,7 +24,7 @@
     "build": "styleguidist build",
     "deploy": "git push",
     "test": "jest",
-    "prepublishOnly": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline --extensions \".ts,.js\"",
+    "prepack": "rm -fr ./dist & babel ./src --out-dir ./dist -s inline --extensions \".ts,.js\"",
     "postpublish": ""
   },
   "browserslist": [
