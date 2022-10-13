@@ -62,9 +62,9 @@ export default function BlockEditable({
   };
 
   const handleKeyPress = (keycode) => {
-    if (actions && actions.setIsChanged) {
+    // if (actions && actions.setIsChanged) {
       actions.setIsChanged(true);
-    }
+    // }
   };
 
   const handledKeyCodes = [8/*Delete/Backspace*/];
