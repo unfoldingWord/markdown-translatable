@@ -27,6 +27,8 @@ function SectionTranslatable({
   expanded,
   blockable,
   style,
+  translationFontFamily,
+  originalFontFamily,
 }) {
   const classes = useStyles();
   const [editedTranslation, setEditedTranslation] = useState(translation);
@@ -88,6 +90,8 @@ function SectionTranslatable({
           outputFilters={outputFilters}
           onTranslation={_onTranslation}
           preview={preview}
+          originalFontFamily={originalFontFamily}
+          translationFontFamily={translationFontFamily}
         />
       );
     };
@@ -148,6 +152,10 @@ SectionTranslatable.propTypes = {
   outputFilters: PropTypes.array,
   /** CSS for the component. */
   style: PropTypes.object,
+  /** CSS attribute for custom font */
+  translationFontFamily: PropTypes.string,
+  /** CSS attribute for custom font */
+  originalFontFamily: PropTypes.string,
 };
 
 SectionTranslatable.defaultProps = {
