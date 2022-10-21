@@ -61,7 +61,8 @@ export default function BlockEditable({
     handleBlur(_markdown);
   };
 
-  const handleKeyPress = (keycode) => {
+  const handleKeyPress = (e) => {
+    console.log("pppppppppppppppp",e)
     // if (actions && actions.setIsChanged) {
       actions.setIsChanged(true);
     // }
@@ -70,13 +71,14 @@ export default function BlockEditable({
   const handledKeyCodes = [8/*Delete/Backspace*/];
 
   const handleKeyUp = (event) => {
-    if (actions && actions.setIsChanged) {
-      if (handledKeyCodes.includes(event.keyCode)) {
+    console.log("hhhhhhhhhkkkkkuuuuu",event)
+    // if (actions && actions.setIsChanged) {
+      // if (handledKeyCodes.includes(event.keyCode)) {
         // NOTE: we don't want to convert HTML on key keyUp.
         // So we cant test for changes.
         actions.setIsChanged(true);
-      }
-    }
+      // }
+    // }
   };
 
   const handleCutPaste = (event) => {
@@ -117,8 +119,9 @@ export default function BlockEditable({
             className={classes.html}
             dir='auto'
             onBlur={handleHTMLBlur}
-            onKeyPress={handleKeyPress}
+            onKeyPress={handleKeyUp}
             onKeyUp={handleKeyUp}
+            onKeyDown = {handleKeyPress}
             onCut={handleCutPaste}
             onPaste={handleCutPaste}
             data-test="blockeditable-editable-markdown-rawmarkdown"
@@ -185,6 +188,7 @@ const RawMarkdown = ({
         onBlur={handleRawBlur}
         onKeyPress={handleKeyPress}
         onKeyUp={handleKeyUp}
+        onKeyDown = {handleKeyPress}
         onCut={handleCutPaste}
         onPaste={handleCutPaste}
         data-test="blockeditable-editable-markdown-pre"
