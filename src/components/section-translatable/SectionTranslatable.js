@@ -96,7 +96,7 @@ function SectionTranslatable({
       );
     };
     return _blocksTranslatables;
-  }, [inputFilters, originalBlocks, outputFilters, preview, setTranslationBlock, translationBlocks]);
+  }, [inputFilters, originalBlocks, outputFilters, preview, setTranslationBlock, translationBlocks, originalFontFamily, translationFontFamily]);
 
   const titleBlock = originalBlocks[0].split('\n\n')[0] || translationBlocks[0].split('\n\n')[0];
 
