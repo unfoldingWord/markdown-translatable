@@ -56,7 +56,6 @@ function Translatable({
   }, [markdownState.isChanged, onContentIsDirty]);
 
   const component = useMemo(() => {
-    console.log('rcl ont', translationFontFamily);
     const props = {
       original, translation: editedTranslation, onTranslation: setEditedTranslation,
       preview, onPreview: setPreview, inputFilters, outputFilters, blockable,
