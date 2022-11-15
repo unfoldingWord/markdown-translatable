@@ -24,6 +24,8 @@ function DocumentTranslatable({
   onTranslation,
   blockable,
   style,
+  translationFontFamily,
+  originalFontFamily,
 }) {
   const classes = useStyles();
   const [sectionFocus, setSectionFocus] = useState(0);
@@ -96,6 +98,8 @@ function DocumentTranslatable({
           preview={preview}
           blockable={blockable}
           style={style}
+          originalFontFamily={originalFontFamily}
+          translationFontFamily={translationFontFamily}
         />
       );
     };
@@ -129,6 +133,10 @@ DocumentTranslatable.propTypes = {
   outputFilters: PropTypes.array,
   /** CSS for the component. */
   style: PropTypes.object,
+  /** CSS attribute for custom font */
+  translationFontFamily: PropTypes.string,
+  /** CSS attribute for custom font */
+  originalFontFamily: PropTypes.string,
 };
 
 DocumentTranslatable.defaultProps = {

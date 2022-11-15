@@ -12,8 +12,10 @@ function BlockTranslatable({
   outputFilters,
   style,
   preview,
+  originalFontFamily,
+  translationFontFamily,
 }) {
-  const classes = useStyles();
+  const classes = useStyles({ originalFontFamily, translationFontFamily });
 
   const originalBlock = useMemo(() => (
     <BlockEditable
@@ -69,6 +71,10 @@ BlockTranslatable.propTypes = {
   style: PropTypes.object,
   /** Display Raw Markdown or HTML. */
   preview: PropTypes.bool,
+  /** CSS attribute for custom font */
+  translationFontFamily: PropTypes.string,
+  /** CSS attribute for custom font */
+  originalFontFamily: PropTypes.string,
 };
 
 BlockTranslatable.defaultProps = {
@@ -83,11 +89,13 @@ BlockTranslatable.defaultProps = {
 const useStyles = makeStyles(theme => ({
   root: {
   },
-  original: {
+  original: props => ({
     background: '#eee4',
-  },
-  translation: {
-  },
+    fontFamily: props.originalFontFamily || 'inherit',
+  }),
+  translation: props => ({
+    fontFamily: props.translationFontFamily || 'inherit',
+  }),
 }));
 
 export default BlockTranslatable;
