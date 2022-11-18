@@ -61,13 +61,17 @@ export default function BlockEditable({
     handleBlur(_markdown);
   };
 
-  const handleKeyPress = (keycode) => {
-    if (actions && actions.setIsChanged) {
+  const handleArrayKey = [37, 38, 39, 40]
+
+  const handleKeyPress = (event) => {
+    if (handleArrayKey.includes(event.keyCode)){
+      console.log("arrow key is not required")
+    }else{
       actions.setIsChanged(true);
     }
   };
 
-  const handledKeyCodes = [8/*Delete/Backspace*/];
+  const handledKeyCodes = [8, 46/*Delete/Backspace*/];
 
   const handleKeyUp = (event) => {
     if (actions && actions.setIsChanged) {
@@ -119,6 +123,7 @@ export default function BlockEditable({
             onBlur={handleHTMLBlur}
             onKeyPress={handleKeyPress}
             onKeyUp={handleKeyUp}
+            onKeyDown = {handleKeyPress}
             onCut={handleCutPaste}
             onPaste={handleCutPaste}
             data-test="blockeditable-editable-markdown-rawmarkdown"
@@ -185,6 +190,7 @@ const RawMarkdown = ({
         onBlur={handleRawBlur}
         onKeyPress={handleKeyPress}
         onKeyUp={handleKeyUp}
+        onKeyDown = {handleKeyPress}
         onCut={handleCutPaste}
         onPaste={handleCutPaste}
         data-test="blockeditable-editable-markdown-pre"
