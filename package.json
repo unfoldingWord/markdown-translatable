@@ -15,7 +15,7 @@
     "prop-types": "^15.7.2",
     "react-headroom": "^3.1.0",
     "react-markdown": "4.0.6",
-    "showdown": "^1.9.1",
+    "showdown": "^2.1.0",
     "turndown": "^7.0.0",
     "turndown-plugin-gfm": "^1.0.2"
   },

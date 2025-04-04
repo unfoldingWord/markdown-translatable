@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useReducer, useMemo, useCallback,
 } from 'react';
 import PropTypes from 'prop-types';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'react-markdown';
 import md5 from 'md5';
 import {
   Accordion, AccordionSummary, AccordionDetails, AccordionActions, IconButton,
@@ -101,7 +101,7 @@ function SectionTranslatable({
   const titleBlock = originalBlocks[0].split('\n\n')[0] || translationBlocks[0].split('\n\n')[0];
 
   const summaryTitle = useMemo(() => (
-    (expanded) ? <></> : <ReactMarkdown source={titleBlock} escapeHtml={false} />
+    (expanded) ? <></> : <Markdown source={titleBlock} escapeHtml={false} />
   ), [expanded, titleBlock]);
 
   const component = useMemo(() => (
