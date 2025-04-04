@@ -87,10 +87,14 @@ export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
   // Prevent "    *" from being considered as <pre><code>....
   _markdown = _markdown.replace(/^\ \ \ \ \*/mg, '*');
 
+  // Prevent space after square bracket before parenthesis from being considered as a link.
+  _markdown = _markdown.replaceAll('] (', '] &&& (');
+
   _markdown = filter({ string: _markdown, filters: inputFilters });
 
   let html = markdownToHtmlConverter.makeHtml(_markdown);
   html = html.replace(/<br\s.\\?>/ig, '<br/>');
+  html = html.replaceAll('] &&& (', '] (');
 
   // Insert NBSP into empty blocks.
   // See above (htmlToMarkdown) where this NBSP is later stripped out.
