@@ -88,13 +88,13 @@ export const markdownToHtml = ({ markdown, inputFilters = [] }) => {
   _markdown = _markdown.replace(/^ {4}\*/mg, '*');
 
   // Prevent space after square bracket before parenthesis from being considered as a link.
-  _markdown = _markdown.replace(/\] +\(/g, '&&&&&');
+  _markdown = _markdown.replace(/\] +\(/g, '@@@@@');
 
   _markdown = filter({ string: _markdown, filters: inputFilters });
 
   let html = markdownToHtmlConverter.makeHtml(_markdown);
   html = html.replace(/<br\s.\\?>/ig, '<br/>');
-  html = html.replaceAll('&&&&&', '] (');
+  html = html.replace(/@@@@@/g, '] (');
 
   // Insert NBSP into empty blocks.
   // See above (htmlToMarkdown) where this NBSP is later stripped out.
