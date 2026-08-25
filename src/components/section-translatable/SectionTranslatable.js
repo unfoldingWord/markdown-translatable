@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useReducer, useMemo, useCallback,
+  useEffect, useReducer, useMemo, useCallback, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import ReactMarkdown from 'react-markdown';
@@ -31,7 +31,8 @@ function SectionTranslatable({
   originalFontFamily,
 }) {
   const classes = useStyles();
-  const [editedTranslation, setEditedTranslation] = useState(translation);
+  // 'prop' = syncing controlled translation; 'edit' = user/child change that may emit upward.
+  const changeOriginRef = useRef('prop');
 
   const originalBlocks = useMemo(() => (
     (blockable) ? blocksFromMarkdown({ markdown: original }) : [original]
@@ -46,26 +47,27 @@ function SectionTranslatable({
 
   // update translationBlocks to match blockable chained through _translationBlocks
   useEffect(() => {
+    changeOriginRef.current = 'prop';
     dispatch({ type: 'SET_ITEMS', value: { items: _translationBlocks } });
   }, [_translationBlocks]);
-  // update onTranslation when translationBlocks are updated
+  // Only emit upward for edit-originated changes (not prop-driven normalize).
   useEffect(() => {
     const _translation = markdownFromBlocks({ blocks: translationBlocks });
-    setEditedTranslation(_translation);
-  }, [translationBlocks]);
 
-  useEffect(() => {
-    if (editedTranslation !== translation) {
-      onTranslation(editedTranslation);
-      // console.log('SectionTranslatable got updated editedTranslation');
+    if (changeOriginRef.current === 'edit' && _translation !== translation) {
+      // Clear before notify so a parent rerender with a new callback identity
+      // cannot re-enter this effect and emit again before translation updates.
+      changeOriginRef.current = 'prop';
+      onTranslation(_translation);
     }
-  }, [editedTranslation, onTranslation, translation]);
+  }, [translationBlocks, onTranslation, translation]);
 
   const expandedToggle = useCallback(() => {
     _onExpanded(!expanded);
   }, [_onExpanded, expanded]);
 
   const setTranslationBlock = useCallback(({ index, item }) => {
+    changeOriginRef.current = 'edit';
     dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
 
@@ -79,7 +81,8 @@ function SectionTranslatable({
       const _onTranslation = (item) => setTranslationBlock({ index: i, item });
       const translationBlock = translationBlocks[i];
       const originalBlock = originalBlocks[i];
-      const key = i + md5(JSON.stringify(originalBlock + translationBlock));
+      // Stable across translation edits; remount when source block identity changes.
+      const key = `${i}:${md5(JSON.stringify(originalBlock || ''))}`;
 
       _blocksTranslatables.push(
         <BlockTranslatable
