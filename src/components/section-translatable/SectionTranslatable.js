@@ -53,7 +53,11 @@ function SectionTranslatable({
   // Only emit upward for edit-originated changes (not prop-driven normalize).
   useEffect(() => {
     const _translation = markdownFromBlocks({ blocks: translationBlocks });
+
     if (changeOriginRef.current === 'edit' && _translation !== translation) {
+      // Clear before notify so a parent rerender with a new callback identity
+      // cannot re-enter this effect and emit again before translation updates.
+      changeOriginRef.current = 'prop';
       onTranslation(_translation);
     }
   }, [translationBlocks, onTranslation, translation]);
@@ -78,7 +82,8 @@ function SectionTranslatable({
       const translationBlock = translationBlocks[i];
       const originalBlock = originalBlocks[i];
       // Stable across translation edits; remount when source block identity changes.
-      const key = `${i}:${md5(JSON.stringify(originalBlock ?? ''))}`;
+      const key = `${i}:${md5(JSON.stringify(originalBlock || ''))}`;
+
       _blocksTranslatables.push(
         <BlockTranslatable
           key={key}

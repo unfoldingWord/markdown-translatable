@@ -54,7 +54,11 @@ function DocumentTranslatable({
     setEditedTranslation(_translation);
     // Only push upward for edit-originated changes. Prop sync must not echo
     // (join(split(translation)) often differs from translation).
+
     if (changeOriginRef.current === 'edit' && _translation !== translation) {
+      // Clear before notify so a parent rerender with a new callback identity
+      // cannot re-enter this effect and emit again before translation updates.
+      changeOriginRef.current = 'prop';
       onTranslation(_translation);
     }
   }, [translationSections, onTranslation, translation]);
@@ -74,8 +78,9 @@ function DocumentTranslatable({
       const originalSection = originalSections[i];
       const translationSection = translationSections[i];
       // Stable across translation edits; remount when source section identity changes.
-      const key = `${i}:${md5(JSON.stringify(originalSection ?? ''))}`;
+      const key = `${i}:${md5(JSON.stringify(originalSection || ''))}`;
       const __onTranslation = (item) => setTranslationSection({ index: i, item });
+
       const onExpanded = (expanded) => {
         if (expanded) {
           setSectionFocus(i);
