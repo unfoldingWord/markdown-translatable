@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useMemo, useCallback, useReducer,
+  useState, useEffect, useMemo, useCallback, useReducer, useRef,
 } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,6 +30,9 @@ function DocumentTranslatable({
   const classes = useStyles();
   const [sectionFocus, setSectionFocus] = useState(0);
   const [editedTranslation, setEditedTranslation] = useState(translation);
+  // 'prop' = syncing controlled translation; 'edit' = user/child change that may emit upward.
+  // Emitting on prop-driven normalize was part of a remount/update storm after save.
+  const changeOriginRef = useRef('prop');
 
   const _translationSections = useMemo(() => (
     sectionsFromMarkdown({ markdown: editedTranslation })
@@ -41,6 +44,7 @@ function DocumentTranslatable({
   ), [original]);
 
   useEffect(() => {
+    changeOriginRef.current = 'prop';
     const _translationSections = sectionsFromMarkdown({ markdown: translation });
     dispatch({ type: 'SET_ITEMS', value: { items: _translationSections } });
   }, [translation]);
@@ -48,20 +52,17 @@ function DocumentTranslatable({
   useEffect(() => {
     const _translation = markdownFromSections({ sections: translationSections });
     setEditedTranslation(_translation);
-  }, [translationSections]);
-
-  useEffect(() => {
-    if (editedTranslation !== translation) {
-      onTranslation(editedTranslation);
-      //console.log('DocumentTranslatable got updated editedTranslation');
+    // Only push upward for edit-originated changes. Prop sync must not echo
+    // (join(split(translation)) often differs from translation).
+    if (changeOriginRef.current === 'edit' && _translation !== translation) {
+      onTranslation(_translation);
     }
-  }, [editedTranslation, onTranslation, translation]); // adding onTranslation to memoized array causes infinite loop
+  }, [translationSections, onTranslation, translation]);
 
   const setTranslationSection = useCallback(({ index, item }) => {
+    changeOriginRef.current = 'edit';
     dispatch({ type: 'SET_ITEM', value: { index, item } });
   }, []);
-
-
 
   const sectionTranslatables = () => {
     const totalSections = originalSections.length > translationSections.length ?
@@ -72,9 +73,9 @@ function DocumentTranslatable({
     for ( let i=0; i < totalSections; i++ ) {
       const originalSection = originalSections[i];
       const translationSection = translationSections[i];
-      const key = md5(i + JSON.stringify(originalSection) + JSON.stringify(translationSection));
+      // Stable across translation edits; remount when source section identity changes.
+      const key = `${i}:${md5(JSON.stringify(originalSection ?? ''))}`;
       const __onTranslation = (item) => setTranslationSection({ index: i, item });
-
       const onExpanded = (expanded) => {
         if (expanded) {
           setSectionFocus(i);
