@@ -13,8 +13,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: lts/*
-      - name: Yarn install cache
-        uses: c-hive/gha-yarn-cache@v1
+          cache: yarn
       - name: Install Packages
         run: yarn --prefer-offline
       - name: Run Coverage Tests
