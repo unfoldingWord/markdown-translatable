@@ -1,0 +1,63 @@
+# Dependabot configuration.
+#
+# The repo previously had no dependabot.yml at all, so Dependabot ran with pure
+# defaults: security updates only, nothing ignored, no Actions coverage.
+version: 2
+
+updates:
+  # ---------------------------------------------------------------------------
+  # npm / yarn -- security updates only.
+  #
+  # open-pull-requests-limit: 0 disables scheduled *version* update PRs. Per
+  # GitHub's docs, "If you want the customization for a package ecosystem to
+  # only apply to security updates (and exclude version updates), set the
+  # open-pull-requests-limit key to 0" -- security update PRs are not subject
+  # to this limit. Version updates are unwanted here because the dev toolchain
+  # is deliberately held at a 2019-era stack (React 16, webpack 4, jest 24) to
+  # match the published package's React 16 peer range.
+  #
+  # The ignore list below is what stops the recurring failed runs. Dependabot's
+  # security job accepts an ignore-conditions field (visible in the job
+  # definition of any run under Actions > Dependabot Updates), so these apply
+  # to security updates, not just version updates.
+  #
+  # Every entry is a transitive devDependency of react-styleguidist@10, which
+  # pins webpack-dev-server@3.11.0 and react-dev-utils. Dependabot cannot patch
+  # any of them: a security job may only bump *direct* dependencies
+  # ("update-subdependencies": false), and the pinning parent has no in-range
+  # release that takes a fixed version. Each alert therefore produces a failed
+  # "security_update_not_possible" run rather than a PR.
+  #
+  # None of this reaches consumers of the package: `files` is ["dist/*"] and
+  # dist/ is babel output from src/, so these are build-time-only dependencies
+  # of the styleguide docs site.
+  #
+  # The actual fix is upgrading react-styleguidist 10 -> 12, which moves to
+  # webpack 5 and keeps the React >= 16.8 peer range. When that lands, delete
+  # this ignore list and let the alerts resolve normally.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+    ignore:
+      # react-styleguidist > webpack-dev-server@3.11.0 > http-proxy-middleware
+      - dependency-name: "http-proxy-middleware"
+      # react-styleguidist > webpack-dev-server > sockjs > faye-websocket
+      - dependency-name: "websocket-driver"
+      # react-styleguidist > react-dev-utils
+      - dependency-name: "shell-quote"
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions -- version updates left ON deliberately.
+  #
+  # There are only a handful of actions, and a stale action major is exactly
+  # what produced the "Node.js 20 is deprecated" annotation that took two PRs
+  # to chase down. Letting Dependabot bump these catches it automatically.
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    open-pull-requests-limit: 5
