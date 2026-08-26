@@ -65,13 +65,13 @@
     "react": "^16.8.6",
     "react-docgen-typescript": "^1.9.0",
     "react-dom": "^16.8.6",
-    "react-scripts": "^3.2.0",
     "react-styleguidist": "^10.2.1",
     "source-map-support": "0.5.16",
     "style-loader": "^1.0.0",
     "ts-jest": "^24.1.0",
     "ts-loader": "^6.2.1",
-    "typescript": "3.7.2"
+    "typescript": "3.7.2",
+    "webpack": "^4.42.0"
   },
   "main": "dist/index.js",
   "files": [
